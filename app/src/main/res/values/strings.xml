@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">KotlinRxJavaEx</string>
+    <string name="title_activity_movie">MovieActivity</string>
+    <string name="movie_info">Movie Info</string>
+    <string name="rate_button">Rate This Movie Now</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="movie_name">Movie:</string>
+    <string name="movie_date">Release date:</string>
+    <string name="movie_rating">Rating:</string>
+    <string name="add_movie_to_watch_list">Add movie to watch list</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_ok">OK</string>
+    <string name="my_app">My App</string>
+    <string name="remove_movie_from_watch_list">Remove</string>
+    <string name="menu_compose">compose</string>
+</resources>
