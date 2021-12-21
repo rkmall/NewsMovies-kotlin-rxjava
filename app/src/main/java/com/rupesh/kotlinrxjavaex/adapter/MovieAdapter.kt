@@ -13,16 +13,18 @@ import com.rupesh.kotlinrxjavaex.model.Movie
 import com.rupesh.kotlinrxjavaex.utils.AppConstants
 import com.rupesh.kotlinrxjavaex.view.MovieDetailActivity
 
+/**
+ * A simple [RecyclerView.Adapter] subclass.
+ * This adapter is attached to [com.rupesh.kotlinrxjavaex.view.MovieFragment]
+ * and handles the View operations associated with the RecyclerView
+ * @author Rupesh Mall
+ * @since 1.0
+ */
 class MovieAdapter(
     val context: Context,
     val movies: ArrayList<Movie>,
-    val listener: MovieFragListener
+    val listener: (movie: Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>()  {
-
-
-    interface MovieFragListener {
-        fun onClickOk(movie: Movie)
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -51,8 +53,15 @@ class MovieAdapter(
         return movies.size
     }
 
+    /**
+     * Inner class MovieViewHolder
+     */
     inner class MovieViewHolder(val binding: MovieListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
+        /**
+         * On Movie item click redirects to [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
+         * passing the selected Movie item to the destination
+         */
         fun onMovieClick() {
             itemView.setOnClickListener {
                 val position = adapterPosition
@@ -69,13 +78,18 @@ class MovieAdapter(
             }
         }
 
+        /**
+         * On Movie item long click gets the position of the selected item
+         * and invokes the callback method implemented by
+         * [com.rupesh.kotlinrxjavaex.view.MovieFragment]
+         */
         fun onMovieLongClick() {
             itemView.setOnLongClickListener {
                 val position = adapterPosition
 
                 if(position != RecyclerView.NO_POSITION) {
                     val selectedMovie = movies[position]
-                    listener.onClickOk(selectedMovie)
+                    listener(selectedMovie)
                 }else {
                     Toast.makeText(context, "Internal error", Toast.LENGTH_LONG).show()
                 }

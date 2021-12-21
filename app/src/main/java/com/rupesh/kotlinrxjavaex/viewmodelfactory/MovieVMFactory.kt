@@ -5,8 +5,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.rupesh.kotlinrxjavaex.repository.MovieRepository
 import com.rupesh.kotlinrxjavaex.viewmodel.MovieViewModel
 
+/**
+ * Factory to instantiate [com.rupesh.kotlinrxjavaex.viewmodel.MovieViewModel]
+ * Implements [ViewModelProvider.Factory]
+ * @param movieRepository the MovieRepository
+ */
 class MovieVMFactory(
-    private val movieRepository: MovieRepository
+    val movieRepository: MovieRepository
 ): ViewModelProvider.Factory{
 
 

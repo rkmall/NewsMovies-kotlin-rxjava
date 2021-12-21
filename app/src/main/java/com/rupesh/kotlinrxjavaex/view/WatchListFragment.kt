@@ -1,60 +1,93 @@
 package com.rupesh.kotlinrxjavaex.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.rupesh.kotlinrxjavaex.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.rupesh.kotlinrxjavaex.adapter.WatchListAdapter
+import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
+import com.rupesh.kotlinrxjavaex.db.MovieDB
+import com.rupesh.kotlinrxjavaex.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.repository.DbMovieRepository
+import com.rupesh.kotlinrxjavaex.viewmodel.DbMovieViewModel
+import com.rupesh.kotlinrxjavaex.viewmodelfactory.DbMovieVMFactory
 
 /**
  * A simple [Fragment] subclass.
- * Use the [WatchListFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * This Fragment displays [com.rupesh.kotlinrxjavaex.db.entity.DbMovie]information
+ * using a Recycler View.
+ * @author Rupesh Mall
+ * @since 1.0
  */
 class WatchListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var watchListItemBinding: FragmentWatchListBinding? = null
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var watchListAdapter: WatchListAdapter
+    private lateinit var dbMovieViewModel: DbMovieViewModel
+    private var dbMovies = ArrayList<DbMovie>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_watch_list, container, false)
+        watchListItemBinding = FragmentWatchListBinding.inflate(inflater, container, false)
+        val view: View = watchListItemBinding!!.root
+
+        val dbMovieVMFactory: DbMovieVMFactory = DbMovieVMFactory(DbMovieRepository(requireContext(), MovieDB.getDB(requireContext())))
+        dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
+
+        getMovieListFromDb()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment WatchListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WatchListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+    fun getMovieListFromDb() {
+        dbMovieViewModel.getAllMovieFromDb()
+        dbMovieViewModel.dbMovieMutableLiveData.observe(viewLifecycleOwner, Observer {
+            dbMovies = it as ArrayList<DbMovie>
+            initRecyclerView()
+        })
+    }
+
+
+    fun onRemoveButtonClicked(dbMovie: DbMovie) {
+        dbMovieViewModel.deleteMovieFromDB(dbMovie)
+    }
+
+    /**
+     * Initialize thisFragment's RecyclerView
+     * RecyclerView uses LinearLayout
+     */
+    private fun initRecyclerView() {
+        recyclerView = watchListItemBinding!!.rvWatchList.also {
+            watchListAdapter = WatchListAdapter(requireContext(), dbMovies) {item -> onRemoveButtonClicked(item)}
+            it.layoutManager = LinearLayoutManager(requireContext())
+            it.adapter = watchListAdapter
+        }
+
+        watchListAdapter.notifyDataSetChanged()
+    }
+
+    /**
+     * Clears the connection between Observables and Observers
+     * added in CompositeDisposables
+     * And clear the bindings
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        watchListItemBinding = null
+        dbMovieViewModel.clear()
     }
 }

@@ -13,6 +13,12 @@ import com.rupesh.kotlinrxjavaex.databinding.ActivityMovieDetailBinding
 import com.rupesh.kotlinrxjavaex.model.Movie
 import com.rupesh.kotlinrxjavaex.utils.AppConstants
 
+/**
+ * A simple [AppCompatActivity] subclass.
+ * This class displays the detail info about [com.rupesh.kotlinrxjavaex.model.Movie]
+ * @author Rupesh Mall
+ * @since 1.0
+ */
 class MovieDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityMovieDetailBinding? = null
@@ -35,34 +41,47 @@ class MovieDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // Get Parcelable from MovieAdapter
         val intentThatStartedThisActivity: Intent = intent
-        if(intentThatStartedThisActivity.hasExtra("movie")) {
-            val movie: Movie? = intentThatStartedThisActivity.getParcelableExtra("movie")
-            image = movie!!.poster_path
-            name = movie.original_title
-            plot = movie.overview
-            rating = movie.vote_average.toString()
-            date = movie.release_date
-            id = movie.id
 
+        if(intentThatStartedThisActivity.hasExtra("movie")) {
+
+            val movie: Movie? = intentThatStartedThisActivity.getParcelableExtra("movie")
+
+            movie?.let {
+                image = it.poster_path
+                name = it.original_title
+                plot = it.overview
+                rating = it.vote_average.toString()
+                date = it.release_date
+                id = it.id
+            }
+
+            // Init Collapsing toolbar
             initCollapsingToolBar()
 
+            // Bind Movie object with the Views
             val posterPath = "${AppConstants.POSTER_PATH}$image"
+            binding?.let {
 
-            Glide.with(this)
-                .load(posterPath)
-                .placeholder(R.drawable.loading)
-                .into(binding!!.ivMovieDetailImage)
+                Glide.with(this)
+                    .load(posterPath)
+                    .placeholder(R.drawable.loading)
+                    .into(it.ivMovieDetailImage)
 
-            binding!!.layoutContentMovieDetail.tvMovieDetailTitle.text = name
-            binding!!.layoutContentMovieDetail.tvMovieDetailPlot.text = plot
-            binding!!.layoutContentMovieDetail.tvMovieDetailRating.text = rating
-            binding!!.layoutContentMovieDetail.tvMovieDetailReleaseDate.text = date
+                it.layoutContentMovieDetail.tvMovieDetailTitle.text = name
+                it.layoutContentMovieDetail.tvMovieDetailPlot.text = plot
+                it.layoutContentMovieDetail.tvMovieDetailRating.text = rating
+                it.layoutContentMovieDetail.tvMovieDetailReleaseDate.text = date
+            }
         } else {
             Toast.makeText(this, "No movie data found", Toast.LENGTH_LONG).show()
         }
     }
 
+    /**
+     * Initializes Collapsing Toolbar
+     */
     private fun initCollapsingToolBar() {
         val collapsingToolbarLayout: CollapsingToolbarLayout = binding!!.ctMovieDetail
         collapsingToolbarLayout.title = " "
@@ -80,7 +99,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     scrollRange = appBarLayout!!.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.title = name
+                    collapsingToolbarLayout.title = " "
                     isShow = true
                 } else if (isShow) {
                     collapsingToolbarLayout.title = name

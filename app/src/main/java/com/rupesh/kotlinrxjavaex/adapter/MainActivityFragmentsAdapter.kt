@@ -7,6 +7,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.rupesh.kotlinrxjavaex.view.MovieFragment
 import com.rupesh.kotlinrxjavaex.view.WatchListFragment
 
+/**
+ * A simple [FragmentStateAdapter] subclass.
+ * This adapter manages the two Fragments:
+ * [com.rupesh.kotlinrxjavaex.view.MovieFragment] and
+ * [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
+ * @author Rupesh Mall
+ * @since 1.0
+ */
 class MainActivityFragmentsAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle

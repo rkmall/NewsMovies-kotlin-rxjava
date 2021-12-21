@@ -4,6 +4,12 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Movie class represent a movie data instance
+ * @see <a href="https://developers.themoviedb.org/3/getting-started/introduction"></a>
+ * @author Rupesh Mall
+ * @since 1.0
+ */
 @Parcelize
 data class Movie(
     @SerializedName("adult") val adult :                                Boolean,

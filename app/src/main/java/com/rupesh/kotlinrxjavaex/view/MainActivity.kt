@@ -11,6 +11,12 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.adapter.MainActivityFragmentsAdapter
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMainBinding
 
+/**
+ * A simple [AppCompatActivity] subclass.
+ * The main Activity and the entry point of the App
+ * @author Rupesh Mall
+ * @since 1.0
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -54,6 +60,9 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        /**
+         * On ViewPager2 page change, gets the tabLayout position
+         */
         viewPagerCallBack = object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 tabLayout.selectTab(tabLayout.getTabAt(position))
@@ -66,6 +75,9 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Unregister ViewPager2 callback
+     */
     override fun onDestroy() {
         super.onDestroy()
         viewPager2.unregisterOnPageChangeCallback(viewPagerCallBack)
