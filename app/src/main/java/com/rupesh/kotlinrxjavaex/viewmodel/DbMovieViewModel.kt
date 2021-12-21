@@ -43,16 +43,16 @@ class DbMovieViewModel(
      */
     fun addMovieToDB(id: Long, title: String,
                            rating: Double, overview: String,
-                           releaseDate: String, posterPath: String ) {
-        dbMovieRepository.addMovieToDb(id, title, rating, overview, releaseDate, posterPath)
+                           releaseDate: String, posterPath: String ): Long {
+        return dbMovieRepository.addMovieToDb(id, title, rating, overview, releaseDate, posterPath)
     }
 
     /**
      * Forwards the operation to delete DbMovie to DbMovieRepository
      * @param dbMovie the DbMovie instance to be deleted
      */
-    fun deleteMovieFromDB(dbMovie: DbMovie) {
-        dbMovieRepository.deleteMovieFromDb(dbMovie)
+    fun deleteMovieFromDB(dbMovie: DbMovie): Int {
+        return dbMovieRepository.deleteMovieFromDb(dbMovie)
     }
 
     /**
