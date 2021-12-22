@@ -24,7 +24,7 @@
                 android:layout_margin="5dp"
                 android:padding="5dp"
                 android:text="@string/movie_name"
-                android:textColor="@color/colorPrimary"
+                android:textColor="#BF360C"
                 android:textSize="20sp" />
 
 
@@ -36,7 +36,7 @@
                 android:layout_margin="5dp"
                 android:padding="5dp"
                 android:text="@string/movie_date"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_margin="5dp"
                 android:padding="5dp"
                 android:text="@string/movie_date"
-                android:textColor="@color/colorPrimary"
+                android:textColor="#BF360C"
                 android:textSize="15sp" />
 
             <TextView
@@ -59,7 +59,7 @@
                 android:padding="5dp"
                 android:layout_below="@id/tv_watchlist_date1"
                 android:text="@string/movie_rating"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <TextView
@@ -71,7 +71,7 @@
                 android:layout_below="@id/tv_watchlist_date1"
                 android:layout_toEndOf="@id/tv_watchlist_rating1"
                 android:text="@string/movie_rating"
-                android:textColor="@color/colorPrimary"
+                android:textColor="#BF360C"
                 android:textSize="15sp" />
 
             <Button
@@ -81,7 +81,7 @@
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="45dp"
                 android:layout_below="@id/tv_watchlist_rating"
-                android:backgroundTint="@color/teal_700"
+                android:backgroundTint="#BF360C"
                 android:text="@string/remove_movie_from_watch_list" />
         </RelativeLayout>
 

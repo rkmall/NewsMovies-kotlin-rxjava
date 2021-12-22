@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = "Movie Gallery"
 
+
         tabLayout = binding.mainTabLayout
         viewPager2 = binding.mainViewPager
 

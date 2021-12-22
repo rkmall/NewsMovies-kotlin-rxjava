@@ -121,7 +121,7 @@
                     android:layout_margin="10dp"
                     android:padding="5dp"
                     android:text="Rate This Movie Now"
-                    android:textColor="@android:color/holo_orange_light"
+                    android:textColor="#BF360C"
                     android:visibility="visible"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rating_bar" />

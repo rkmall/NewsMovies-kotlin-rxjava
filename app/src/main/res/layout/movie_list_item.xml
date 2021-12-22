@@ -31,7 +31,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="#BF360C"
                 android:textSize="15dp"/>
 
             <TextView
@@ -42,7 +42,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="#BF360C"
                 android:textSize="12dp"/>
         </RelativeLayout>
 
