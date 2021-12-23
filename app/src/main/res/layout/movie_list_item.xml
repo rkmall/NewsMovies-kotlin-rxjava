@@ -31,7 +31,8 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
-                android:textColor="#BF360C"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="15dp"/>
 
             <TextView
@@ -42,7 +43,8 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
-                android:textColor="#BF360C"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="12dp"/>
         </RelativeLayout>
 

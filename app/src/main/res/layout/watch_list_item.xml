@@ -21,10 +21,11 @@
                 android:id="@+id/tv_watchlist_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:padding="2dp"
                 android:text="@string/movie_name"
-                android:textColor="#BF360C"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="20sp" />
 
 
@@ -33,10 +34,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_watchlist_title"
-                android:layout_margin="5dp"
-                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:padding="2dp"
                 android:text="@string/movie_date"
                 android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="15sp" />
 
             <TextView
@@ -45,33 +47,36 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_watchlist_title"
                 android:layout_toEndOf="@id/tv_watchlist_date1"
-                android:layout_margin="5dp"
-                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:padding="2dp"
                 android:text="@string/movie_date"
-                android:textColor="#BF360C"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_watchlist_rating1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:padding="2dp"
                 android:layout_below="@id/tv_watchlist_date1"
                 android:text="@string/movie_rating"
                 android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_watchlist_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:padding="2dp"
                 android:layout_below="@id/tv_watchlist_date1"
                 android:layout_toEndOf="@id/tv_watchlist_rating1"
                 android:text="@string/movie_rating"
-                android:textColor="#BF360C"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif"
                 android:textSize="15sp" />
 
             <Button
@@ -81,7 +86,8 @@
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="45dp"
                 android:layout_below="@id/tv_watchlist_rating"
-                android:backgroundTint="#BF360C"
+                android:backgroundTint="@color/black"
+                android:fontFamily="sans-serif"
                 android:text="@string/remove_movie_from_watch_list" />
         </RelativeLayout>
 
