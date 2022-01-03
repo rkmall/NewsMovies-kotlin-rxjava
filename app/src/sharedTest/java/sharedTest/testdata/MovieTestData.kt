@@ -1,6 +1,6 @@
 package sharedTest.testdata
 
-import com.rupesh.kotlinrxjavaex.model.Movie
+import com.rupesh.kotlinrxjavaex.data.model.Movie
 
 class MovieTestData {
 

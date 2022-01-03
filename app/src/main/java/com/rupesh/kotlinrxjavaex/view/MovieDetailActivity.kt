@@ -10,8 +10,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMovieDetailBinding
-import com.rupesh.kotlinrxjavaex.model.Movie
-import com.rupesh.kotlinrxjavaex.utils.AppConstants
+import com.rupesh.kotlinrxjavaex.data.model.Movie
+import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
 
 /**
  * A simple [AppCompatActivity] subclass.

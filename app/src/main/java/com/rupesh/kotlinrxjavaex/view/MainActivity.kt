@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.adapter.MainActivityFragmentsAdapter
+import com.rupesh.kotlinrxjavaex.presentation.adapter.MainActivityFragmentsAdapter
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMainBinding
 
 /**

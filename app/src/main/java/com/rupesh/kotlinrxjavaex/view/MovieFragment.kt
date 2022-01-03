@@ -12,18 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rupesh.kotlinrxjavaex.adapter.MovieAdapter
+import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
-import com.rupesh.kotlinrxjavaex.db.MovieDB
-import com.rupesh.kotlinrxjavaex.model.Movie
-import com.rupesh.kotlinrxjavaex.repository.DbMovieRepository
-import com.rupesh.kotlinrxjavaex.repository.MovieRepository
-import com.rupesh.kotlinrxjavaex.service.RetrofitInstance
-import com.rupesh.kotlinrxjavaex.viewmodel.DbMovieViewModel
-import com.rupesh.kotlinrxjavaex.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.viewmodelfactory.DbMovieVMFactory
-import com.rupesh.kotlinrxjavaex.viewmodelfactory.MovieVMFactory
+import com.rupesh.kotlinrxjavaex.data.db.MovieDB
+import com.rupesh.kotlinrxjavaex.data.model.Movie
+import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
+import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
+import com.rupesh.kotlinrxjavaex.data.service.RetrofitInstance
+import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
+import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 
 /**
  * A simple [Fragment] subclass.

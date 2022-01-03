@@ -9,13 +9,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rupesh.kotlinrxjavaex.adapter.WatchListAdapter
+import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
-import com.rupesh.kotlinrxjavaex.db.MovieDB
-import com.rupesh.kotlinrxjavaex.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.repository.DbMovieRepository
-import com.rupesh.kotlinrxjavaex.viewmodel.DbMovieViewModel
-import com.rupesh.kotlinrxjavaex.viewmodelfactory.DbMovieVMFactory
+import com.rupesh.kotlinrxjavaex.data.db.MovieDB
+import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
+import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
 
 /**
  * A simple [Fragment] subclass.

@@ -1,6 +1,6 @@
 package sharedTest.testdata
 
-import com.rupesh.kotlinrxjavaex.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
 
 class DbMovieTestData {
 
