@@ -1,5 +1,6 @@
 package com.rupesh.kotlinrxjavaex.data.service
 
+import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -25,7 +26,7 @@ object RetrofitInstance {
     // Retrofit val by Kotlin lazy delegation
     val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(AppConstants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

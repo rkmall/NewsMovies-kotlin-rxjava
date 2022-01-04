@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMovieDetailBinding
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
@@ -65,7 +65,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
             // Bind Movie image with the View
             val image = movie!!.poster_path
-            val posterPath = "${AppConstants.POSTER_PATH}$image"
+            val posterPath = "${BuildConfig.POSTER_PATH}$image"
             binding?.let {
 
                 Glide.with(this)

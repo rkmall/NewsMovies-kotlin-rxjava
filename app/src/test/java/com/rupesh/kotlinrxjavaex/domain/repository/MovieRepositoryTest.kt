@@ -16,6 +16,7 @@ import sharedTest.RxImmediateSchedulerRule
 import sharedTest.testdata.MovieDBResponseTestData
 import org.mockito.Mockito.mock
 import com.google.common.truth.Truth.assertThat
+import com.rupesh.kotlinrxjavaex.BuildConfig
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -49,7 +50,7 @@ class MovieRepositoryTest {
         val expected: Int = 2
 
         // Mock return data with the TestData
-        Mockito.`when`(service.getAllMoviesWithRx(AppConstants.api_key))
+        Mockito.`when`(service.getAllMoviesWithRx(BuildConfig.API_KEY))
             .thenReturn(testData.getTestObservable())
 
         // Test method
@@ -65,7 +66,7 @@ class MovieRepositoryTest {
         val expected = "Movie2021"
 
         // Mock return data as test data
-        Mockito.`when`(service.getAllMoviesWithRx(AppConstants.api_key))
+        Mockito.`when`(service.getAllMoviesWithRx(BuildConfig.API_KEY))
             .thenReturn(testData.getTestObservable())
 
         // Test method

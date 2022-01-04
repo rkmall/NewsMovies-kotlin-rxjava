@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
 import com.rupesh.kotlinrxjavaex.data.model.Movie
@@ -45,7 +46,7 @@ class MovieAdapter(
     override fun onBindViewHolder(holder: MovieAdapter.MovieViewHolder, position: Int) {
         holder.bind()
 
-        val posterPath = "${AppConstants.POSTER_PATH}${movies[position].poster_path}"
+        val posterPath = "${BuildConfig.POSTER_PATH}${movies[position].poster_path}"
 
         Glide.with(context)
             .load(posterPath)

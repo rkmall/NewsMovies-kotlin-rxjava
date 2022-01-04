@@ -1,9 +1,14 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
+import com.rupesh.kotlinrxjavaex.domain.usecase.DeleteSavedMovie
+import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllSavedMovies
+import com.rupesh.kotlinrxjavaex.domain.usecase.SaveMovieToDb
+import com.rupesh.kotlinrxjavaex.domain.util.Event
 
 /**
  * DbMovieViewModel is [androidx.lifecycle.ViewModel]
@@ -16,7 +21,9 @@ import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
  * @since 1.0
  */
 class DbMovieViewModel(
-    val dbMovieRepository: DbMovieRepository
+    val getAllSavedMovies: GetAllSavedMovies,
+    val saveMovieToDb: SaveMovieToDb,
+    val deleteSavedMovie: DeleteSavedMovie
 ) : ViewModel()  {
 
     /**
@@ -24,12 +31,15 @@ class DbMovieViewModel(
      */
     var dbMovieMutableLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
 
+    val statusMessage = MutableLiveData<Event<String>>()
+
     /**
      * Gets a list of DMovie wrapped inside MutableLiveData
      * @return the LiveData<List<DMovie>
      */
     fun getAllMovieFromDb() {
-        dbMovieMutableLiveData = dbMovieRepository.getMovieLiveDataFromDB()
+        dbMovieMutableLiveData = getAllSavedMovies.execute()
+        statusMessage.value = Event("Your saved movies")
     }
 
     /**
@@ -43,16 +53,20 @@ class DbMovieViewModel(
      */
     fun addMovieToDB(id: Long, title: String,
                            rating: Double, overview: String,
-                           releaseDate: String, posterPath: String ): Long {
-        return dbMovieRepository.addMovieToDb(id, title, rating, overview, releaseDate, posterPath)
+                           releaseDate: String, posterPath: String ) {
+
+
+        saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
+        statusMessage.value = Event("Saved movie $title")
     }
 
     /**
      * Forwards the operation to delete DbMovie to DbMovieRepository
      * @param dbMovie the DbMovie instance to be deleted
      */
-    fun deleteMovieFromDB(dbMovie: DbMovie): Int {
-        return dbMovieRepository.deleteMovieFromDb(dbMovie)
+    fun deleteMovieFromDB(dbMovie: DbMovie) {
+        deleteSavedMovie.execute(dbMovie)
+        statusMessage.value = Event("Deleted movie ${dbMovie.title}")
     }
 
     /**
@@ -60,7 +74,7 @@ class DbMovieViewModel(
      * added in CompositeDisposables
      */
     fun clear() {
-        dbMovieRepository.clear()
+        getAllSavedMovies.clear()
         super.onCleared()
     }
 }

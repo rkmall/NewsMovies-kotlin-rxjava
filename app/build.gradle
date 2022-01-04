@@ -16,13 +16,16 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
-
+        buildConfigField("String", "API_KEY", MOVIE_KEY)
+        buildConfigField("String", "BASE_URL", MOVIE_URL)
+        buildConfigField("String", "POSTER_PATH", IMG_PATH)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -93,7 +96,7 @@ dependencies {
     
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // RxBinding
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 

@@ -1,10 +1,15 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
+import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.model.Movie
 import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
+import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
+import com.rupesh.kotlinrxjavaex.domain.util.Event
+import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
 
 /**
  * DbMovieViewModel is [androidx.lifecycle.ViewModel]
@@ -17,13 +22,15 @@ import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
  * @since 1.0
  */
 class MovieViewModel(
-    private val movieRepository: MovieRepository
+    private val getAllMovies: GetAllMovies
 ): ViewModel() {
 
     /**
      * Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
      */
-    var movieLiveData: LiveData<List<Movie>> = MutableLiveData()
+    var movieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+
+    val statusMessage = MutableLiveData<Event<String>>()
 
     var movie: Movie? = null
 
@@ -32,20 +39,17 @@ class MovieViewModel(
      * @return the LiveData<List<DMovie>
      */
     fun getMovieList() {
-        movieLiveData = movieRepository.getMovieLiveData()
+        movieLiveData = getAllMovies.execute()
+        statusMessage.value = Event("Current popular movies")
     }
 
-
-    fun setMovieData(_movie: Movie) {
-        movie = _movie
-    }
 
     /**
      * Clears the connection between Observables and Observers
      * added in CompositeDisposables
      */
     fun clear() {
-        movieRepository.clear()
+        getAllMovies.clear()
         super.onCleared()
     }
 }

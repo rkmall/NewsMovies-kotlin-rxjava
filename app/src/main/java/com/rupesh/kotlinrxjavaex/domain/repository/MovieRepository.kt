@@ -1,10 +1,11 @@
 package com.rupesh.kotlinrxjavaex.domain.repository
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.model.Movie
 import com.rupesh.kotlinrxjavaex.data.model.MovieDBResponse
 import com.rupesh.kotlinrxjavaex.data.service.MovieDataService
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -31,21 +32,21 @@ class MovieRepository(private val service: MovieDataService) {
     private val movies: ArrayList<Movie> = ArrayList()
 
     // MutableLiveData to hold the API call result
-    private val moviesLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    val movieListResult: MutableLiveData<List<Movie>> = MutableLiveData()
 
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    // RxJava Obseravables
+    // RxJava Observables
     private var movieDBResponseObservable: Observable<MovieDBResponse>? = null
 
     /**
      * Gets a list of all Movies in succession from API call
      * @return the MutableLiveData<List<Movie> that wraps the result of API call
      */
-    fun getMovieLiveData(): MutableLiveData<List<Movie>> {
+    fun getMovieLiveData() {
 
-        movieDBResponseObservable = service.getAllMoviesWithRx(AppConstants.api_key)
+        movieDBResponseObservable = service.getAllMoviesWithRx(BuildConfig.API_KEY)
 
         disposable.add(
             movieDBResponseObservable!!
@@ -62,15 +63,14 @@ class MovieRepository(private val service: MovieDataService) {
                     }
 
                     override fun onError(e: Throwable) {
-
+                        Log.i("RxError: ", "Get all movie error")
                     }
 
                     override fun onComplete() {
-                        moviesLiveData.postValue(movies)
+                        movieListResult.value = movies
                     }
                 })
         )
-        return moviesLiveData
     }
 
     /**

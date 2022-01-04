@@ -3,6 +3,7 @@ package com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
+import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 
 /**
@@ -11,11 +12,11 @@ import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
  * @param movieRepository the MovieRepository
  */
 class MovieVMFactory(
-    val movieRepository: MovieRepository
+    val getAllMovies: GetAllMovies
 ): ViewModelProvider.Factory{
 
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MovieViewModel(movieRepository) as T
+        return MovieViewModel(getAllMovies) as T
     }
 }

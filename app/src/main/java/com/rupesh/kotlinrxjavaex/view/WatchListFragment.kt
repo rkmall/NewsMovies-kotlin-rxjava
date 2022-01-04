@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -49,6 +50,8 @@ class WatchListFragment : Fragment() {
         initRecyclerView()
 
         getMovieListFromDb()
+
+        displayToastMessage()
     }
 
     fun getMovieListFromDb() {
@@ -57,6 +60,14 @@ class WatchListFragment : Fragment() {
             dbMovies = it as ArrayList<DbMovie>
             watchListAdapter.setList(dbMovies)
             watchListAdapter.notifyDataSetChanged()
+        })
+    }
+
+    fun displayToastMessage() {
+        dbMovieViewModel.statusMessage.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            }
         })
     }
 

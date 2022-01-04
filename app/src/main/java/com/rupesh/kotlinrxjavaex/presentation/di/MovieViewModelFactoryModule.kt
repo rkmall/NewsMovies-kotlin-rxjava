@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.presentation.di
 
 import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
+import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 import dagger.Module
 import dagger.Provides
@@ -15,8 +16,8 @@ class MovieViewModelFactoryModule {
     @Singleton
     @Provides
     fun provideMovieViewModelFactory(
-        movieRepository: MovieRepository
+        getAllMovies: GetAllMovies
     ): MovieVMFactory {
-        return MovieVMFactory(movieRepository)
+        return MovieVMFactory(getAllMovies)
     }
 }

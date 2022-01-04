@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.domain.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.rupesh.kotlinrxjavaex.data.db.MovieDB
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
@@ -30,9 +31,12 @@ import io.reactivex.schedulers.Schedulers
 class DbMovieRepository(
     val movieDB: MovieDB
 ) {
-
     // MutableLiveData to hold the result of database operation
-    private val moviesLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
+    val moviesLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
+
+    var rowIdInserted: MutableLiveData<Long> = MutableLiveData()
+
+    var noOfRowIdDeleted: MutableLiveData<Int> = MutableLiveData()
 
     // RxJava CompositeDisposable
     private val disposable: CompositeDisposable = CompositeDisposable()
@@ -40,12 +44,11 @@ class DbMovieRepository(
     // RxJava observable
     private var movieObservable: Observable<List<DbMovie>>? = null
 
-
     /**
      * Gets a list of all Movies from Database [com.rupesh.kotlinrxjavaex.db.MovieDB]
      * @return the MutableLiveData<List<DMovie> that wraps the result of database operation
      */
-    fun getMovieLiveDataFromDB(): MutableLiveData<List<DbMovie>> {
+    fun getMovieLiveDataFromDB() {
 
         movieObservable = movieDB.getMovieDao().getAllMovie()
 
@@ -58,14 +61,13 @@ class DbMovieRepository(
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.i("RxError: ", "Get all movie from db error")
                 }
 
                 override fun onComplete() {
                 }
             })
         )
-
-        return moviesLiveData
     }
 
     /**
@@ -82,13 +84,11 @@ class DbMovieRepository(
         id: Long, title: String,
         rating: Double, overview: String,
         releaseDate: String, posterPath: String
-    ): Long {
-
-        var rowIdInserted: Long = -1
+    ) {
 
         disposable.add(Completable.fromAction {
             val movie = DbMovie(id, title, rating, overview, releaseDate, posterPath)
-            rowIdInserted = movieDB.getMovieDao().addMovie(movie)
+            rowIdInserted.value = movieDB.getMovieDao().addMovie(movie)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -102,19 +102,16 @@ class DbMovieRepository(
                 }
             })
         )
-        return rowIdInserted
     }
 
     /**
      * Deletes the DbMovie from App's database provided the DbMovie instance
      * @param dbMovie the DbMovie instance that needs to be deleted from database
      */
-    fun deleteMovieFromDb(dbMovie: DbMovie): Int {
-
-        var noOfRowDeleted = -1;
+    fun deleteMovieFromDb(dbMovie: DbMovie) {
 
         disposable.add(Maybe.fromAction<Any> {
-            noOfRowDeleted = movieDB.getMovieDao().deleteMovie(dbMovie)
+            noOfRowIdDeleted.value = movieDB.getMovieDao().deleteMovie(dbMovie)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -126,10 +123,7 @@ class DbMovieRepository(
                 }
             })
         )
-
-        return noOfRowDeleted
     }
-
 
     /**
      * Clears the connection between Observables and Observers
