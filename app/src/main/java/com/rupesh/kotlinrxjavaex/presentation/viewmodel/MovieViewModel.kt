@@ -25,12 +25,19 @@ class MovieViewModel(
      */
     var movieLiveData: LiveData<List<Movie>> = MutableLiveData()
 
+    var movie: Movie? = null
+
     /**
      * Gets a list of Movie wrapped inside MutableLiveData
      * @return the LiveData<List<DMovie>
      */
     fun getMovieList() {
         movieLiveData = movieRepository.getMovieLiveData()
+    }
+
+
+    fun setMovieData(_movie: Movie) {
+        movie = _movie
     }
 
     /**

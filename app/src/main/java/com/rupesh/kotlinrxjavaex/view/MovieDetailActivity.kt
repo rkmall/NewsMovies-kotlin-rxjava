@@ -1,17 +1,23 @@
 package com.rupesh.kotlinrxjavaex.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.databinding.ActivityMovieDetailBinding
 import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
+import com.rupesh.kotlinrxjavaex.data.util.AppConstants
+import com.rupesh.kotlinrxjavaex.databinding.ActivityMovieDetailBinding
+import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * A simple [AppCompatActivity] subclass.
@@ -19,48 +25,46 @@ import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
  * @author Rupesh Mall
  * @since 1.0
  */
+@AndroidEntryPoint
 class MovieDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityMovieDetailBinding? = null
 
-    private var image: String? = null
-    private var name: String? = null
-    private var plot: String? = null
-    private var rating: String? = null
-    private var date: String? = null
-    private var id: Int? = null
+    @Inject
+    lateinit var movieVMFactory: MovieVMFactory
+
+    private lateinit var movieViewModel: MovieViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMovieDetailBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail)
         val view: View = binding!!.root
         setContentView(view)
 
-        val toolbar = binding!!.toolbarMovieDetail
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initToolbar()
 
-        // Get Parcelable from MovieAdapter
+        movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
+
+        binding!!.lifecycleOwner = this
+
+        binding!!.movieVM = movieViewModel
+
+        getParcelizeMovie()
+
+        initCollapsingToolBar()
+    }
+
+    // Get Parcelable from MovieAdapter
+    private fun getParcelizeMovie() {
         val intentThatStartedThisActivity: Intent = intent
 
         if(intentThatStartedThisActivity.hasExtra("movie")) {
-
             val movie: Movie? = intentThatStartedThisActivity.getParcelableExtra("movie")
+            binding!!.movieVM!!.movie = movie   // data binding
 
-            movie?.let {
-                image = it.poster_path
-                name = it.original_title
-                plot = it.overview
-                rating = it.vote_average.toString()
-                date = it.release_date
-                id = it.id
-            }
-
-            // Init Collapsing toolbar
-            initCollapsingToolBar()
-
-            // Bind Movie object with the Views
+            // Bind Movie image with the View
+            val image = movie!!.poster_path
             val posterPath = "${AppConstants.POSTER_PATH}$image"
             binding?.let {
 
@@ -68,15 +72,16 @@ class MovieDetailActivity : AppCompatActivity() {
                     .load(posterPath)
                     .placeholder(R.drawable.loading)
                     .into(it.ivMovieDetailImage)
-
-                it.layoutContentMovieDetail.tvMovieDetailTitle.text = name
-                it.layoutContentMovieDetail.tvMovieDetailPlot.text = plot
-                it.layoutContentMovieDetail.tvMovieDetailRating.text = rating
-                it.layoutContentMovieDetail.tvMovieDetailReleaseDate.text = date
             }
         } else {
             Toast.makeText(this, "No movie data found", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun initToolbar() {
+        val toolbar = binding!!.toolbarMovieDetail
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     /**
@@ -99,10 +104,8 @@ class MovieDetailActivity : AppCompatActivity() {
                     scrollRange = appBarLayout!!.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.title = " "
                     isShow = true
                 } else if (isShow) {
-                    collapsingToolbarLayout.title = name
                     isShow = false
                 }
             }

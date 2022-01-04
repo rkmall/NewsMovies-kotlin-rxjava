@@ -38,7 +38,7 @@ class DbMovieRepositoryTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         movieDB = Room.inMemoryDatabaseBuilder(context, MovieDB::class.java).build()
-        repository = DbMovieRepository(context, movieDB)
+        repository = DbMovieRepository(movieDB)
     }
 
     @Test

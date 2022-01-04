@@ -6,24 +6,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
+import com.rupesh.kotlinrxjavaex.R
+import com.rupesh.kotlinrxjavaex.data.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
-import com.rupesh.kotlinrxjavaex.data.db.MovieDB
-import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
-import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
-import com.rupesh.kotlinrxjavaex.data.service.RetrofitInstance
+import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
-import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -49,28 +44,28 @@ class MovieFragment : Fragment() {
 
     private var movies = ArrayList<Movie>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieFragmentBinding = FragmentMovieBinding.inflate(inflater, container, false)
+        movieFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
+
         val view: View = movieFragmentBinding!!.root
 
-        val movieVMFactory: MovieVMFactory = MovieVMFactory(MovieRepository(RetrofitInstance.instance))
-        movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
-
-        val dbMovieVMFactory: DbMovieVMFactory = DbMovieVMFactory(DbMovieRepository(requireContext(), MovieDB.getDB(requireContext())))
-        dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
-
-        // API call
-        getMovieList()
-
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        movieViewModel = (activity as MainActivity).movieViewModel
+
+        dbMovieViewModel = (activity as MainActivity).dbMovieViewModel
+
+        initRecyclerView()
+
+        getMovieList()
     }
 
     // Get a list of Movie and observe the LiveData<List<Movie>>
@@ -78,7 +73,8 @@ class MovieFragment : Fragment() {
         movieViewModel.getMovieList()
         movieViewModel.movieLiveData.observe(viewLifecycleOwner, Observer() {
             movies = it as ArrayList<Movie>
-            initRecyclerView()
+            movieAdapter.setList(movies)
+            movieAdapter.notifyDataSetChanged()
         })
     }
 
@@ -96,13 +92,11 @@ class MovieFragment : Fragment() {
             else
                 it.layoutManager = GridLayoutManager(requireContext(), 4)
 
-            movieAdapter = MovieAdapter(requireContext(), movies) {item -> onItemClick(item)}
+            movieAdapter = MovieAdapter(requireContext()) {item -> onItemClick(item)}
 
             it.itemAnimator = DefaultItemAnimator()
             it.adapter = movieAdapter
         }
-
-        movieAdapter.notifyDataSetChanged()
     }
 
     /**
@@ -123,7 +117,6 @@ class MovieFragment : Fragment() {
             it.tvAddMovieName.text = movie.original_title
 
             it.ok.setOnClickListener {
-                val id: Long = 0L
                 val title: String = movie.original_title
                 val rating: Double = movie.vote_average
                 val overview: String = movie.overview

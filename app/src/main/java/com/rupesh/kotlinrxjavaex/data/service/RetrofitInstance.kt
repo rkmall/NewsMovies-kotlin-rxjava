@@ -1,6 +1,6 @@
 package com.rupesh.kotlinrxjavaex.data.service
 
-import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
+import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -23,7 +23,7 @@ object RetrofitInstance {
         .build()
 
     // Retrofit val by Kotlin lazy delegation
-    private val retrofit by lazy {
+    val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(AppConstants.BASE_URL)
             .client(client)
@@ -33,7 +33,7 @@ object RetrofitInstance {
     }
 
     // Create Retrofit with API service by Kotlin lazy delegation
-    val instance by lazy {
+    /*val instance by lazy {
         retrofit.create(MovieDataService::class.java)
-    }
+    }*/
 }

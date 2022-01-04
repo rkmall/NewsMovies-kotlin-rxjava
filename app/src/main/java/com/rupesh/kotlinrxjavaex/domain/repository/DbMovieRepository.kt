@@ -28,7 +28,6 @@ import io.reactivex.schedulers.Schedulers
  * @since 1.0
  */
 class DbMovieRepository(
-    val context: Context,
     val movieDB: MovieDB
 ) {
 

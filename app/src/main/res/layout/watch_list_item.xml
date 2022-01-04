@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="dbMovie"
+            type="com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -25,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:padding="2dp"
-                    android:text="@string/movie_name"
+                    android:text="@{dbMovie.title}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="20sp" />
@@ -51,7 +58,7 @@
                     android:layout_toEndOf="@id/tv_watchlist_date1"
                     android:layout_margin="2dp"
                     android:padding="2dp"
-                    android:text="@string/movie_date"
+                    android:text="@{dbMovie.releaseDate}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="15sp" />
@@ -76,7 +83,7 @@
                     android:padding="2dp"
                     android:layout_below="@id/tv_watchlist_date1"
                     android:layout_toEndOf="@id/tv_watchlist_rating1"
-                    android:text="@string/movie_rating"
+                    android:text="@{String.valueOf(dbMovie.rating)}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="15sp" />

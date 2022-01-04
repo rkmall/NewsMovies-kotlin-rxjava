@@ -1,13 +1,13 @@
 package com.rupesh.kotlinrxjavaex.data.db
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
+import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 
 /**
  * MovieDB represents a Room database with entity
@@ -37,13 +37,13 @@ abstract class MovieDB: RoomDatabase(){
          * @param context Android application context
          * @return the singleton instance of MovieDB
          */
-        fun getDB(context: Context): MovieDB {
+        fun getDB(app: Application): MovieDB {
             val tempInstance = INSTANCE
 
             if(tempInstance != null) return tempInstance
 
             synchronized(this) {
-                val instance = Room.databaseBuilder(context.applicationContext, MovieDB::class.java, AppConstants.DB_NAME)
+                val instance = Room.databaseBuilder(app, MovieDB::class.java, AppConstants.DB_NAME)
                     .addCallback(object: RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

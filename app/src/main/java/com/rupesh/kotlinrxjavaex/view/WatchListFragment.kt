@@ -4,18 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
-import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
-import com.rupesh.kotlinrxjavaex.data.db.MovieDB
+import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
+import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
+import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
-import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -33,34 +31,34 @@ class WatchListFragment : Fragment() {
     private lateinit var dbMovieViewModel: DbMovieViewModel
     private var dbMovies = ArrayList<DbMovie>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        watchListItemBinding = FragmentWatchListBinding.inflate(inflater, container, false)
+        watchListItemBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_watch_list, container, false)
         val view: View = watchListItemBinding!!.root
-
-        val dbMovieVMFactory: DbMovieVMFactory = DbMovieVMFactory(DbMovieRepository(requireContext(), MovieDB.getDB(requireContext())))
-        dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
-
-        getMovieListFromDb()
-
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        dbMovieViewModel = (activity as MainActivity).dbMovieViewModel
+
+        initRecyclerView()
+
+        getMovieListFromDb()
+    }
 
     fun getMovieListFromDb() {
         dbMovieViewModel.getAllMovieFromDb()
         dbMovieViewModel.dbMovieMutableLiveData.observe(viewLifecycleOwner, Observer {
             dbMovies = it as ArrayList<DbMovie>
-            initRecyclerView()
+            watchListAdapter.setList(dbMovies)
+            watchListAdapter.notifyDataSetChanged()
         })
     }
-
 
     fun onRemoveButtonClicked(dbMovie: DbMovie) {
         dbMovieViewModel.deleteMovieFromDB(dbMovie)
@@ -72,12 +70,10 @@ class WatchListFragment : Fragment() {
      */
     private fun initRecyclerView() {
         recyclerView = watchListItemBinding!!.rvWatchList.also {
-            watchListAdapter = WatchListAdapter(requireContext(), dbMovies) {item -> onRemoveButtonClicked(item)}
+            watchListAdapter = WatchListAdapter(requireContext()) {item -> onRemoveButtonClicked(item)}
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = watchListAdapter
         }
-
-        watchListAdapter.notifyDataSetChanged()
     }
 
     /**

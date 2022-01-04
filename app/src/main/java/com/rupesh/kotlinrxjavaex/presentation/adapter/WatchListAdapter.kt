@@ -3,9 +3,12 @@ package com.rupesh.kotlinrxjavaex.presentation.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
 
 /**
  * A simple [RecyclerView.Adapter] subclass.
@@ -16,22 +19,26 @@ import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
  */
 class WatchListAdapter(
     val context: Context,
-    val movies: ArrayList<DbMovie>,
     val listener: (dbMovie: DbMovie) -> Unit
 ): RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>()  {
+
+    var movies: List<DbMovie> = ArrayList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): WatchListAdapter.WatchListViewHolder {
-        val binding: WatchListItemBinding = WatchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding: WatchListItemBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.watch_list_item,
+            parent,
+            false
+        )
         return WatchListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: WatchListAdapter.WatchListViewHolder, position: Int) {
-        holder.binding.tvWatchlistTitle.text = movies[position].title
-        holder.binding.tvWatchlistDate.text = movies[position].releaseDate
-        holder.binding.tvWatchlistRating.text = movies[position].rating.toString()
+        holder.bind()
 
         holder.onRemoveButtonClicked()
     }
@@ -40,10 +47,18 @@ class WatchListAdapter(
         return movies.size
     }
 
+    fun setList(movieList: List<DbMovie>) {
+        movies = movieList
+    }
+
     /**
      * Inner class MovieViewHolder
      */
     inner class WatchListViewHolder(val binding: WatchListItemBinding): RecyclerView.ViewHolder(binding.root) {
+
+        fun bind() {
+            binding.dbMovie = movies[adapterPosition]
+        }
 
         /**
          * On "Cancel" button click gets the position of the selected item

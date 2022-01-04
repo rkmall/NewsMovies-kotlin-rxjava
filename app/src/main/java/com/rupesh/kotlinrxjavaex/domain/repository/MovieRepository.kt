@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.rupesh.kotlinrxjavaex.data.model.Movie
 import com.rupesh.kotlinrxjavaex.data.model.MovieDBResponse
 import com.rupesh.kotlinrxjavaex.data.service.MovieDataService
-import com.rupesh.kotlinrxjavaex.data.utils.AppConstants
+import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

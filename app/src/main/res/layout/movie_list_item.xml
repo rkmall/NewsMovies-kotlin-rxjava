@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="movie"
+            type="com.rupesh.kotlinrxjavaex.data.model.Movie" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -33,6 +40,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="10dp"
+                    android:text="@{movie.original_title}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="15dp"/>
@@ -45,6 +53,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="5dp"
+                    android:text="@{String.valueOf(movie.vote_average)}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="12dp"/>

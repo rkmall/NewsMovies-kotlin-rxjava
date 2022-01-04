@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -109,6 +110,14 @@ dependencies {
 
     // RxJava2 support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
+
+    // Dagger 2
+    implementation 'com.google.dagger:dagger:2.40.5'
+    kapt 'com.google.dagger:dagger-compiler:2.40.5'
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
