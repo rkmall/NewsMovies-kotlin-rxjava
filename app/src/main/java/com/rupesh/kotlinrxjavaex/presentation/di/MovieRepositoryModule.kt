@@ -9,6 +9,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 
+/*
 @Module
 @InstallIn(SingletonComponent::class)
 class MovieRepositoryModule {
@@ -20,4 +21,4 @@ class MovieRepositoryModule {
     ): MovieRepository {
         return MovieRepository(service)
     }
-}
+}*/

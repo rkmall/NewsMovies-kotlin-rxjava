@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * MovieRepository class is repository that performs API call to
@@ -26,7 +27,7 @@ import io.reactivex.schedulers.Schedulers
  * @since 1.0
  */
 
-class MovieRepository(private val service: MovieDataService) {
+class MovieRepository @Inject constructor(private val service: MovieDataService) {
 
     // Intermediate holder to store API call result
     private val movies: ArrayList<Movie> = ArrayList()
@@ -67,7 +68,7 @@ class MovieRepository(private val service: MovieDataService) {
                     }
 
                     override fun onComplete() {
-                        movieListResult.value = movies
+                        movieListResult.postValue(movies)
                     }
                 })
         )

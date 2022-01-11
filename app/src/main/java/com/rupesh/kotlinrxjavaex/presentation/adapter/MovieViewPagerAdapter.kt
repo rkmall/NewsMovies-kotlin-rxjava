@@ -15,22 +15,23 @@ import com.rupesh.kotlinrxjavaex.view.WatchListFragment
  * @author Rupesh Mall
  * @since 1.0
  */
-class MainActivityFragmentsAdapter(
+class MovieViewPagerAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle
 ): FragmentStateAdapter(fm, lifecycle) {
 
+    private val fragmentList = arrayListOf(
+        MovieFragment(),
+        WatchListFragment()
+    )
+
     // Returns Fragments count
     override fun getItemCount(): Int {
-        return 2
+        return fragmentList.size
     }
 
-    // Returns Fragment position
+    // Returns Fragment
     override fun createFragment(position: Int): Fragment {
-        return when(position) {
-            0 -> MovieFragment()
-            1 -> WatchListFragment()
-            else -> MovieFragment()
-        }
+        return fragmentList[position]
     }
 }

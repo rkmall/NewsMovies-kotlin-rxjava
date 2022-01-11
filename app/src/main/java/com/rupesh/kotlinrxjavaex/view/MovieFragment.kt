@@ -50,11 +50,10 @@ class MovieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
+        movieFragmentBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
 
-        val view: View = movieFragmentBinding!!.root
-
-        return view
+        return movieFragmentBinding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

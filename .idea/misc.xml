@@ -3,15 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/activity_movie_detail.xml" value="0.152" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/content_movie_fragment.xml" value="0.25" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/fragment_movie.xml" value="0.25" />
+        <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/fragment_movie_container.xml" value="0.24048913043478262" />
+        <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/fragment_news.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/fragment_watch_list.xml" value="0.25" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/layout_add_movie_dialog.xml" value="0.25" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/layout_content_movie_detail.xml" value="0.25" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/movie_list_item.xml" value="0.2" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/layout/watch_list_item.xml" value="0.25" />
+        <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/Users/stratysilver/Documents/RM Files/Andriod/RxJavaProjects/KotlinRxJavaEx/app/src/main/res/menu/menu_main.xml" value="0.25" />
       </map>
     </option>

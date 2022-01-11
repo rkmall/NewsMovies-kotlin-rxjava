@@ -13,4 +13,6 @@
     <string name="my_app">My App</string>
     <string name="remove_movie_from_watch_list">Remove</string>
     <string name="menu_compose">compose</string>
+    <string name="menu_news_title">News</string>
+    <string name="menu_movies_title">Movies</string>
 </resources>

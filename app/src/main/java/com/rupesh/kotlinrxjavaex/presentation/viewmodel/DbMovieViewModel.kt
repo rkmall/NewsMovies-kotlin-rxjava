@@ -1,10 +1,8 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
 import com.rupesh.kotlinrxjavaex.domain.usecase.DeleteSavedMovie
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllSavedMovies
 import com.rupesh.kotlinrxjavaex.domain.usecase.SaveMovieToDb

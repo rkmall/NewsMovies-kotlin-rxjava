@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.data.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -14,11 +15,19 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class MovieDBResponse(
-    @SerializedName("page") val page :                     Int,
+    @SerializedName("page")
+    @Expose
+    val page: Int,
 
-    @SerializedName("results") val movies :                List<Movie>,
+    @SerializedName("results")
+    @Expose
+    val movies: List<Movie>,
 
-    @SerializedName("total_pages") val totalPages :        Int,
+    @SerializedName("total_pages")
+    @Expose
+    val totalPages: Int,
 
-    @SerializedName("total_results") val totalResults :    Int
+    @SerializedName("total_results")
+    @Expose
+    val totalResults: Int
 ): Parcelable

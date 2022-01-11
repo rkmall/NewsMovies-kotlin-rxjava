@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.data.db
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
@@ -37,13 +38,17 @@ abstract class MovieDB: RoomDatabase(){
          * @param context Android application context
          * @return the singleton instance of MovieDB
          */
-        fun getDB(app: Application): MovieDB {
+        fun getDB(context: Context): MovieDB {
             val tempInstance = INSTANCE
 
             if(tempInstance != null) return tempInstance
 
             synchronized(this) {
-                val instance = Room.databaseBuilder(app, MovieDB::class.java, AppConstants.DB_NAME)
+                val instance = Room.databaseBuilder(
+                    context,
+                    MovieDB::class.java,
+                    AppConstants.DB_NAME)
+
                     .addCallback(object: RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
@@ -55,6 +60,7 @@ abstract class MovieDB: RoomDatabase(){
                             Log.d("MovieDb", "MovieDb onOpen() invoked")
                         }
                     })
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 return instance

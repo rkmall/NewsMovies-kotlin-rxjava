@@ -17,11 +17,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class UseCaseModule {
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun provideGetAllMoviesUseCase(movieRepository: MovieRepository): GetAllMovies {
         return GetAllMovies(movieRepository)
-    }
+    }*/
 
     @Singleton
     @Provides

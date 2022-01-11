@@ -10,6 +10,8 @@ import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
 import com.rupesh.kotlinrxjavaex.domain.util.Event
 import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * DbMovieViewModel is [androidx.lifecycle.ViewModel]
@@ -21,7 +23,8 @@ import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
  * @author Rupesh Mall
  * @since 1.0
  */
-class MovieViewModel(
+@HiltViewModel
+class MovieViewModel @Inject constructor(
     private val getAllMovies: GetAllMovies
 ): ViewModel() {
 
