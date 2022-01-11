@@ -37,9 +37,7 @@ class WatchListAdapter(
     }
 
     override fun onBindViewHolder(holder: WatchListAdapter.WatchListViewHolder, position: Int) {
-        holder.bind()
-
-        holder.onRemoveButtonClicked()
+        holder.bind(movies[position])
     }
 
     override fun getItemCount(): Int {
@@ -55,8 +53,10 @@ class WatchListAdapter(
      */
     inner class WatchListViewHolder(val binding: WatchListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind() {
-            binding.dbMovie = movies[adapterPosition]
+        fun bind(_dbMovie: DbMovie) {
+            binding.dbMovie = _dbMovie
+
+            onRemoveButtonClicked()
         }
 
         /**
@@ -64,7 +64,7 @@ class WatchListAdapter(
          * and invokes the callback method implemented by
          * [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
          */
-        fun onRemoveButtonClicked() {
+        private fun onRemoveButtonClicked() {
             binding.btnWatchlistRemove.setOnClickListener {
                 val position = adapterPosition
 

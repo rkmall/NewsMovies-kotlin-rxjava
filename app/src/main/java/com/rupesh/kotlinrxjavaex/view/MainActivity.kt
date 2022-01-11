@@ -2,6 +2,7 @@ package com.rupesh.kotlinrxjavaex.view
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -14,8 +15,10 @@ import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieViewPagerAdapter
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMainBinding
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
+import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.NewsVMFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -41,6 +44,11 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var dbMovieViewModel: DbMovieViewModel
 
+    @Inject
+    lateinit var newsVMFactory: NewsVMFactory
+
+    lateinit var newsViewModel: NewsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -54,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
 
         dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
+
+        newsViewModel = ViewModelProvider(this, newsVMFactory)[NewsViewModel::class.java]
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -53,24 +53,22 @@ class MovieViewModel @Inject constructor(
             getAllMovies.execute()
                 .subscribeWith(object: DisposableObserver<List<Movie>>() {
                     override fun onNext(t: List<Movie>) {
-                        Log.i("MyTag", "onNextGetListAPI: $t")
+                        Log.i("MyTag", "onNextGetMovieListAPI: $t")
                         movieLiveData.value = t
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetListAPI")
+                        Log.i("MyTag", "onErrorGetMovieListAPI")
                         statusMessage.value = Event("Something went wrong")
-
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetListAPI")
+                        Log.i("MyTag", "onCompleteGetMovieListAPI")
                         statusMessage.value = Event("Popular movies")
                     }
                 })
         )
     }
-
 
     /**
      * Clears the connection between Observables and Observers

@@ -13,15 +13,18 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 
+/*
 @Module
 @InstallIn(SingletonComponent::class)
 class UseCaseModule {
 
-    /*@Singleton
+    */
+/*@Singleton
     @Provides
     fun provideGetAllMoviesUseCase(movieRepository: MovieRepository): GetAllMovies {
         return GetAllMovies(movieRepository)
-    }*/
+    }*//*
+
 
     @Singleton
     @Provides
@@ -40,4 +43,4 @@ class UseCaseModule {
     fun provideDeleteSavedMovieUseCase(dbMovieRepository: DbMovieRepository): DeleteSavedMovie {
         return DeleteSavedMovie(dbMovieRepository)
     }
-}
+}*/

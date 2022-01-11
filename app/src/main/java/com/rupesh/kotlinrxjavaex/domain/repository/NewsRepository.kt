@@ -12,8 +12,8 @@ import javax.inject.Inject
 class NewsRepository @Inject constructor(val service: NewsService) {
 
     /**
-     * Gets a list of all Movies in succession from API call
-     * @return the Observable<List<Movie> that wraps the result of API call
+     * Gets a list of all NewsArticle
+     * @return the Observable<List<NewsArticle> that wraps the result of API call
      */
     fun getNewsArticleListFromAPI(country: String, page: Int): Observable<List<NewsArticle>> {
         val newsResponseObservable = service.getTopHeadlines(country, page)

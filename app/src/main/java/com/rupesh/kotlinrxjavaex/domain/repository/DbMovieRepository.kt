@@ -6,6 +6,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * DbMovieRepository class is repository that connects App's database
@@ -20,7 +21,7 @@ import io.reactivex.schedulers.Schedulers
  * @author Rupesh Mall
  * @since 1.0
  */
-class DbMovieRepository(
+class DbMovieRepository @Inject constructor(
     val movieDB: MovieDB
 ) {
     /**

@@ -43,17 +43,7 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieAdapter.MovieViewHolder, position: Int) {
-        holder.bind()
-
-        val posterPath = "${BuildConfig.POSTER_PATH}${movies[position].poster_path}"
-
-        Glide.with(context)
-            .load(posterPath)
-            .placeholder(R.drawable.loading)
-            .into(holder.binding.ivMovie)
-
-        holder.onMovieClick()
-        holder.onMovieLongClick()
+        holder.bind(movies[position])
     }
 
     override fun getItemCount(): Int {
@@ -69,8 +59,18 @@ class MovieAdapter(
      */
     inner class MovieViewHolder(val binding: MovieListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind() {
-            binding.movie = movies[adapterPosition]
+        fun bind(_movie: Movie) {
+            binding.movie = _movie
+
+            val posterPath = "${BuildConfig.POSTER_PATH}${_movie.poster_path}"
+            Glide.with(binding.ivMovie.context)
+                .load(posterPath)
+                .placeholder(R.drawable.loading)
+                .into(binding.ivMovie)
+
+            onMovieClick()
+
+            onMovieLongClick()
         }
 
         /**

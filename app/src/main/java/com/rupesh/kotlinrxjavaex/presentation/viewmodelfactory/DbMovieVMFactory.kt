@@ -8,13 +8,14 @@ import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllSavedMovies
 import com.rupesh.kotlinrxjavaex.domain.usecase.SaveMovieToDb
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
+import javax.inject.Inject
 
 /**
  * Factory to instantiate [com.rupesh.kotlinrxjavaex.viewmodel.DbMovieViewModel]
  * Implements [ViewModelProvider.Factory]
  * @param dbMovieRepository the DbMovieRepository
  */
-class DbMovieVMFactory(
+class DbMovieVMFactory @Inject constructor(
     val getAllSavedMovies: GetAllSavedMovies,
     val saveMovieToDb: SaveMovieToDb,
     val deleteSavedMovie: DeleteSavedMovie

@@ -9,11 +9,13 @@ import com.rupesh.kotlinrxjavaex.domain.usecase.DeleteSavedMovie
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllSavedMovies
 import com.rupesh.kotlinrxjavaex.domain.usecase.SaveMovieToDb
 import com.rupesh.kotlinrxjavaex.domain.util.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableMaybeObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * DbMovieViewModel is [androidx.lifecycle.ViewModel]
@@ -25,7 +27,8 @@ import io.reactivex.schedulers.Schedulers
  * @author Rupesh Mall
  * @since 1.0
  */
-class DbMovieViewModel(
+@HiltViewModel
+class DbMovieViewModel @Inject constructor(
     val getAllSavedMovies: GetAllSavedMovies,
     val saveMovieToDb: SaveMovieToDb,
     val deleteSavedMovie: DeleteSavedMovie
@@ -33,7 +36,6 @@ class DbMovieViewModel(
 
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
-
 
     // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
     private val dbMovieListLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
@@ -56,17 +58,17 @@ class DbMovieViewModel(
             getAllSavedMovies.execute()
                 .subscribeWith(object : DisposableObserver<List<DbMovie>>() {
                     override fun onNext(t: List<DbMovie>) {
-                        Log.i("MyTag", "onNextGetList")
+                        Log.i("MyTag", "onNextGetMovieListDB")
                         dbMovieListLiveData.postValue(t)
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetList")
+                        Log.i("MyTag", "onErrorGetMovieListDB")
                         statusMessage.postValue(Event("Something went wrong"))
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetList")
+                        Log.i("MyTag", "onCompleteGetMovieListDB")
                         statusMessage.postValue(Event("Your saved movies"))
                     }
                 })
@@ -91,17 +93,17 @@ class DbMovieViewModel(
             saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
                 .subscribeWith(object : DisposableMaybeObserver<Long>() {
                     override fun onSuccess(t: Long) {
-                        Log.i("MyTag", "onSuccessAdd: $t ")
+                        Log.i("MyTag", "onSuccessAddDB: $t ")
                         statusMessage.postValue(Event("Saved movie $title"))
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorAdd: ${e.message}")
+                        Log.i("MyTag", "onErrorAddDB: ${e.message}")
                         statusMessage.postValue(Event("Something went wrong"))
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteAdd")
+                        Log.i("MyTag", "onCompleteAddDB")
                     }
                 })
         )
@@ -119,17 +121,17 @@ class DbMovieViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableMaybeObserver<Int>() {
                     override fun onSuccess(t: Int) {
-                        Log.i("MyTag", "onSuccessDelete: $t ")
+                        Log.i("MyTag", "onSuccessDeleteDB: $t ")
                         statusMessage.postValue(Event("Deleted movie ${dbMovie.title}"))
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorDelete: ${e.message}")
+                        Log.i("MyTag", "onErrorDeleteDB: ${e.message}")
                         statusMessage.postValue(Event("Something went wrong"))
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteDelete")
+                        Log.i("MyTag", "onCompleteDeleteDB")
                     }
                 })
         )

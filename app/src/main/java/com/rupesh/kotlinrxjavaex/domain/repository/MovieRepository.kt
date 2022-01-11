@@ -33,7 +33,7 @@ class MovieRepository @Inject constructor(private val service: MovieDataService)
         return movieDBResponseObservable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map { t -> t.movies }
+            .map { it.movies }
     }
 
 
