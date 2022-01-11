@@ -6,8 +6,11 @@
 - OkHttp/ Retrofit
 - Room
 - Glide
+- Dagger Hilt
 
 ## _Screenshots_
+
+![NewslistFragment](./screenshots/news_list_fragment.png?raw=true "Optional title") <br><br>
 
 ![MainActivity](./screenshots/movie_main_1.png?raw=true "Optional title") <br><br>
 
