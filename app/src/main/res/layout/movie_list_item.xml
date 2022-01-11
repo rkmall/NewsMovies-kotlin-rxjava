@@ -6,7 +6,7 @@
     <data>
         <variable
             name="movie"
-            type="com.rupesh.kotlinrxjavaex.data.model.Movie" />
+            type="com.rupesh.kotlinrxjavaex.data.movie.model.Movie" />
     </data>
 
     <LinearLayout

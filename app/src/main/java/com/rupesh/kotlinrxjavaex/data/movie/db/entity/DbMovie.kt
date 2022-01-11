@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.data.db.entity
+package com.rupesh.kotlinrxjavaex.data.movie.db.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

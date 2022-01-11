@@ -1,7 +1,7 @@
 package com.rupesh.kotlinrxjavaex.presentation.di
 
 import android.content.Context
-import com.rupesh.kotlinrxjavaex.data.db.MovieDB
+import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

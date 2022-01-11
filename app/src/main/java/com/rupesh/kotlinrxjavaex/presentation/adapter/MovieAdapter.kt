@@ -11,8 +11,7 @@ import com.bumptech.glide.Glide
 import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
-import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.view.MovieDetailActivity
 
 /**

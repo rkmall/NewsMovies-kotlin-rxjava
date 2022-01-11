@@ -1,7 +1,6 @@
-package com.rupesh.kotlinrxjavaex.data.service
+package com.rupesh.kotlinrxjavaex.data.movie.service
 
 import com.rupesh.kotlinrxjavaex.BuildConfig
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

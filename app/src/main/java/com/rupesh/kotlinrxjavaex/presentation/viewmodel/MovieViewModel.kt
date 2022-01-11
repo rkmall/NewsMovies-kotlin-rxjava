@@ -1,16 +1,15 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
 import com.rupesh.kotlinrxjavaex.domain.util.Event
-import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
 import javax.inject.Inject
 
 /**
@@ -28,22 +27,48 @@ class MovieViewModel @Inject constructor(
     private val getAllMovies: GetAllMovies
 ): ViewModel() {
 
-    /**
-     * Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
-     */
-    var movieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    // RxJava CompositeDisposables
+    private val disposable: CompositeDisposable = CompositeDisposable()
 
-    val statusMessage = MutableLiveData<Event<String>>()
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
+    private val movieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
 
+    val movieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
+
+    // Status message to notify user about the completion of event
+    private val statusMessage = MutableLiveData<Event<String>>()
+
+    val statusMessageResult: LiveData<Event<String>> get() = statusMessage
+
+    // Used for data binding by [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
     var movie: Movie? = null
+
 
     /**
      * Gets a list of Movie wrapped inside MutableLiveData
      * @return the LiveData<List<DMovie>
      */
     fun getMovieList() {
-        movieLiveData = getAllMovies.execute()
-        statusMessage.value = Event("Current popular movies")
+        disposable.add(
+            getAllMovies.execute()
+                .subscribeWith(object: DisposableObserver<List<Movie>>() {
+                    override fun onNext(t: List<Movie>) {
+                        Log.i("MyTag", "onNextGetListAPI: $t")
+                        movieLiveData.value = t
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorGetListAPI")
+                        statusMessage.value = Event("Something went wrong")
+
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteGetListAPI")
+                        statusMessage.value = Event("Popular movies")
+                    }
+                })
+        )
     }
 
 
@@ -52,7 +77,7 @@ class MovieViewModel @Inject constructor(
      * added in CompositeDisposables
      */
     fun clear() {
-        getAllMovies.clear()
+        disposable.clear()
         super.onCleared()
     }
 }

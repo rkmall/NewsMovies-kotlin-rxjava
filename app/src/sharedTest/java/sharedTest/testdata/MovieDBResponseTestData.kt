@@ -1,7 +1,7 @@
 package sharedTest.testdata
 
-import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.data.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
+import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
 import io.reactivex.Observable
 
 class MovieDBResponseTestData {

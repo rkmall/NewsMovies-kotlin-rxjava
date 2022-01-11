@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
@@ -54,24 +54,24 @@ class WatchListFragment : Fragment() {
         displayToastMessage()
     }
 
-    fun getMovieListFromDb() {
+    private fun getMovieListFromDb() {
         dbMovieViewModel.getAllMovieFromDb()
-        dbMovieViewModel.dbMovieMutableLiveData.observe(viewLifecycleOwner, Observer {
+        dbMovieViewModel.dbMovieListResult.observe(viewLifecycleOwner, Observer {
             dbMovies = it as ArrayList<DbMovie>
             watchListAdapter.setList(dbMovies)
             watchListAdapter.notifyDataSetChanged()
         })
     }
 
-    fun displayToastMessage() {
-        dbMovieViewModel.statusMessage.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
+    private fun displayToastMessage() {
+        dbMovieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()!!.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             }
         })
     }
 
-    fun onRemoveButtonClicked(dbMovie: DbMovie) {
+    private fun onRemoveButtonClicked(dbMovie: DbMovie) {
         dbMovieViewModel.deleteMovieFromDB(dbMovie)
     }
 

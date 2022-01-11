@@ -6,7 +6,7 @@
     <data>
         <variable
             name="dbMovie"
-            type="com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie" />
+            type="com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie" />
     </data>
 
     <LinearLayout

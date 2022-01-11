@@ -7,8 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
-import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 
 /**
  * A simple [RecyclerView.Adapter] subclass.

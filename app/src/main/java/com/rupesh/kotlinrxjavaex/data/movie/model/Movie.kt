@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.data.model
+package com.rupesh.kotlinrxjavaex.data.movie.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

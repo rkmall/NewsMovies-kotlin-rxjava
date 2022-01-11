@@ -1,10 +1,11 @@
-package com.rupesh.kotlinrxjavaex.data.db
+package com.rupesh.kotlinrxjavaex.data.movie.db
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -19,10 +20,10 @@ import io.reactivex.Single
 interface MovieDao {
 
     @Insert
-    fun addMovie(movie: DbMovie): Long
+    fun addMovie(movie: DbMovie): Maybe<Long>
 
     @Delete
-    fun deleteMovie(movie: DbMovie): Int
+    fun deleteMovie(movie: DbMovie): Maybe<Int>
 
     @Query("select * from movies")
     fun getAllMovie(): Observable<List<DbMovie>>

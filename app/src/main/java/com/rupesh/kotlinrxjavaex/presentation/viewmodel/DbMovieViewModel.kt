@@ -1,12 +1,19 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.domain.usecase.DeleteSavedMovie
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllSavedMovies
 import com.rupesh.kotlinrxjavaex.domain.usecase.SaveMovieToDb
 import com.rupesh.kotlinrxjavaex.domain.util.Event
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableMaybeObserver
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
 
 /**
  * DbMovieViewModel is [androidx.lifecycle.ViewModel]
@@ -24,20 +31,46 @@ class DbMovieViewModel(
     val deleteSavedMovie: DeleteSavedMovie
 ) : ViewModel()  {
 
-    /**
-     * Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
-     */
-    var dbMovieMutableLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
+    // RxJava CompositeDisposables
+    private val disposable: CompositeDisposable = CompositeDisposable()
 
-    val statusMessage = MutableLiveData<Event<String>>()
+
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
+    private val dbMovieListLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
+
+    val dbMovieListResult: LiveData<List<DbMovie>> get() = dbMovieListLiveData
+
+
+    // Status message to notify user about the completion of event
+    private val statusMessage = MutableLiveData<Event<String>>()
+
+    val statusMessageResult: LiveData<Event<String>> get() = statusMessage
 
     /**
      * Gets a list of DMovie wrapped inside MutableLiveData
      * @return the LiveData<List<DMovie>
      */
     fun getAllMovieFromDb() {
-        dbMovieMutableLiveData = getAllSavedMovies.execute()
-        statusMessage.value = Event("Your saved movies")
+
+        disposable.add(
+            getAllSavedMovies.execute()
+                .subscribeWith(object : DisposableObserver<List<DbMovie>>() {
+                    override fun onNext(t: List<DbMovie>) {
+                        Log.i("MyTag", "onNextGetList")
+                        dbMovieListLiveData.postValue(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorGetList")
+                        statusMessage.postValue(Event("Something went wrong"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteGetList")
+                        statusMessage.postValue(Event("Your saved movies"))
+                    }
+                })
+        )
     }
 
     /**
@@ -54,8 +87,24 @@ class DbMovieViewModel(
                            releaseDate: String, posterPath: String ) {
 
 
-        saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
-        statusMessage.value = Event("Saved movie $title")
+        disposable.add(
+            saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
+                .subscribeWith(object : DisposableMaybeObserver<Long>() {
+                    override fun onSuccess(t: Long) {
+                        Log.i("MyTag", "onSuccessAdd: $t ")
+                        statusMessage.postValue(Event("Saved movie $title"))
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorAdd: ${e.message}")
+                        statusMessage.postValue(Event("Something went wrong"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteAdd")
+                    }
+                })
+        )
     }
 
     /**
@@ -63,8 +112,27 @@ class DbMovieViewModel(
      * @param dbMovie the DbMovie instance to be deleted
      */
     fun deleteMovieFromDB(dbMovie: DbMovie) {
-        deleteSavedMovie.execute(dbMovie)
-        statusMessage.value = Event("Deleted movie ${dbMovie.title}")
+
+        disposable.add(
+            deleteSavedMovie.execute(dbMovie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableMaybeObserver<Int>() {
+                    override fun onSuccess(t: Int) {
+                        Log.i("MyTag", "onSuccessDelete: $t ")
+                        statusMessage.postValue(Event("Deleted movie ${dbMovie.title}"))
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorDelete: ${e.message}")
+                        statusMessage.postValue(Event("Something went wrong"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteDelete")
+                    }
+                })
+        )
     }
 
     /**
@@ -72,7 +140,7 @@ class DbMovieViewModel(
      * added in CompositeDisposables
      */
     fun clear() {
-        getAllSavedMovies.clear()
+        disposable.clear()
         super.onCleared()
     }
 }

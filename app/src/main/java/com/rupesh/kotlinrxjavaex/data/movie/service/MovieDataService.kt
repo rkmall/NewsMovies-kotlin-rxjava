@@ -1,6 +1,6 @@
-package com.rupesh.kotlinrxjavaex.data.service
+package com.rupesh.kotlinrxjavaex.data.movie.service
 
-import com.rupesh.kotlinrxjavaex.data.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query

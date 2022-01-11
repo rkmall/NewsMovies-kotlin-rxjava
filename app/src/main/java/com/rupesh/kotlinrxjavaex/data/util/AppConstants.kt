@@ -10,6 +10,6 @@ class AppConstants {
 
     companion object {
         const val DB_NAME = "MovieDB"
-        const val POSTER_PATH = "https://image.tmdb.org/t/p/w500"
+        const val DB_NEWS = "NewsDB"
     }
 }

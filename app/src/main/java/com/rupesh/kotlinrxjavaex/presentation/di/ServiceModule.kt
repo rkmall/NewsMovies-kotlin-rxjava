@@ -1,12 +1,11 @@
 package com.rupesh.kotlinrxjavaex.presentation.di
 
-import com.rupesh.kotlinrxjavaex.data.service.MovieDataService
-import com.rupesh.kotlinrxjavaex.data.service.RetrofitInstance
+import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
+import com.rupesh.kotlinrxjavaex.data.movie.service.RetrofitInstance
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 

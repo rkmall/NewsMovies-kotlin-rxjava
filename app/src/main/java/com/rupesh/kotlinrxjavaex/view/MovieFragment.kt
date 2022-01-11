@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.model.Movie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
@@ -73,7 +73,7 @@ class MovieFragment : Fragment() {
     // Get a list of Movie and observe the LiveData<List<Movie>>
     fun getMovieList() {
         movieViewModel.getMovieList()
-        movieViewModel.movieLiveData.observe(viewLifecycleOwner, Observer() {
+        movieViewModel.movieLiveDataResult.observe(viewLifecycleOwner, Observer() {
             movies = it as ArrayList<Movie>
             movieAdapter.setList(movies)
             movieAdapter.notifyDataSetChanged()
@@ -81,7 +81,7 @@ class MovieFragment : Fragment() {
     }
 
     fun displayToastMessage() {
-        movieViewModel.statusMessage.observe(viewLifecycleOwner, Observer {
+        movieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             }

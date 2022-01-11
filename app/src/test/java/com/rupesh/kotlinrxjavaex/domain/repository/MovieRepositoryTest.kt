@@ -3,9 +3,8 @@ package com.rupesh.kotlinrxjavaex.domain.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
-import com.rupesh.kotlinrxjavaex.data.model.Movie
-import com.rupesh.kotlinrxjavaex.data.service.MovieDataService
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
+import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
 
 import org.junit.After
 import org.junit.Before

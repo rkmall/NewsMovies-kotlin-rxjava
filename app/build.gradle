@@ -19,6 +19,8 @@ android {
         buildConfigField("String", "API_KEY", MOVIE_KEY)
         buildConfigField("String", "BASE_URL", MOVIE_URL)
         buildConfigField("String", "POSTER_PATH", IMG_PATH)
+        buildConfigField("String", "API_NEWS", NEWS_KEY)
+        buildConfigField("String", "BASE_NEWS", NEWS_URL)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

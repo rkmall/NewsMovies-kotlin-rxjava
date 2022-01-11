@@ -1,3 +1,4 @@
+/*
 package com.rupesh.kotlinrxjavaex.domain.repository
 
 import android.content.Context
@@ -5,8 +6,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.rupesh.kotlinrxjavaex.data.db.MovieDB
-import com.rupesh.kotlinrxjavaex.data.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -126,4 +127,4 @@ class DbMovieRepositoryTest {
     fun tearDown() {
         //
     }
-}
+}*/
