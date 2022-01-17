@@ -37,7 +37,7 @@ class DbMovieViewModel @Inject constructor(
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment]
     private val dbMovieListLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
 
     val dbMovieListResult: LiveData<List<DbMovie>> get() = dbMovieListLiveData

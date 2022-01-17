@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
+import com.rupesh.kotlinrxjavaex.domain.usecase.GetSearchedMovie
 import com.rupesh.kotlinrxjavaex.domain.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -24,16 +25,24 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MovieViewModel @Inject constructor(
-    private val getAllMovies: GetAllMovies
+    private val getAllMovies: GetAllMovies,
+    private val getSearchedMovie: GetSearchedMovie
 ): ViewModel() {
 
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment]
     private val movieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
 
     val movieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
+
+
+    private val searchedMovieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+
+    val searchedMovieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
+
+
 
     // Status message to notify user about the completion of event
     private val statusMessage = MutableLiveData<Event<String>>()
@@ -54,17 +63,40 @@ class MovieViewModel @Inject constructor(
                 .subscribeWith(object: DisposableObserver<List<Movie>>() {
                     override fun onNext(t: List<Movie>) {
                         Log.i("MyTag", "onNextGetMovieListAPI: $t")
-                        movieLiveData.value = t
+                        movieLiveData.postValue(t)
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetMovieListAPI")
-                        statusMessage.value = Event("Something went wrong")
+                        statusMessage.postValue(Event("Something went wrong"))
                     }
 
                     override fun onComplete() {
                         Log.i("MyTag", "onCompleteGetMovieListAPI")
-                        statusMessage.value = Event("Popular movies")
+                        statusMessage.postValue(Event("Popular movies"))
+                    }
+                })
+        )
+    }
+
+
+    fun getSearchedMovie(searchQuery: String) {
+        disposable.add(
+            getSearchedMovie.execute(searchQuery)
+                .subscribeWith(object: DisposableObserver<List<Movie>>() {
+                    override fun onNext(t: List<Movie>) {
+                        Log.i("MyTag", "onNextGetMovieListAPI: $t")
+                        searchedMovieLiveData.postValue(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorGetMovieListAPI")
+                        statusMessage.postValue(Event("Something went wrong"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteGetMovieListAPI")
+                        statusMessage.postValue(Event("Popular movies"))
                     }
                 })
         )

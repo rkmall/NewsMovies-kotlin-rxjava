@@ -1,7 +1,6 @@
 package com.rupesh.kotlinrxjavaex.presentation.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -12,7 +11,6 @@ import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.view.MovieDetailActivity
 
 /**
  * A simple [RecyclerView.Adapter] subclass.
@@ -23,7 +21,8 @@ import com.rupesh.kotlinrxjavaex.view.MovieDetailActivity
  */
 class MovieAdapter(
     val context: Context,
-    val listener: (movie: Movie) -> Unit
+    val listenerForClick: (movie: Movie) -> Unit,
+    val listenerForLongClick: (movie: Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>()  {
 
     var movies: List<Movie> = ArrayList()
@@ -77,18 +76,20 @@ class MovieAdapter(
          * On Movie item click redirects to [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
          * passing the selected Movie item to the destination
          */
-        fun onMovieClick() {
+        private fun onMovieClick() {
             binding.cvMovie.setOnClickListener {
                 val position = adapterPosition
 
                 if(position != RecyclerView.NO_POSITION) {
                     val selectedMovie = movies[position]
-                    val intent = Intent(context, MovieDetailActivity::class.java)
+                    listenerForClick(selectedMovie)
+
+                    /*val intent = Intent(context, MovieDetailActivity::class.java)
                     intent.putExtra("movie", selectedMovie)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     val movieTitle = selectedMovie.original_title
                     Toast.makeText(it.context, movieTitle, Toast.LENGTH_LONG).show()
-                    context.startActivity(intent)
+                    context.startActivity(intent)*/
                 }
             }
         }
@@ -98,13 +99,13 @@ class MovieAdapter(
          * and invokes the callback method implemented by
          * [com.rupesh.kotlinrxjavaex.view.MovieFragment]
          */
-        fun onMovieLongClick() {
+        private fun onMovieLongClick() {
             binding.cvMovie.setOnLongClickListener {
                 val position = adapterPosition
 
                 if(position != RecyclerView.NO_POSITION) {
                     val selectedMovie = movies[position]
-                    listener(selectedMovie)
+                    listenerForLongClick(selectedMovie)
                 }else {
                     Toast.makeText(context, "Internal error", Toast.LENGTH_LONG).show()
                 }

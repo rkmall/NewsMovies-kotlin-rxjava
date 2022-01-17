@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view
+package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
+import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
 
 /**
  * A simple [Fragment] subclass.
@@ -49,13 +50,12 @@ class WatchListFragment : Fragment() {
 
         initRecyclerView()
 
-        getMovieListFromDb()
+        observeDbMovieList()
 
         displayToastMessage()
     }
 
-    private fun getMovieListFromDb() {
-        dbMovieViewModel.getAllMovieFromDb()
+    private fun observeDbMovieList() {
         dbMovieViewModel.dbMovieListResult.observe(viewLifecycleOwner, Observer {
             dbMovies = it as ArrayList<DbMovie>
             watchListAdapter.setList(dbMovies)
@@ -65,7 +65,7 @@ class WatchListFragment : Fragment() {
 
     private fun displayToastMessage() {
         dbMovieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()!!.let {
+            it.getContentIfNotHandled()?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             }
         })

@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view
+package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.app.Dialog
 import android.content.res.Configuration
@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
@@ -20,6 +22,11 @@ import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
+import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * A simple [Fragment] subclass.
@@ -31,9 +38,9 @@ import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 
 class MovieFragment : Fragment() {
 
-    private var movieFragmentBinding: FragmentMovieBinding? = null
+    private lateinit var movieFragmentBinding: FragmentMovieBinding
 
-    private var addMovieDialogBinding: LayoutAddMovieDialogBinding? = null
+    private lateinit var addMovieDialogBinding: LayoutAddMovieDialogBinding
 
     private lateinit var movieViewModel: MovieViewModel
 
@@ -65,14 +72,13 @@ class MovieFragment : Fragment() {
 
         initRecyclerView()
 
-        getMovieList()
+        observeMoviesList()
 
         displayToastMessage()
     }
 
     // Get a list of Movie and observe the LiveData<List<Movie>>
-    fun getMovieList() {
-        movieViewModel.getMovieList()
+    private fun observeMoviesList() {
         movieViewModel.movieLiveDataResult.observe(viewLifecycleOwner, Observer() {
             movies = it as ArrayList<Movie>
             movieAdapter.setList(movies)
@@ -80,7 +86,33 @@ class MovieFragment : Fragment() {
         })
     }
 
-    fun displayToastMessage() {
+
+
+    private fun setSearchText() {
+
+        RxTextView.textChangeEvents(movieFragmentBinding!!.etSearch)
+            .skipInitialValue()
+            .debounce(300, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object: DisposableObserver<TextViewTextChangeEvent>() {
+                override fun onNext(t: TextViewTextChangeEvent) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onError(e: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onComplete() {
+                    TODO("Not yet implemented")
+                }
+
+            })
+
+    }
+
+    private fun displayToastMessage() {
         movieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
@@ -102,11 +134,25 @@ class MovieFragment : Fragment() {
             else
                 it.layoutManager = GridLayoutManager(requireContext(), 4)
 
-            movieAdapter = MovieAdapter(requireContext()) {item -> onItemClick(item)}
+            movieAdapter = MovieAdapter(requireContext(), {item -> onItemClick(item)}, {item -> onItemLongClick(item)})
 
             it.itemAnimator = DefaultItemAnimator()
             it.adapter = movieAdapter
         }
+    }
+
+    private fun onItemClick(movie: Movie) {
+        val movieDetailFragment = MovieDetailFragment()
+
+        val bundle = Bundle()
+        bundle.putParcelable("movie", movie)
+        movieDetailFragment.arguments = bundle
+
+        val fm = activity?.supportFragmentManager
+        val fragmentTransaction = fm?.beginTransaction()
+        fragmentTransaction?.replace(R.id.frame_layout_main, movieDetailFragment)
+        fragmentTransaction?.addToBackStack(null)
+        fragmentTransaction?.commit()
     }
 
     /**
@@ -117,12 +163,12 @@ class MovieFragment : Fragment() {
      * into App's database
      * @param movie the Movie [com.rupesh.kotlinrxjavaex.model.Movie]
      */
-    fun onItemClick(movie: Movie) {
+    private fun onItemLongClick(movie: Movie) {
         addMovieDialogBinding = LayoutAddMovieDialogBinding.inflate(LayoutInflater.from(requireContext()))
         val dialog: Dialog = Dialog(requireContext())
-        dialog.setContentView(addMovieDialogBinding!!.root)
+        dialog.setContentView(addMovieDialogBinding.root)
 
-        addMovieDialogBinding?.let {
+        addMovieDialogBinding.let {
 
             it.tvAddMovieName.text = movie.original_title
 
@@ -153,6 +199,5 @@ class MovieFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         movieViewModel.clear()
-        movieFragmentBinding = null
     }
 }

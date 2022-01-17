@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.rupesh.kotlinrxjavaex.view.MovieFragment
-import com.rupesh.kotlinrxjavaex.view.WatchListFragment
+import com.rupesh.kotlinrxjavaex.view.fragment.MovieFragment
+import com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment
 
 /**
  * A simple [FragmentStateAdapter] subclass.

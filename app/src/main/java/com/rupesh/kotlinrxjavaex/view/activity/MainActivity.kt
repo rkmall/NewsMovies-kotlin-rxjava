@@ -1,24 +1,24 @@
-package com.rupesh.kotlinrxjavaex.view
+package com.rupesh.kotlinrxjavaex.view.activity
 
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieViewPagerAdapter
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMainBinding
+import com.rupesh.kotlinrxjavaex.presentation.util.AppPreferenceHelper
+import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.DbMovieVMFactory
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.NewsVMFactory
+import com.rupesh.kotlinrxjavaex.view.fragment.MovieContainerFragment
+import com.rupesh.kotlinrxjavaex.view.fragment.NewsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,31 +49,36 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var newsViewModel: NewsViewModel
 
+    private lateinit var preferenceHelper: AppPreferenceHelper
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        setToolbar()
-
-        replaceFragment(NewsFragment())
-
-        initBottomNavView()
+        preferenceHelper = AppPreferenceHelper(this)
 
         movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
 
         dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
 
         newsViewModel = ViewModelProvider(this, newsVMFactory)[NewsViewModel::class.java]
+
+
+        if(NetworkChecker.isNetWorkAvailable(this)) {
+            appLaunchInitiate()
+        } else {
+            Toast.makeText(this, "Please turn on mobile network", Toast.LENGTH_LONG).show()
+        }
+
+        replaceFragment(NewsFragment())
+
+        initBottomNavView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
-    }
-
-    private fun setToolbar() {
-        val toolbar: Toolbar = binding.toolbarMainActivity
-        setSupportActionBar(toolbar)
     }
 
     private fun initBottomNavView() {
@@ -104,5 +109,16 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = fm.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout_main, fragment)
         fragmentTransaction.commit()
+    }
+
+    /**
+     * Load all the necessary data
+     */
+    private fun appLaunchInitiate() {
+        newsViewModel.getNewsList("us", 1)
+        movieViewModel.getMovieList()
+        dbMovieViewModel.getAllMovieFromDb()
+        preferenceHelper.storeFirstRun()
+        preferenceHelper.storeCurrentTime(System.currentTimeMillis())
     }
 }

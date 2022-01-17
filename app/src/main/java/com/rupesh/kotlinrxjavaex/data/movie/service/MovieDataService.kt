@@ -1,7 +1,11 @@
 package com.rupesh.kotlinrxjavaex.data.movie.service
 
+import android.os.Build
+import com.rupesh.kotlinrxjavaex.BuildConfig
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -23,5 +27,13 @@ interface MovieDataService {
      * @return the RxJava Observables containing [com.rupesh.kotlinrxjavaex.model.MovieDBResponse]
      */
     @GET("movie/popular")
-    fun getAllMoviesWithRx(@Query("api_key") apiKey: String): Observable<MovieDBResponse>
+    fun getAllMoviesWithRx(
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Observable<MovieDBResponse>
+
+    @GET("search/movie")
+    fun getSearchedMovie(
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("query") searchQuery: String
+    ): Single<List<Movie>>
 }

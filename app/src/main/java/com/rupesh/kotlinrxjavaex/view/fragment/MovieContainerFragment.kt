@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view
+package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -40,6 +40,8 @@ class MovieContainerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setToolbar()
+
         /**
          * Note: ViewPager must be set first before calling setTabLayout() as
          *       the method uses the initialized ViewPager to set the Tabs
@@ -47,6 +49,12 @@ class MovieContainerFragment : Fragment() {
         setViewPager()
 
         setTabLayout()
+    }
+
+
+    private fun setToolbar() {
+        val toolbar = binding.tbMovieFrag
+        toolbar.title = "Movies"
     }
 
     /**

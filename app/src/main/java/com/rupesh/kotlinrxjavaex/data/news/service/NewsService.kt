@@ -10,24 +10,17 @@ interface NewsService {
 
     @GET("v2/top-headlines")
     fun getTopHeadlines(
-        @Query("country")
-        country:String,
-        @Query("page")
-        page:Int,
-        @Query("apiKey")
-        apiKey:String = BuildConfig.API_NEWS
+        @Query("country") country: String,
+        @Query("page") page: Int,
+        @Query("apiKey") apiKey: String = BuildConfig.API_NEWS
     ): Observable<NewsResponse>
 
 
     @GET("v2/top-headlines")
     fun getSearchedTopHeadlines(
-        @Query("country")
-        country:String,
-        @Query("q")
-        searchQuery:String,
-        @Query("page")
-        page:Int,
-        @Query("apiKey")
-        apiKey:String = BuildConfig.API_NEWS
+        @Query("country") country: String,
+        @Query("q") searchQuery: String,
+        @Query("page") page: Int,
+        @Query("apiKey") apiKey: String = BuildConfig.API_NEWS
     ): Observable<NewsResponse>
 }

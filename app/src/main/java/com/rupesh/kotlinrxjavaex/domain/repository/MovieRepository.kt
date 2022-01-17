@@ -1,11 +1,17 @@
 package com.rupesh.kotlinrxjavaex.domain.repository
 
+import com.jakewharton.rxbinding2.widget.RxSearchView
 import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Function
+import io.reactivex.functions.Predicate
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -28,12 +34,29 @@ class MovieRepository @Inject constructor(private val service: MovieDataService)
      * @return the Observable<List<Movie> that wraps the result of API call
      */
     fun getMovieListFromAPI(): Observable<List<Movie>> {
-        val movieDBResponseObservable = service.getAllMoviesWithRx(BuildConfig.API_KEY)
+        val movieDBResponseObservable = service.getAllMoviesWithRx()
 
         return movieDBResponseObservable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map { it.movies }
+    }
+
+    fun getSearchedMovieFromAPI(searchQuery: String): Observable<List<Movie>> {
+
+        val publishedSubject: PublishSubject<String> = PublishSubject.create()
+
+        return publishedSubject
+            //.debounce(5000, TimeUnit.MILLISECONDS)
+            //.distinctUntilChanged()
+            .switchMapSingle(object:Function<String, Single<List<Movie>>> {
+
+                override fun apply(t: String): Single<List<Movie>> {
+                    return service.getSearchedMovie(searchQuery = searchQuery)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                }
+            })
     }
 
 

@@ -1,3 +1,4 @@
+/*
 package com.rupesh.kotlinrxjavaex.view
 
 import android.content.Intent
@@ -19,12 +20,14 @@ import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+*/
 /**
  * A simple [AppCompatActivity] subclass.
  * This class displays the detail info about [com.rupesh.kotlinrxjavaex.model.Movie]
  * @author Rupesh Mall
  * @since 1.0
- */
+ *//*
+
 @AndroidEntryPoint
 class MovieDetailActivity : AppCompatActivity() {
 
@@ -84,9 +87,11 @@ class MovieDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    /**
+    */
+/**
      * Initializes Collapsing Toolbar
-     */
+     *//*
+
     private fun initCollapsingToolBar() {
         val collapsingToolbarLayout: CollapsingToolbarLayout = binding!!.ctMovieDetail
         collapsingToolbarLayout.title = " "
@@ -111,4 +116,4 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         })
     }
-}
+}*/

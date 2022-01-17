@@ -7,24 +7,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        tools:context=".view.MainActivity">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_main_activity"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/black"
-            app:menu="@menu/menu_main"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="InfoApp"
-            app:titleTextColor="@color/teal_700"/>
+        tools:context=".view.activity.MainActivity">
 
         <FrameLayout
             android:id="@+id/frame_layout_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/bnv_main"
-            android:layout_below="@id/toolbar_main_activity">
+            android:layout_above="@id/bnv_main">
         </FrameLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
