@@ -60,7 +60,7 @@ class MovieFragment : Fragment() {
         movieFragmentBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
 
-        return movieFragmentBinding!!.root
+        return movieFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,32 +86,6 @@ class MovieFragment : Fragment() {
         })
     }
 
-
-
-    private fun setSearchText() {
-
-        RxTextView.textChangeEvents(movieFragmentBinding!!.etSearch)
-            .skipInitialValue()
-            .debounce(300, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object: DisposableObserver<TextViewTextChangeEvent>() {
-                override fun onNext(t: TextViewTextChangeEvent) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onError(e: Throwable) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onComplete() {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-    }
-
     private fun displayToastMessage() {
         movieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
@@ -127,7 +101,7 @@ class MovieFragment : Fragment() {
      * For Landscape view, the span is 4
      */
     private fun initRecyclerView() {
-        recyclerView = movieFragmentBinding!!.layoutContentMovieFragment.rvMovieFragment.also {
+        recyclerView = movieFragmentBinding.layoutContentMovieFragment.rvMovieFragment.also {
 
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
                 it.layoutManager = GridLayoutManager(requireContext(), 2)

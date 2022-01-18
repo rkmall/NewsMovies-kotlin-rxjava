@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * A simple [Fragment] subclass.
@@ -33,11 +41,13 @@ class WatchListFragment : Fragment() {
     private lateinit var dbMovieViewModel: DbMovieViewModel
     private var dbMovies = ArrayList<DbMovie>()
 
+    private var disposable = CompositeDisposable()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         watchListItemBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_watch_list, container, false)
         val view: View = watchListItemBinding!!.root
         return view
@@ -53,6 +63,8 @@ class WatchListFragment : Fragment() {
         observeDbMovieList()
 
         displayToastMessage()
+
+        filterMovieList()
     }
 
     private fun observeDbMovieList() {
@@ -71,6 +83,38 @@ class WatchListFragment : Fragment() {
         })
     }
 
+    /**
+     * This method uses RxJava binding to attach listener to the Edit text to listen to
+     * search string changes.
+     */
+    private fun filterMovieList() {
+        disposable.add(
+            RxTextView.textChangeEvents(watchListItemBinding!!.svWatchlistFragment)
+                //.skipInitialValue()
+                .debounce(800, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<TextViewTextChangeEvent>() {
+                    override fun onNext(t: TextViewTextChangeEvent) {
+                        Log.i("FilterList", t.text().toString())
+                        watchListAdapter.filter.filter(t.text())
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("FilterList", "onError: ${e.message}")
+                    }
+
+                    override fun onComplete() {
+                        Log.i("FilterList", "onComplete")
+                    }
+                })
+        )
+    }
+
+    /**
+     * Remove DbMovie from the local database on Remove button clicked
+     */
     private fun onRemoveButtonClicked(dbMovie: DbMovie) {
         dbMovieViewModel.deleteMovieFromDB(dbMovie)
     }
@@ -87,6 +131,12 @@ class WatchListFragment : Fragment() {
         }
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        disposable.clear()
+    }
+
     /**
      * Clears the connection between Observables and Observers
      * added in CompositeDisposables
@@ -94,6 +144,7 @@ class WatchListFragment : Fragment() {
      */
     override fun onDestroy() {
         super.onDestroy()
+        disposable.dispose()
         watchListItemBinding = null
         dbMovieViewModel.clear()
     }

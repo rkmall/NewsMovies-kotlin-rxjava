@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.fragment.WatchListFragment">
 
+        <EditText
+            android:id="@+id/sv_watchlist_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:layout_marginTop="5dp"
+            android:textSize="30sp"
+            android:background="@color/search_background"
+            android:inputType="text" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_watchList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/sv_watchlist_fragment"/>
 
     </RelativeLayout>
 </layout>

@@ -88,6 +88,7 @@ class NewsFragment : Fragment() {
     }
 
     /**
+     *
      * Subscribe PublishSubject first as it immediately start emitting values on creation
      */
     private fun searchNewsArticle() {
@@ -106,10 +107,10 @@ class NewsFragment : Fragment() {
             .distinctUntilChanged()
 
             // Any future items emitted by PublishSubject will be available to this
-            // observer as now the Observer is attached to PublishSubject before it has started emitting items
+            // Observer as now the Observer is attached to PublishSubject before it has started emitting items
             .subscribeWith(object: DisposableObserver<String>()  {
                 override fun onNext(t: String) {
-                    viewModel.getSearchedNewsList(defaultCountry, t, defaultPage) // use the search query string here
+                    viewModel.getSearchedNewsList(defaultCountry, t, defaultPage) // use the search query string (emitted)
                     observeSearchedNews()
                 }
 
@@ -123,7 +124,7 @@ class NewsFragment : Fragment() {
             })
         )
 
-        setSearchQueryText()  // search query string is pushed to PublishSubject here
+        setSearchQueryText() // search query string is pushed to PublishSubject here
     }
 
     /**
@@ -139,7 +140,7 @@ class NewsFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
-                    subject.onNext(newText) // set search query text here
+                    subject.onNext(newText) // set search query text, which is emitted by PublishSubject
                 }else {
                     throw Exception("Internal RxJava Error")
                 }
