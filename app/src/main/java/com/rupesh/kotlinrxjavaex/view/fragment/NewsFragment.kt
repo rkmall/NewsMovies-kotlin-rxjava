@@ -2,13 +2,13 @@ package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rupesh.kotlinrxjavaex.R
@@ -17,22 +17,10 @@ import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.ObservableSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import io.reactivex.functions.Function
-import io.reactivex.functions.Predicate
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
@@ -78,7 +66,7 @@ class NewsFragment : Fragment() {
 
         observeNewsList()
 
-        callAPI()
+        searchNewsArticle()
 
         displayToastMessage()
     }
@@ -99,11 +87,29 @@ class NewsFragment : Fragment() {
         })
     }
 
-    private fun callAPI() {
-        disposable.add(
-            getSearchQueryObservable().subscribeWith(object: DisposableObserver<String>()  {
+    /**
+     * Subscribe PublishSubject first as it immediately start emitting values on creation
+     */
+    private fun searchNewsArticle() {
+
+        disposable.add( subject
+            // debounce of 1s on MainThread
+            .debounce(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .filter { str ->
+                if (str.isEmpty()) {
+                    observeNewsList()
+                    false
+                } else {
+                    true
+                }
+            }
+            .distinctUntilChanged()
+
+            // Any future items emitted by PublishSubject will be available to this
+            // observer as now the Observer is attached to PublishSubject before it has started emitting items
+            .subscribeWith(object: DisposableObserver<String>()  {
                 override fun onNext(t: String) {
-                    viewModel.getSearchedNewsList(defaultCountry, t, defaultPage)
+                    viewModel.getSearchedNewsList(defaultCountry, t, defaultPage) // use the search query string here
                     observeSearchedNews()
                 }
 
@@ -116,9 +122,15 @@ class NewsFragment : Fragment() {
                 }
             })
         )
+
+        setSearchQueryText()  // search query string is pushed to PublishSubject here
     }
 
-    private fun getSearchQueryObservable(): Observable<String> {
+    /**
+     * Set Search view with listener by pushing search query string to PublishSubject' onNext()
+     * in OnQueryTextChange() method
+     */
+    private fun setSearchQueryText() {
         fragmentNewsBinding.svNews.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 subject.onComplete()
@@ -127,30 +139,13 @@ class NewsFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
-                    subject.onNext(newText)
+                    subject.onNext(newText) // set search query text here
                 }else {
                     throw Exception("Internal RxJava Error")
                 }
                 return true
             }
         })
-
-        return subject
-            .debounce(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .filter(object: Predicate<String> {
-                override fun test(t: String): Boolean {
-                    if(t.isEmpty()) {
-                        initRV()
-                        observeNewsList()
-                        return false
-                    }else {
-                        return true
-                    }
-                }
-            })
-            .distinctUntilChanged()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
 

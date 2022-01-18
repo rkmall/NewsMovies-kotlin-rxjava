@@ -42,7 +42,7 @@ class MovieDetailFragment : Fragment() {
 
         movieViewModel = (activity as MainActivity).movieViewModel
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.movieVM = movieViewModel
 
