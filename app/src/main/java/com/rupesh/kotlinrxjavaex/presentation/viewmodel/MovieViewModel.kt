@@ -37,11 +37,9 @@ class MovieViewModel @Inject constructor(
 
     val movieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
 
-
     private val searchedMovieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
 
     val searchedMovieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
-
 
 
     // Status message to notify user about the completion of event

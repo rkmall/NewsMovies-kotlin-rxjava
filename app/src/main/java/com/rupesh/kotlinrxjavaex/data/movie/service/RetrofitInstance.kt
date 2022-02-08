@@ -23,7 +23,7 @@ object RetrofitInstance {
         .build()
 
     // Retrofit val by Kotlin lazy delegation
-    val retrofit by lazy {
+    val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(client)

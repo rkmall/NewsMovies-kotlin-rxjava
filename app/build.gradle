@@ -66,7 +66,6 @@ android {
 
 dependencies {
 
-
     def lifecycle_version = "2.4.0"
     def arch_version = "2.1.0"
     def room_version = "2.3.0"
@@ -76,7 +75,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-
 
 
     // ViewModel

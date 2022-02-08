@@ -88,7 +88,6 @@ class DbMovieViewModel @Inject constructor(
                            rating: Double, overview: String,
                            releaseDate: String, posterPath: String ) {
 
-
         disposable.add(
             saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
                 .subscribeWith(object : DisposableMaybeObserver<Long>() {
