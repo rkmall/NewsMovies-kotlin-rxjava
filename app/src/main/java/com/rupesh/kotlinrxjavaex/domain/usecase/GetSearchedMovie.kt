@@ -9,7 +9,6 @@ import javax.inject.Inject
 class GetSearchedMovie @Inject constructor(
     private val movieRepository: MovieRepository
 ) {
-
     fun execute(searchQuery: String): Observable<List<Movie>> {
         return movieRepository.getSearchedMovieFromAPI(searchQuery)
     }

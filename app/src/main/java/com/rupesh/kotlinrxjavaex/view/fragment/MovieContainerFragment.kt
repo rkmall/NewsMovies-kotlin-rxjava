@@ -22,11 +22,9 @@ import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieViewPagerAdapter
 class MovieContainerFragment : Fragment() {
 
     private lateinit var binding: FragmentMovieContainerBinding
-
     private lateinit var viewPager2: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var movieViewPagerAdapter: MovieViewPagerAdapter
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +48,6 @@ class MovieContainerFragment : Fragment() {
 
         setTabLayout()
     }
-
 
     private fun setToolbar() {
         val toolbar = binding.tbMovieFrag

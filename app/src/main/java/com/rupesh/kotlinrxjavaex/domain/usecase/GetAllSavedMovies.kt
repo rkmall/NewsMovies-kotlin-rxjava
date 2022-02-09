@@ -5,8 +5,9 @@ import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class GetAllSavedMovies @Inject constructor(val dbMovieRepository: DbMovieRepository) {
-
+class GetAllSavedMovies @Inject constructor(
+    private val dbMovieRepository: DbMovieRepository
+) {
     fun execute(): Observable<List<DbMovie>> {
         return dbMovieRepository.getMovieListFromDB()
     }

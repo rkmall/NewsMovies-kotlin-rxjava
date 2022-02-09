@@ -3,6 +3,7 @@ package com.rupesh.kotlinrxjavaex.view.activity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -36,17 +37,14 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var movieVMFactory: MovieVMFactory
-
     lateinit var movieViewModel: MovieViewModel
 
     @Inject
     lateinit var dbMovieVMFactory: DbMovieVMFactory
-
     lateinit var dbMovieViewModel: DbMovieViewModel
 
     @Inject
     lateinit var newsVMFactory: NewsVMFactory
-
     lateinit var newsViewModel: NewsViewModel
 
     private lateinit var preferenceHelper: AppPreferenceHelper
@@ -59,17 +57,10 @@ class MainActivity : AppCompatActivity() {
         preferenceHelper = AppPreferenceHelper(this)
 
         movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
-
         dbMovieViewModel = ViewModelProvider(this, dbMovieVMFactory)[DbMovieViewModel::class.java]
-
         newsViewModel = ViewModelProvider(this, newsVMFactory)[NewsViewModel::class.java]
 
-
-        if(NetworkChecker.isNetWorkAvailable(this)) {
-            appLaunchInitiate()
-        } else {
-            Toast.makeText(this, "Please turn on mobile network", Toast.LENGTH_LONG).show()
-        }
+        checkNetwork()
 
         replaceFragment(NewsFragment())
 
@@ -81,8 +72,15 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun initBottomNavView() {
+    private fun checkNetwork() {
+        if(NetworkChecker.isNetWorkAvailable(this)) {
+            appLaunchInitiate()
+        } else {
+            Toast.makeText(this, "Please turn on mobile network", Toast.LENGTH_LONG).show()
+        }
+    }
 
+    private fun initBottomNavView() {
         binding.bnvMain.setOnItemSelectedListener {
 
             when(it.itemId) {

@@ -5,8 +5,9 @@ import com.rupesh.kotlinrxjavaex.domain.repository.DbMovieRepository
 import io.reactivex.Maybe
 import javax.inject.Inject
 
-class SaveMovieToDb @Inject constructor(val dbMovieRepository: DbMovieRepository) {
-
+class SaveMovieToDb @Inject constructor(
+    private val dbMovieRepository: DbMovieRepository
+) {
     fun execute(id: Long, title: String,
                 rating: Double, overview: String,
                 releaseDate: String, posterPath: String): Maybe<Long> {

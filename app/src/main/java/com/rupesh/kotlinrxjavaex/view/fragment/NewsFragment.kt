@@ -128,7 +128,7 @@ class NewsFragment : Fragment() {
     }
 
     /**
-     * Set Search view with listener by pushing search query string to PublishSubject' onNext()
+     * Set Search view with listener by pushing search query string to PublishSubject's onNext()
      * in OnQueryTextChange() method
      */
     private fun setSearchQueryText() {
