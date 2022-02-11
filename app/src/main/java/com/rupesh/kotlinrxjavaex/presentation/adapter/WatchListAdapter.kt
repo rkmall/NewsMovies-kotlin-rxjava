@@ -21,11 +21,11 @@ import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
  */
 class WatchListAdapter(
     val context: Context,
+    //val moviesList: ArrayList<DbMovie>,
     val listener: (dbMovie: DbMovie) -> Unit
-): RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(), Filterable  {
+): RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(), Filterable {
 
     var moviesList: List<DbMovie> = ArrayList()
-
     var filteredList: List<DbMovie> = ArrayList()
 
     override fun onCreateViewHolder(
@@ -51,6 +51,8 @@ class WatchListAdapter(
 
     fun setList(movieList: List<DbMovie>) {
         this.moviesList = movieList
+        this.filteredList = movieList
+        this.notifyDataSetChanged()
     }
 
     /**
@@ -59,8 +61,8 @@ class WatchListAdapter(
     inner class WatchListViewHolder(val binding: WatchListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(_dbMovie: DbMovie) {
+            Log.i("FilterListObs", _dbMovie.toString())
             binding.dbMovie = _dbMovie
-
             onRemoveButtonClicked()
         }
 
@@ -86,10 +88,9 @@ class WatchListAdapter(
      * @return Filter for the adapter
      */
     override fun getFilter(): Filter {
-
         return object: Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val searchString = constraint.toString()
+                val searchString = constraint.toString()    // get user input
 
                 if(searchString.isEmpty()) {
                     filteredList = moviesList   // when search string is empty
@@ -100,10 +101,8 @@ class WatchListAdapter(
                             tempFilteredList.add(item)
                         }
                     }
-
                     filteredList = tempFilteredList
                 }
-
                 val filteredResults = FilterResults()
                 filteredResults.values = filteredList
                 return filteredResults

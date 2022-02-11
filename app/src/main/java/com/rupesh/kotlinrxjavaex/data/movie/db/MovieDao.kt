@@ -11,7 +11,7 @@ import io.reactivex.Single
 
 /**
  * MovieDao is an interface that represents Data Access Object and
- * interacts with local SQLite database using room database to perform
+ * interacts with underlying SQLite database using Room database to perform
  * database operations for entity [com.rupesh.kotlinrxjavaex.db.entity.DbMovie]
  * @author Rupesh Mall
  * @since 1.0

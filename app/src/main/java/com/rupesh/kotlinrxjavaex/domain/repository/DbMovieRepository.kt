@@ -1,3 +1,5 @@
+
+/*
 package com.rupesh.kotlinrxjavaex.domain.repository
 
 import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
@@ -8,6 +10,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+
+*/
 /**
  * DbMovieRepository class is repository that connects App's database
  * [com.rupesh.kotlinrxjavaex.db.MovieDB] using DAO
@@ -20,14 +24,19 @@ import javax.inject.Inject
  * @param db the Application Database
  * @author Rupesh Mall
  * @since 1.0
- */
+ *//*
+
+
 class DbMovieRepository @Inject constructor(
     val movieDB: MovieDB
 ) {
-    /**
+    */
+/**
      * Gets a list of all Movies from Database [com.rupesh.kotlinrxjavaex.db.MovieDB]
      * @return the MutableLiveData<List<DMovie> that wraps the result of database operation
-     */
+     *//*
+
+
     fun getMovieListFromDB(): Observable<List<DbMovie>> {
         val movieObservable = movieDB.getMovieDao().getAllMovie()
 
@@ -36,7 +45,9 @@ class DbMovieRepository @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    /**
+
+    */
+/**
      * Adds and instance of [com.rupesh.kotlinrxjavaex.db.entity.DbMovie]
      * into the database
      * @param id the DMovie id
@@ -45,7 +56,9 @@ class DbMovieRepository @Inject constructor(
      * @param overview the DMovie overview
      * @param releaseDate the DMovie release date
      * @param posterPath the DMovie poster path (url)
-     */
+     *//*
+
+
     fun addMovieToDB(
         id: Long, title: String,
         rating: Double, overview: String,
@@ -61,10 +74,14 @@ class DbMovieRepository @Inject constructor(
     }
 
 
-    /**
+
+    */
+/**
      * Deletes the DbMovie from App's database provided the DbMovie instance
      * @param dbMovie the DbMovie instance that needs to be deleted from database
-     */
+     *//*
+
+
     fun deleteMovieFromDB(dbMovie: DbMovie): Maybe<Int> {
         val result: Maybe<Int> = movieDB.getMovieDao().deleteMovie(dbMovie)
 
@@ -73,3 +90,4 @@ class DbMovieRepository @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
     }
 }
+*/

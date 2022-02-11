@@ -35,14 +35,11 @@ import java.util.concurrent.TimeUnit
 class WatchListFragment : Fragment() {
 
     private var watchListItemBinding: FragmentWatchListBinding? = null
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var watchListAdapter: WatchListAdapter
     private lateinit var dbMovieViewModel: DbMovieViewModel
     private var dbMovies = ArrayList<DbMovie>()
-
     private var disposable = CompositeDisposable()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,19 +56,19 @@ class WatchListFragment : Fragment() {
         dbMovieViewModel = (activity as MainActivity).dbMovieViewModel
 
         initRecyclerView()
-
         observeDbMovieList()
-
-        displayToastMessage()
-
         filterMovieList()
+        displayToastMessage()
     }
 
     private fun observeDbMovieList() {
         dbMovieViewModel.dbMovieListResult.observe(viewLifecycleOwner, Observer {
-            dbMovies = it as ArrayList<DbMovie>
+            dbMovies.clear()
+            dbMovies.addAll(it)
+            //dbMovies = it as ArrayList<DbMovie>
+            Log.i("FilterListObs", dbMovies.toString())
+            //initRecyclerView()
             watchListAdapter.setList(dbMovies)
-            watchListAdapter.notifyDataSetChanged()
         })
     }
 
@@ -90,8 +87,8 @@ class WatchListFragment : Fragment() {
     private fun filterMovieList() {
         disposable.add(
             RxTextView.textChangeEvents(watchListItemBinding!!.svWatchlistFragment)
-                //.skipInitialValue()
-                .debounce(800, TimeUnit.MILLISECONDS)
+                .skipInitialValue()
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +127,6 @@ class WatchListFragment : Fragment() {
             it.adapter = watchListAdapter
         }
     }
-
 
     override fun onPause() {
         super.onPause()

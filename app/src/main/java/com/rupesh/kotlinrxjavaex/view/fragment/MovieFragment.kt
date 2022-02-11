@@ -39,17 +39,11 @@ import java.util.concurrent.TimeUnit
 class MovieFragment : Fragment() {
 
     private lateinit var movieFragmentBinding: FragmentMovieBinding
-
     private lateinit var addMovieDialogBinding: LayoutAddMovieDialogBinding
-
     private lateinit var movieViewModel: MovieViewModel
-
     private lateinit var dbMovieViewModel: DbMovieViewModel
-
     private lateinit var recyclerView: RecyclerView
-
     private lateinit var movieAdapter: MovieAdapter
-
     private var movies = ArrayList<Movie>()
 
     override fun onCreateView(
@@ -82,7 +76,6 @@ class MovieFragment : Fragment() {
         movieViewModel.movieLiveDataResult.observe(viewLifecycleOwner, Observer() {
             movies = it as ArrayList<Movie>
             movieAdapter.setList(movies)
-            movieAdapter.notifyDataSetChanged()
         })
     }
 
@@ -143,9 +136,7 @@ class MovieFragment : Fragment() {
         dialog.setContentView(addMovieDialogBinding.root)
 
         addMovieDialogBinding.let {
-
             it.tvAddMovieName.text = movie.original_title
-
             it.ok.setOnClickListener {
                 val title: String = movie.original_title
                 val rating: Double = movie.vote_average

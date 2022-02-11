@@ -42,7 +42,6 @@ class DbMovieViewModel @Inject constructor(
 
     val dbMovieListResult: LiveData<List<DbMovie>> get() = dbMovieListLiveData
 
-
     // Status message to notify user about the completion of event
     private val statusMessage = MutableLiveData<Event<String>>()
 
@@ -53,9 +52,10 @@ class DbMovieViewModel @Inject constructor(
      * @return the LiveData<List<DMovie>
      */
     fun getAllMovieFromDb() {
-
         disposable.add(
             getAllSavedMovies.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<DbMovie>>() {
                     override fun onNext(t: List<DbMovie>) {
                         Log.i("MyTag", "onNextGetMovieListDB")
@@ -88,8 +88,12 @@ class DbMovieViewModel @Inject constructor(
                            rating: Double, overview: String,
                            releaseDate: String, posterPath: String ) {
 
+        val movie = DbMovie(id, title, rating, overview, releaseDate, posterPath)
+
         disposable.add(
-            saveMovieToDb.execute(id, title, rating, overview, releaseDate, posterPath)
+            saveMovieToDb.execute(movie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableMaybeObserver<Long>() {
                     override fun onSuccess(t: Long) {
                         Log.i("MyTag", "onSuccessAddDB: $t ")
@@ -98,7 +102,7 @@ class DbMovieViewModel @Inject constructor(
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorAddDB: ${e.message}")
-                        statusMessage.postValue(Event("Something went wrong"))
+                        statusMessage.postValue(Event("Could not add to the list"))
                     }
 
                     override fun onComplete() {
@@ -113,7 +117,6 @@ class DbMovieViewModel @Inject constructor(
      * @param dbMovie the DbMovie instance to be deleted
      */
     fun deleteMovieFromDB(dbMovie: DbMovie) {
-
         disposable.add(
             deleteSavedMovie.execute(dbMovie)
                 .subscribeOn(Schedulers.io())
@@ -126,7 +129,7 @@ class DbMovieViewModel @Inject constructor(
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorDeleteDB: ${e.message}")
-                        statusMessage.postValue(Event("Something went wrong"))
+                        statusMessage.postValue(Event("Could not delete movie"))
                     }
 
                     override fun onComplete() {

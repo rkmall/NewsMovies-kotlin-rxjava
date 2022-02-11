@@ -51,6 +51,7 @@ class MovieAdapter(
 
     fun setList(movieList: List<Movie>) {
         movies = movieList
+        notifyDataSetChanged()
     }
 
     /**

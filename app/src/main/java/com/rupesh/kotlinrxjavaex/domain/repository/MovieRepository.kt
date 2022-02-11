@@ -1,3 +1,4 @@
+/*
 package com.rupesh.kotlinrxjavaex.domain.repository
 
 import com.jakewharton.rxbinding2.widget.RxSearchView
@@ -14,6 +15,7 @@ import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+*/
 /**
  * MovieRepository class is repository that performs API call to
  * @see <a href="https://developers.themoviedb.org/3/getting-started/introduction"></a>
@@ -25,14 +27,17 @@ import javax.inject.Inject
  * can get and subsequently pass to Views to observe
  * @author Rupesh Mall
  * @since 1.0
- */
+ *//*
+
 
 class MovieRepository @Inject constructor(private val service: MovieDataService) {
 
-    /**
+    */
+/**
      * Gets a list of all Movies in succession from API call
      * @return the Observable<List<Movie> that wraps the result of API call
-     */
+     *//*
+
     fun getMovieListFromAPI(): Observable<List<Movie>> {
         val movieDBResponseObservable = service.getAllMoviesWithRx()
 
@@ -42,7 +47,8 @@ class MovieRepository @Inject constructor(private val service: MovieDataService)
             .map { it.movies }
     }
 
-    fun getSearchedMovieFromAPI(searchQuery: String): Observable<List<Movie>> {
+    */
+/*fun getSearchedMovieFromAPI(searchQuery: String): Observable<List<Movie>> {
 
         val publishedSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -57,10 +63,12 @@ class MovieRepository @Inject constructor(private val service: MovieDataService)
                         .observeOn(AndroidSchedulers.mainThread())
                 }
             })
-    }
+    }*//*
 
 
-    /*fun getMovieLiveData() {
+
+    */
+/*fun getMovieLiveData() {
         movieDBResponseObservable = service.getAllMoviesWithRx(BuildConfig.API_KEY)
 
         disposable.add(
@@ -86,5 +94,6 @@ class MovieRepository @Inject constructor(private val service: MovieDataService)
                     }
                 })
         )
-    }*/
-}
+    }*//*
+
+}*/

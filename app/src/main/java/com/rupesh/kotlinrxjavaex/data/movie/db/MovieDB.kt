@@ -22,7 +22,7 @@ abstract class MovieDB: RoomDatabase(){
      * In other classes where we need to instantiate MovieDB to perform
      * database operation, we can get singleton MovieDB object and
      * and use it to invoke this method to get MovieDao that can be used
-     * to invoke all database operation methods declared in MovieDao
+     * to invoke all database operation methods declared in MovieDao interface
      * @return the MovieDao [com.rupesh.kotlinrxjavaex.db.MovieDao]
      */
     abstract fun getMovieDao(): MovieDao

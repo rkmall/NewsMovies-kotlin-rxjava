@@ -31,15 +31,10 @@ import java.util.concurrent.TimeUnit
 class NewsFragment : Fragment() {
 
     private lateinit var fragmentNewsBinding: FragmentNewsBinding
-
     private  lateinit var viewModel: NewsViewModel
-
     private lateinit var newsAdapter: NewsAdapter
-
     private var defaultCountry = "us"
-
     private var defaultPage = 1
-
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     val subject: PublishSubject<String> = PublishSubject.create()
@@ -61,14 +56,10 @@ class NewsFragment : Fragment() {
         viewModel = (activity as MainActivity).newsViewModel
 
         setToolbar()
-
         initRV()
-
         observeNewsList()
-
-        searchNewsArticle()
-
         displayToastMessage()
+        searchNewsArticle()
     }
 
     // Observe the article list
@@ -92,13 +83,12 @@ class NewsFragment : Fragment() {
      * Subscribe PublishSubject first as it immediately start emitting values on creation
      */
     private fun searchNewsArticle() {
-
         disposable.add( subject
             // debounce of 1s on MainThread
             .debounce(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .filter { str ->
                 if (str.isEmpty()) {
-                    observeNewsList()
+                    observeNewsList()   // observe news list if query string empty
                     false
                 } else {
                     true
@@ -123,8 +113,7 @@ class NewsFragment : Fragment() {
                 }
             })
         )
-
-        setSearchQueryText() // search query string is pushed to PublishSubject here
+        setSearchQueryText() // search query string is set to PublishSubject here
     }
 
     /**
@@ -134,7 +123,7 @@ class NewsFragment : Fragment() {
     private fun setSearchQueryText() {
         fragmentNewsBinding.svNews.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                subject.onComplete()
+                // do nothing, continue as is
                 return true
             }
 
@@ -148,7 +137,6 @@ class NewsFragment : Fragment() {
             }
         })
     }
-
 
     private fun displayToastMessage() {
         viewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {

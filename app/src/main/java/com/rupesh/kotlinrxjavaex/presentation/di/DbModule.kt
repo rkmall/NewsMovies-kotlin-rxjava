@@ -2,6 +2,7 @@ package com.rupesh.kotlinrxjavaex.presentation.di
 
 import android.content.Context
 import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
+import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,8 +17,8 @@ class DbModule {
 
     @Singleton
     @Provides
-    fun provideMovieDb(@ApplicationContext context: Context): MovieDB {
-        return MovieDB.getDB(context)
+    fun provideMovieDao(@ApplicationContext context: Context): MovieDao {
+        return MovieDB.getDB(context).getMovieDao()
     }
 }
 

@@ -5,12 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllMovies
-import com.rupesh.kotlinrxjavaex.domain.usecase.GetSearchedMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.domain.usecase.*
 import com.rupesh.kotlinrxjavaex.domain.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 import javax.inject.Inject
 
 /**
@@ -26,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieViewModel @Inject constructor(
     private val getAllMovies: GetAllMovies,
-    private val getSearchedMovie: GetSearchedMovie
+    private val getSearchedMovie: GetSearchedMovie,
 ): ViewModel() {
 
     // RxJava CompositeDisposables
@@ -50,7 +53,6 @@ class MovieViewModel @Inject constructor(
     // Used for data binding by [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
     var movie: Movie? = null
 
-
     /**
      * Gets a list of Movie wrapped inside MutableLiveData
      * @return the LiveData<List<DMovie>
@@ -58,15 +60,25 @@ class MovieViewModel @Inject constructor(
     fun getMovieList() {
         disposable.add(
             getAllMovies.execute()
-                .subscribeWith(object: DisposableObserver<List<Movie>>() {
-                    override fun onNext(t: List<Movie>) {
-                        Log.i("MyTag", "onNextGetMovieListAPI: $t")
-                        movieLiveData.postValue(t)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<Response<MovieDBResponse>>() {
+                    override fun onNext(t: Response<MovieDBResponse>) {
+                        val responseCode = t.code()
+                        Log.i("MyTag", "onNextGetMovieListAPI response code: $responseCode")
+
+                        if(t.isSuccessful) {
+                            t.body()?.let {
+                                movieLiveData.postValue(it.movies)
+                            }
+                        } else {
+                            statusMessage.postValue(Event("Please check your network"))
+                        }
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetMovieListAPI")
-                        statusMessage.postValue(Event("Something went wrong"))
+                        statusMessage.postValue(Event("Cannot fetch movies"))
                     }
 
                     override fun onComplete() {
@@ -78,7 +90,7 @@ class MovieViewModel @Inject constructor(
     }
 
 
-    fun getSearchedMovie(searchQuery: String) {
+    /*fun getSearchedMovie(searchQuery: String) {
         disposable.add(
             getSearchedMovie.execute(searchQuery)
                 .subscribeWith(object: DisposableObserver<List<Movie>>() {
@@ -99,7 +111,7 @@ class MovieViewModel @Inject constructor(
                 })
         )
     }
-
+*/
     /**
      * Clears the connection between Observables and Observers
      * added in CompositeDisposables

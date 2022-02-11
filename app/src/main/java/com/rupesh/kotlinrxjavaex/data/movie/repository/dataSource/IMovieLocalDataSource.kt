@@ -7,6 +7,6 @@ import io.reactivex.Observable
 interface IMovieLocalDataSource {
 
     fun getSavedMovieList(): Observable<List<DbMovie>>
-    fun addMovie(dbMovie: DbMovie): Maybe<Long>
-    fun deleteMovie(dbMovie: DbMovie): Maybe<Int>
+    fun addMovieToDb(dbMovie: DbMovie): Maybe<Long>
+    fun deleteMovieFromDb(dbMovie: DbMovie): Maybe<Int>
 }

@@ -41,20 +41,15 @@ class MovieDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         movieViewModel = (activity as MainActivity).movieViewModel
-
         binding.lifecycleOwner = viewLifecycleOwner
-
         binding.movieVM = movieViewModel
 
         setToolbar()
-
         getParcelizeMovie()
-
         initCollapsingToolBar()
     }
 
     private fun getParcelizeMovie() {
-
         val bundle = this.arguments
 
         if(bundle != null) {

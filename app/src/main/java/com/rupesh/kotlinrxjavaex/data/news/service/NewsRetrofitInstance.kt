@@ -18,7 +18,7 @@ object NewsRetrofitInstance {
 
 
     // Retrofit val by Kotlin lazy delegation
-    val retrofit by lazy {
+    val retrofitNews: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_NEWS)
             .client(client)

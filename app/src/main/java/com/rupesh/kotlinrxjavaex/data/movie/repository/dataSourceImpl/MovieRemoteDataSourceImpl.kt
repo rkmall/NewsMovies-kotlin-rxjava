@@ -6,15 +6,17 @@ import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDa
 import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
 import io.reactivex.Observable
 import io.reactivex.Single
+import retrofit2.Response
 
 class MovieRemoteDataSourceImpl(
     private val movieDataService: MovieDataService
 ) : IMovieRemoteDataSource {
-    override fun getTopMovies(): Observable<MovieDBResponse> {
+
+    override fun getTopMovies(): Observable<Response<MovieDBResponse>> {
         return movieDataService.getAllMoviesWithRx()
     }
 
-    override fun getSearchedMovies(searchQuery: String): Single<List<Movie>> {
+    override fun getSearchedMovies(searchQuery: String): Single<Response<List<Movie>>> {
         return movieDataService.getSearchedMovie(searchQuery = searchQuery)
     }
 }

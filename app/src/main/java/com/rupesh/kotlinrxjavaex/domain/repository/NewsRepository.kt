@@ -16,7 +16,6 @@ class NewsRepository @Inject constructor(val service: NewsService) {
      */
     fun getNewsArticleListFromAPI(country: String, page: Int): Observable<List<NewsArticle>> {
         val newsResponseObservable = service.getTopHeadlines(country, page)
-
         return newsResponseObservable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -28,11 +27,8 @@ class NewsRepository @Inject constructor(val service: NewsService) {
      * @return the Observable<List<NewsArticle> that wraps the result of API call
      */
     fun getSearchedNewsArticleListFromAPI(country: String, searchQuery: String, page: Int): Observable<List<NewsArticle>> {
-
         val newsResponseObservable = service.getSearchedTopHeadlines(country, searchQuery, page)
-
         return newsResponseObservable
-            //.debounce(50000, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

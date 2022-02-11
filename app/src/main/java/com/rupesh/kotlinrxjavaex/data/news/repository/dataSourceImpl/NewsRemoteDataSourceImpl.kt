@@ -5,6 +5,7 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
 import io.reactivex.Observable
+import retrofit2.Response
 
 class NewsRemoteDataSourceImpl(
     private val newsService: NewsService
@@ -14,7 +15,9 @@ class NewsRemoteDataSourceImpl(
         return newsService.getTopHeadlines(country, page)
     }
 
-    override fun getSearchedNewsHeadlines(country: String, searchQuery: String, page: Int): Observable<NewsResponse> {
+    override fun getSearchedNewsHeadlines(country: String,
+                                          searchQuery: String,
+                                          page: Int): Observable<NewsResponse> {
         return newsService.getSearchedTopHeadlines(country, searchQuery, page)
     }
 }
