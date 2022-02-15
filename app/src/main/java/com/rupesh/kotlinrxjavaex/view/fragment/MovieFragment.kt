@@ -13,20 +13,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding2.widget.RxTextView
-import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 /**
  * A simple [Fragment] subclass.
@@ -67,22 +62,24 @@ class MovieFragment : Fragment() {
         initRecyclerView()
 
         observeMoviesList()
-
-        displayToastMessage()
     }
 
     // Get a list of Movie and observe the LiveData<List<Movie>>
     private fun observeMoviesList() {
         movieViewModel.movieLiveDataResult.observe(viewLifecycleOwner, Observer() {
-            movies = it as ArrayList<Movie>
-            movieAdapter.setList(movies)
-        })
-    }
+            when(it) {
+                is Resource.Success -> {
+                    movies = it.data as ArrayList<Movie>
+                    movieAdapter.setList(movies)
+                }
 
-    private fun displayToastMessage() {
-        movieViewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                is Resource.Error -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+
+                else -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
     }

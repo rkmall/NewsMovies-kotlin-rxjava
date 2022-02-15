@@ -3,7 +3,6 @@ package com.rupesh.kotlinrxjavaex.view.activity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment

@@ -6,11 +6,9 @@ import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
 import com.rupesh.kotlinrxjavaex.domain.repository.IMovieRepository
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.Single
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import javax.inject.Inject

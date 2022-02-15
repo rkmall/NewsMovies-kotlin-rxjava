@@ -31,9 +31,4 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
-    // Create Retrofit with API service by Kotlin lazy delegation
-    /*val instance by lazy {
-        retrofit.create(MovieDataService::class.java)
-    }*/
 }

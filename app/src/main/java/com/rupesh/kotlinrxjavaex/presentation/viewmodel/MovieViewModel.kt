@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.domain.usecase.*
-import com.rupesh.kotlinrxjavaex.domain.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -36,19 +36,16 @@ class MovieViewModel @Inject constructor(
     private val disposable: CompositeDisposable = CompositeDisposable()
 
     // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment]
-    private val movieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    private val movieLiveData: MutableLiveData<Resource<List<Movie>>> = MutableLiveData()
+    val movieLiveDataResult: LiveData<Resource<List<Movie>>> get() = movieLiveData
 
-    val movieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
-
-    private val searchedMovieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
-
-    val searchedMovieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
-
+    //private val searchedMovieLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    //val searchedMovieLiveDataResult: LiveData<List<Movie>> get() = movieLiveData
 
     // Status message to notify user about the completion of event
-    private val statusMessage = MutableLiveData<Event<String>>()
+    private val statusMessage = MutableLiveData<Resource<String>>()
 
-    val statusMessageResult: LiveData<Event<String>> get() = statusMessage
+    val statusMessageResult: LiveData<Resource<String>> get() = statusMessage
 
     // Used for data binding by [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
     var movie: Movie? = null
@@ -64,26 +61,17 @@ class MovieViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableObserver<Response<MovieDBResponse>>() {
                     override fun onNext(t: Response<MovieDBResponse>) {
-                        val responseCode = t.code()
-                        Log.i("MyTag", "onNextGetMovieListAPI response code: $responseCode")
-
-                        if(t.isSuccessful) {
-                            t.body()?.let {
-                                movieLiveData.postValue(it.movies)
-                            }
-                        } else {
-                            statusMessage.postValue(Event("Please check your network"))
-                        }
+                        Log.i("MyTag", "onNextGetMovieListAPI response code: ${t.code()}")
+                        movieLiveData.postValue(Resource.Success(t.body()!!.movies))
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetMovieListAPI")
-                        statusMessage.postValue(Event("Cannot fetch movies"))
+                        statusMessage.postValue(Resource.Error(null, "Cannot fetch items"))
                     }
 
                     override fun onComplete() {
                         Log.i("MyTag", "onCompleteGetMovieListAPI")
-                        statusMessage.postValue(Event("Popular movies"))
                     }
                 })
         )
