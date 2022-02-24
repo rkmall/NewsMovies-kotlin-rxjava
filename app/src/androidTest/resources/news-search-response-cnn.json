@@ -1,0 +1,71 @@
+{
+  "status": "ok",
+  "totalResults": 5,
+  "articles": [
+    {
+      "source": {
+        "id": "cnn-es",
+        "name": "CNN Spanish"
+      },
+      "author": "https://www.facebook.com/daniela.orozco2/",
+      "title": "Crisis Ucrania-Rusia: ¿es real la amenaza de una Tercera Guerra Mundial?",
+      "description": "La presencia de militares en ambos lados de la frontera entre Ucrania y Rusia se intensifica y las estrategias diplomáticas no han funcionado del todo. | Mundo | CNN",
+      "url": "https://cnnespanol.cnn.com/video/tercera-guerra-mundial-al-borde-crisis-ucrania-rusia-otan-analisis-levy-pkg-cafe/",
+      "urlToImage": "https://cnnespanol.cnn.com/wp-content/uploads/2022/02/https___cdn.cnn_.com_cnnnext_dam_assets_220216160128-03-ukraine-tension-gallery-021622.jpg?quality=100&strip=info",
+      "publishedAt": "2022-02-21T15:05:50Z",
+      "content": null
+    },
+    {
+      "source": {
+        "id": "cnn-es",
+        "name": "CNN Spanish"
+      },
+      "author": "CNN",
+      "title": "Diez años de la tragedia de Once: una herida que sigue abierta en Argentina | Video | CNN",
+      "description": "Se cumplen 10 años de la tragedia de Once en Argentina, cuando un tren chocó contra el andén en una de las estaciones más concurridoas del país, dejando | Latinoamérica | CNN",
+      "url": "https://cnnespanol.cnn.com/video/tragedia-once-10-anos-argentina-pkg/",
+      "urlToImage": "https://cnnespanol.cnn.com/wp-content/uploads/2022/02/220221093618-once-foto-full-169.jpg?quality=100&strip=info",
+      "publishedAt": "2022-02-21T15:04:39Z",
+      "content": null
+    },
+    {
+      "source": {
+        "id": "cnn",
+        "name": "CNN"
+      },
+      "author": null,
+      "title": "CNN military analyst breaks down Russia's Ukraine strategy - CNN Video",
+      "description": "Retired Major General James \"Spider\" Marks explains the origins of the current Russia-Ukraine crisis and the military strategies at play today.",
+      "url": "http://us.cnn.com/videos/world/2022/02/21/james-spider-marks-russia-ukraine-map-geopolitical-military-strategy-newday-vpx.cnn",
+      "urlToImage": "https://cdn.cnn.com/cnnnext/dam/assets/220221051705-james-spider-marks-russia-ukraine-map-super-tease.jpeg",
+      "publishedAt": "2022-02-21T14:07:39.9332873Z",
+      "content": null
+    },
+    {
+      "source": {
+        "id": "google-news-br",
+        "name": "Google News (Brasil)"
+      },
+      "author": null,
+      "title": "Jornal da CBN - 21/02/2022 - Rádio CBN",
+      "description": "<ol><li>Jornal da CBN - 21/02/2022  Rádio CBN\r\n</li><li>AO VIVO: ESPAÇO CNN - 21/02/2022 | CNN RÁDIO  CNN Brasil\r\n</li><li>AO VIVO: AGORA CNN - 21/02/2022  CNN Brasil\r\n</li><li>​​​​​Repórter Nacional - 21 de fevereiro de 2022  TV Brasil\r\n</li><li>CBN Em Foco …",
+      "url": "https://news.google.com/__i/rss/rd/articles/CBMiK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9OS03NlZEMkJlalnSAQA?oc=5",
+      "urlToImage": null,
+      "publishedAt": "2022-02-21T12:48:06+00:00",
+      "content": "Your browser isnt supported anymore. Update it to get the best YouTube experience and our latest features. Learn more\r\nRemind me later"
+    },
+    {
+      "source": {
+        "id": "google-news",
+        "name": "Google News"
+      },
+      "author": null,
+      "title": "Agitated citizens interrupt Portland Police Bureau press conference - KGW News",
+      "description": "<ol><li>Agitated citizens interrupt Portland Police Bureau press conference  KGW News\r\n</li><li>Armed homeowner and armed protesters had confrontation before shooting that left 1 dead, 5 injured in Portland, police say  CNN\r\n</li><li>Deadly shootout in NE Por…",
+      "url": "https://news.google.com/__i/rss/rd/articles/CBMiK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9aWNpWEhPVTdMelHSAQA?oc=5",
+      "urlToImage": null,
+      "publishedAt": "2022-02-20T19:10:59+00:00",
+      "content": "Your browser isnt supported anymore. Update it to get the best YouTube experience and our latest features. Learn more\r\nRemind me later"
+    }
+  ]
+}

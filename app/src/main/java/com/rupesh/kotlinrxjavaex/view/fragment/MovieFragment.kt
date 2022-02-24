@@ -13,13 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.rupesh.kotlinrxjavaex.R
+import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
-import com.rupesh.kotlinrxjavaex.presentation.viewmodel.DbMovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
 
@@ -36,7 +37,6 @@ class MovieFragment : Fragment() {
     private lateinit var movieFragmentBinding: FragmentMovieBinding
     private lateinit var addMovieDialogBinding: LayoutAddMovieDialogBinding
     private lateinit var movieViewModel: MovieViewModel
-    private lateinit var dbMovieViewModel: DbMovieViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
     private var movies = ArrayList<Movie>()
@@ -44,7 +44,7 @@ class MovieFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         movieFragmentBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
@@ -57,11 +57,9 @@ class MovieFragment : Fragment() {
 
         movieViewModel = (activity as MainActivity).movieViewModel
 
-        dbMovieViewModel = (activity as MainActivity).dbMovieViewModel
-
         initRecyclerView()
-
         observeMoviesList()
+        observeStatusMessage()
     }
 
     // Get a list of Movie and observe the LiveData<List<Movie>>
@@ -72,14 +70,8 @@ class MovieFragment : Fragment() {
                     movies = it.data as ArrayList<Movie>
                     movieAdapter.setList(movies)
                 }
-
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                }
-
-                else -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                }
+                is Resource.Error -> Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                else -> Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
             }
         })
     }
@@ -102,6 +94,14 @@ class MovieFragment : Fragment() {
 
             it.itemAnimator = DefaultItemAnimator()
             it.adapter = movieAdapter
+        }
+    }
+
+    private fun observeStatusMessage() {
+        movieViewModel.statusMessageResult.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { message ->
+                Snackbar.make(requireActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -129,18 +129,22 @@ class MovieFragment : Fragment() {
      */
     private fun onItemLongClick(movie: Movie) {
         addMovieDialogBinding = LayoutAddMovieDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        val dialog: Dialog = Dialog(requireContext())
+        val dialog = Dialog(requireContext())
         dialog.setContentView(addMovieDialogBinding.root)
 
         addMovieDialogBinding.let {
             it.tvAddMovieName.text = movie.original_title
             it.ok.setOnClickListener {
-                val title: String = movie.original_title
-                val rating: Double = movie.vote_average
-                val overview: String = movie.overview
-                val releaseDate: String = movie.release_date
-                val posterPath: String = movie.poster_path
-                dbMovieViewModel.addMovieToDB(0L, title, rating, overview, releaseDate, posterPath)
+                val movieToBeSaved = DbMovie(
+                    0L,
+                    movie.original_title,
+                    movie.vote_average,
+                    movie.overview,
+                    movie.release_date,
+                    movie.poster_path
+                )
+
+                movieViewModel.addMovieToDB(movieToBeSaved)
                 dialog.dismiss()
             }
 

@@ -5,7 +5,7 @@ import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import javax.inject.Inject
+import io.reactivex.Single
 
 class MovieLocalDataSourceImpl(
     private val movieDao: MovieDao
@@ -18,7 +18,7 @@ class MovieLocalDataSourceImpl(
         return movieDao.addMovie(dbMovie)
     }
 
-    override fun deleteMovieFromDb(dbMovie: DbMovie): Maybe<Int> {
-        return movieDao.deleteMovie(dbMovie)
+    override fun deleteMovieFromDb(id: Int): Maybe<Int> {
+        return movieDao.deleteMovie(id)
     }
 }

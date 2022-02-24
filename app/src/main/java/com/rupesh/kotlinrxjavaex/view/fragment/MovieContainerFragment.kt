@@ -45,7 +45,6 @@ class MovieContainerFragment : Fragment() {
          *       the method uses the initialized ViewPager to set the Tabs
          */
         setViewPager()
-
         setTabLayout()
     }
 
@@ -64,7 +63,7 @@ class MovieContainerFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
-                0 -> {tab.text = "Movie Info"}
+                0 -> tab.text = "Movie Info"
                 1 -> tab.text = "Watch List"
             }
         }).attach()

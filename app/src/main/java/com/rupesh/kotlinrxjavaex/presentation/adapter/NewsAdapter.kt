@@ -1,7 +1,9 @@
 package com.rupesh.kotlinrxjavaex.presentation.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +13,10 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.databinding.NewsListItemBinding
 
-class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(
+    val context: Context,
+    val listenerForClick: (article: NewsArticle) -> Unit
+): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private val callback = object : DiffUtil.ItemCallback<NewsArticle>() {
 
@@ -56,6 +61,21 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
             Glide.with(binding.ivArticleImage.context)
                 .load(article.urlToImage)
                 .into(binding.ivArticleImage)
+
+            onNewsItemClick()
+        }
+
+        private fun onNewsItemClick() {
+            binding.mainLayoutNews.setOnClickListener {
+                val position = adapterPosition
+
+                if(position != RecyclerView.NO_POSITION) {
+                    val selectedArticle = differ.currentList[position]
+                    listenerForClick(selectedArticle)
+                } else {
+                    Toast.makeText(context, "Internal error", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }

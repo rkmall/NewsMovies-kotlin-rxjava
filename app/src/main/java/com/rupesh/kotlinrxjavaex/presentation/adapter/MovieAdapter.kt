@@ -58,7 +58,6 @@ class MovieAdapter(
      * Inner class MovieViewHolder
      */
     inner class MovieViewHolder(val binding: MovieListItemBinding): RecyclerView.ViewHolder(binding.root) {
-
         fun bind(_movie: Movie) {
             binding.movie = _movie
 
@@ -69,7 +68,6 @@ class MovieAdapter(
                 .into(binding.ivMovie)
 
             onMovieClick()
-
             onMovieLongClick()
         }
 

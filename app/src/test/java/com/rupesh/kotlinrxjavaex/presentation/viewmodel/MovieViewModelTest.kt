@@ -1,72 +1,174 @@
 package com.rupesh.kotlinrxjavaex.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
-import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.domain.repository.MovieRepository
-import org.junit.After
+import com.rupesh.kotlinrxjavaex.domain.usecase.movie.DeleteSavedMovie
+import com.rupesh.kotlinrxjavaex.domain.usecase.movie.GetAllMovies
+import com.rupesh.kotlinrxjavaex.domain.usecase.movie.GetAllSavedMovies
+import com.rupesh.kotlinrxjavaex.domain.usecase.movie.SaveMovieToDb
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
+import io.reactivex.Maybe
+import io.reactivex.exceptions.UndeliverableException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 import sharedTest.RxImmediateSchedulerRule
-import sharedTest.testdata.MovieTestData
+import sharedTest.testdata.movie.DbMovieTestData
+import sharedTest.testdata.movie.MovieResponseTestData
 
 @RunWith(MockitoJUnitRunner::class)
 class MovieViewModelTest {
 
-    // To execute each task synchronously in the background instead of default background executor
-    // used by Architecture components
     @get:Rule
-    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+    var instantTaskExecutorRule = InstantTaskExecutorRule() // for LiveData
 
-    // To execute rx tasks on the current thread in the FIFO manner (synchronously)
-    @get:Rule
-    var rxRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
+    @Rule
+    @JvmField
+    var testSchedulerRule = RxImmediateSchedulerRule()      // for Retrofit
 
-    lateinit var movieViewModel: MovieViewModel
-    lateinit var movieRepository: MovieRepository
-    lateinit var movieTestData: MovieTestData
-    var movieMutableLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    private lateinit var getAllMovies: GetAllMovies
+    private lateinit var getSavedMovies: GetAllSavedMovies
+    private lateinit var saveMovieToDb: SaveMovieToDb
+    private lateinit var deleteSavedMovies: DeleteSavedMovie
+    private lateinit var movieViewModel: MovieViewModel
 
-    /**
-     * MovieRepository is mocked using Mockito
-     * Instantiate MovieViewModel providing mocked repository
-     * Test Data is initialized
-     */
     @Before
     fun setUp() {
-        movieRepository = mock(MovieRepository::class.java)
-        movieViewModel = MovieViewModel(movieRepository)
-        movieTestData = MovieTestData()
+        getAllMovies = mock(GetAllMovies::class.java)
+        getSavedMovies = mock(GetAllSavedMovies::class.java)
+        saveMovieToDb = mock(SaveMovieToDb::class.java)
+        deleteSavedMovies = mock(DeleteSavedMovie::class.java)
+        movieViewModel = MovieViewModel(
+            getAllMovies,
+            getSavedMovies,
+            saveMovieToDb,
+            deleteSavedMovies
+        )
     }
 
     @Test
-    fun getMovieList_givenMovieRepository_returnsMovieLiveData() {
-        // Set test data
-        movieMutableLiveData.value = movieTestData.getTestMovieList()
+    fun `getAllMovies sets NewsLiveData with theReturnedResult OnSuccess`() {
+        val responseTestData = MovieResponseTestData()
 
-        // Mock return data with the test data
-        Mockito.`when`(movieRepository.getMovieLiveData()).thenReturn(movieMutableLiveData)
+        `when`(getAllMovies.execute()).thenReturn(responseTestData.getResponseDataSuccess())
 
-        // Test method
         movieViewModel.getMovieList()
-        val expected: LiveData<List<Movie>> = movieMutableLiveData
-        val actual: LiveData<List<Movie>> = movieViewModel.movieLiveData
-        val expectedMovie = expected.value?.get(0)
-        val actualMovie = actual.value?.get(0)
 
-        // Assert
-        assertThat(actualMovie?.original_title).isEqualTo(expectedMovie?.original_title)
+        movieViewModel.movieLiveDataResult.value?.let {
+            assertThat(it.data).isNotNull()
+            assertThat(it).isInstanceOf(Resource.Success::class.java)
+            if(it is Resource.Success) {
+                it.data.let { list ->
+                    assertThat(list).isNotEmpty()
+                    if (list != null) {
+                        assertThat(list.size).isEqualTo(2)
+                    }
+                }
+            }
+        }
     }
 
-    @After
-    fun tearDown() {
-       //
+    @Test
+    fun `getAllMovies sets NewsLiveData with errorMessage OnFailure`() {
+        val responseTestData = MovieResponseTestData()
+
+        `when`(getAllMovies.execute()).thenReturn(responseTestData.getResponseDataError())
+
+        movieViewModel.getMovieList()
+
+        movieViewModel.movieLiveDataResult.value?.let {
+            assertThat(it.data).isNull()
+            assertThat(it).isInstanceOf(Resource.Error::class.java)
+            assertThat(it.message).isEqualTo("Cannot fetch the movies")
+        }
+    }
+
+
+    @Test
+    fun `getSavedMoviesFromDb given the savedDataInDb returns the savedDataFromDb`() {
+        val dbTestData = DbMovieTestData()
+
+        `when`(getSavedMovies.execute()).thenReturn(dbTestData.getMovieListTestDataObservable())
+
+        movieViewModel.getAllMovieFromDb()
+
+        movieViewModel.dbMovieListResult.value.let {
+            assertThat(it).isNotEmpty()
+
+            it?.let {
+                assertThat(it.size).isEqualTo(2)
+                assertThat(it[0].title).isEqualTo("Movie-1")
+                assertThat(it[1].title).isEqualTo("Movie-2")
+            }
+        }
+    }
+
+    @Test
+    fun `saveMovie given the dataToBeSaved sets successStatusMessage OnSuccess`() {
+        val movieToBeSaved = DbMovieTestData().getMovieListTestData()[0]
+        val expected = Maybe.create<Long> { emitter -> emitter.onSuccess(1L)  }
+
+        `when`(saveMovieToDb.execute(movieToBeSaved)).thenReturn(expected)
+        movieViewModel.addMovieToDB(movieToBeSaved)
+
+        movieViewModel.statusMessageResult.value?.let {
+            it.getContentIfNotHandled().let { message ->
+                assertThat(message).isEqualTo("Movie Saved")
+            }
+        }
+    }
+
+
+    @Test
+    fun `saveMovie given the dataToBeSaved sets failureStatusMessage OnFailure`() {
+        val movieToBeSaved = DbMovieTestData().getMovieListTestData()[0]
+        val expected = Maybe.create<Long> { emitter ->
+            emitter.onError(UndeliverableException(UnknownError()))
+        }
+
+        `when`(saveMovieToDb.execute(movieToBeSaved)).thenReturn(expected)
+        movieViewModel.addMovieToDB(movieToBeSaved)
+
+        movieViewModel.statusMessageResult.value?.let {
+            it.getContentIfNotHandled().let { message ->
+                assertThat(message).isEqualTo("Could not save the movie")
+            }
+        }
+    }
+
+
+    @Test
+    fun `deleteMovie given the dataToBeDeleted sets successStatusMessage OnSuccess`() {
+        val expected = Maybe.create<Int> { emitter -> emitter.onSuccess(1)  }
+
+        `when`(deleteSavedMovies.execute(1)).thenReturn(expected)
+
+        movieViewModel.deleteMovieFromDB(1)
+
+        movieViewModel.statusMessageResult.value?.let {
+            it.getContentIfNotHandled().let { message ->
+                assertThat(message).isEqualTo("Movie Deleted")
+            }
+        }
+    }
+
+    @Test
+    fun `deleteMovie given the dataToBeSaved sets failureStatusMessage OnFailure`() {
+        val expected = Maybe.create<Int> { emitter ->
+            emitter.onError(UndeliverableException(UnknownError()))
+        }
+
+        `when`(deleteSavedMovies.execute(1)).thenReturn(expected)
+        movieViewModel.deleteMovieFromDB(1)
+
+        movieViewModel.statusMessageResult.value?.let {
+            it.getContentIfNotHandled().let { message ->
+                assertThat(message).isEqualTo("Could not delete the movie")
+            }
+        }
     }
 }

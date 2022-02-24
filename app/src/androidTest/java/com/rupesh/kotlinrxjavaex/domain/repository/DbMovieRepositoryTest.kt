@@ -8,6 +8,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.news.db.NewsDB
+import com.rupesh.kotlinrxjavaex.data.news.db.NewsDao
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -16,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import sharedTest.RxImmediateSchedulerRule
-import sharedTest.testdata.DbMovieTestData
+import sharedTest.testdata.movie.DbMovieTestData
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -31,16 +33,20 @@ class DbMovieRepositoryTest {
     @get:Rule
     var rxRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
 
-    lateinit var context: Context
-    lateinit var repository: DbMovieRepository
-    lateinit var movieDB: MovieDB
+    lateinit var newsDb: NewsDB
+
+    lateinit var newsDao: NewsDao
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        movieDB = Room.inMemoryDatabaseBuilder(context, MovieDB::class.java).build()
-        repository = DbMovieRepository(movieDB)
+        val context: Context = ApplicationProvider.getApplicationContext()
+        newsDb = Room.inMemoryDatabaseBuilder(context, NewsDB::class.java).build()
+        newsDao = newsDb.getNewsDao()
     }
+
+
+
+
 
     @Test
     fun addMovie_whenGivenDMovie_addDMovieToDatabase_id() {
@@ -127,4 +133,5 @@ class DbMovieRepositoryTest {
     fun tearDown() {
         //
     }
-}*/
+}
+*/

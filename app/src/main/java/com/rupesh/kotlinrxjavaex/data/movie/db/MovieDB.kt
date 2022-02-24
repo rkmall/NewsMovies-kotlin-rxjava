@@ -7,7 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.data.util.AppConstants
+import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 
 /**
  * MovieDB represents a Room database with entity
@@ -16,7 +16,7 @@ import com.rupesh.kotlinrxjavaex.data.util.AppConstants
  * @since 1.0
  */
 @Database(entities = [DbMovie::class], version = 1)
-abstract class MovieDB: RoomDatabase(){
+abstract class MovieDB : RoomDatabase(){
 
     /**
      * In other classes where we need to instantiate MovieDB to perform
@@ -46,8 +46,7 @@ abstract class MovieDB: RoomDatabase(){
                 val instance = Room.databaseBuilder(
                     context,
                     MovieDB::class.java,
-                    AppConstants.DB_NAME)
-
+                    AppConstantsData.DB_NAME)
                     .addCallback(object: RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

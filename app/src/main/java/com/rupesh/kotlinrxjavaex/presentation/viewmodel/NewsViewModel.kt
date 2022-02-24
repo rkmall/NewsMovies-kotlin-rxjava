@@ -5,81 +5,166 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
-import com.rupesh.kotlinrxjavaex.domain.usecase.GetAllNewsArticles
-import com.rupesh.kotlinrxjavaex.domain.usecase.GetSearchedNewsArticle
-import com.rupesh.kotlinrxjavaex.domain.util.Event
+import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
+import com.rupesh.kotlinrxjavaex.domain.usecase.news.*
+import com.rupesh.kotlinrxjavaex.presentation.util.Event
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Maybe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableMaybeObserver
 import io.reactivex.observers.DisposableObserver
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
     private val getAllNewsArticles: GetAllNewsArticles,
-    private val getSearchedNewsArticle: GetSearchedNewsArticle
+    private val getSearchedNewsArticle: GetSearchedNewsArticle,
+    private val getSavedNewsArticles: GetSavedNewsArticles,
+    private val saveNewsArticleToDb: SaveNewsArticleToDb,
+    private val deleteNewsArticleFromDb: DeleteNewsArticleFromDb
 ) : ViewModel() {
 
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    // Livedata of type News
-    private val newsLiveData: MutableLiveData<List<NewsArticle>> = MutableLiveData()
+    // Livedata for top NewsArticles
+    private val newsLiveData: MutableLiveData<Resource<List<NewsArticle>>> = MutableLiveData()
+    val newsLiveDataResult: LiveData<Resource<List<NewsArticle>>> get() = newsLiveData
 
-    val newsLiveDataResult: LiveData<List<NewsArticle>> get() = newsLiveData
+    // Livedata for searched NewsArticle  for searched news
+    private val searchedNewsLiveData: MutableLiveData<Resource<List<NewsArticle>>> = MutableLiveData()
+    val searchedNewsLivedataResult: LiveData<Resource<List<NewsArticle>>> get() = searchedNewsLiveData
 
-    // Livedata of type News for searched news
-    private val searchedNewsLiveData: MutableLiveData<List<NewsArticle>> = MutableLiveData()
-
-    val searchedNewsLivedataResult: LiveData<List<NewsArticle>> get() = searchedNewsLiveData
-
+    // Livedata for saved NewsArticle
+    private val savedNewsArticlesLiveData: MutableLiveData<List<NewsArticle>> = MutableLiveData()
+    val savedNewsArticlesLiveDataResult: LiveData<List<NewsArticle>> get() = savedNewsArticlesLiveData
 
     // Status message to notify user about the completion of event
     private val statusMessage = MutableLiveData<Event<String>>()
-
-    val statusMessageResult: LiveData<Event<String>> get() = statusMessage
+    val statusMessageResult get() = statusMessage
 
     /**
      * Gets a list of NewsArticle wrapped inside MutableLiveData
      */
     fun getNewsList(country: String, page: Int) {
+        newsLiveData.postValue(Resource.Loading())
         disposable.add(
             getAllNewsArticles.execute(country, page)
-                .subscribeWith(object: DisposableObserver<List<NewsArticle>>() {
-                    override fun onNext(t: List<NewsArticle>) {
-                        //Log.i("MyTag", "onNextGetNewsListAPI: $t")
-                        newsLiveData.postValue(t)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableSingleObserver<Response<NewsResponse>>() {
+                    override fun onSuccess(t: Response<NewsResponse>) {
+                        val statusCode = t.code()
+                        Log.i("MyTag", "onNextGetTopHeadlines response code: $statusCode")
+                        if(statusCode == 200) {
+                            newsLiveData.postValue(Resource.Success(t.body()!!.articles))
+                        }else {
+                            newsLiveData.postValue(Resource.Error(null, "Cannot fetch news"))
+                        }
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetNewsListAPI")
-                        statusMessage.postValue(Event("Something went wrong"))
-                    }
-
-                    override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetNewsListAPI")
-                        statusMessage.postValue(Event("Top headlines"))
+                        Log.i("MyTag", "onErrorGetTopHeadlines ${e.message}")
+                        newsLiveData.postValue(Resource.Error(null, "Cannot fetch news"))
                     }
                 })
         )
     }
 
     fun getSearchedNewsList(country: String, searchQuery: String, page: Int) {
+        newsLiveData.postValue(Resource.Loading())
         disposable.add(
             getSearchedNewsArticle.execute(country, searchQuery, page)
-                .subscribeWith(object : DisposableObserver<List<NewsArticle>>() {
-                    override fun onNext(t: List<NewsArticle>) {
-                        //Log.i("MyTag", "onNextGetSearchedNewsListAPI: $t")
-                        searchedNewsLiveData.postValue(t)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<Response<NewsResponse>>() {
+                    override fun onSuccess(t: Response<NewsResponse>) {
+                        val statusCode = t.code()
+                        Log.i("MyTag", "onNextGetSearchedHeadlines response code: $statusCode")
+                        if(statusCode == 200) {
+                            searchedNewsLiveData.postValue(Resource.Success(t.body()!!.articles))
+                        } else {
+                            searchedNewsLiveData.postValue(Resource.Error(null, "Cannot fetch search results"))
+                        }
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetSearchedNewsListAPI")
-                        statusMessage.postValue(Event("Something went wrong"))
+                        Log.i("MyTag", "onErrorGetSearchedNews: ${e.message}")
+                        searchedNewsLiveData.postValue(Resource.Error(null, "Cannot fetch search results"))
+                    }
+                })
+        )
+    }
+
+    fun getSavedNewsArticles() {
+        disposable.add(
+            getSavedNewsArticles.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableObserver<List<NewsArticle>>() {
+                    override fun onNext(t: List<NewsArticle>) {
+                        Log.i("MyTag", "onNextGetSavedHeadlines: ${t.size}")
+                        savedNewsArticlesLiveData.postValue(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorGetSearchedNews: ${e.message}")
+                        statusMessage.postValue(Event("Could not fetch the saved articles"))
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetSearchedNewsListAPI")
-                        statusMessage.postValue(Event("Top headlines"))
+                        Log.i("MyTag", "onCompleteGetSearchedNews")
+                    }
+                })
+        )
+    }
+
+    fun saveNewsArticle(newsArticle: NewsArticle) {
+        disposable.add(
+            saveNewsArticleToDb.execute(newsArticle)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableMaybeObserver<Long>() {
+                    override fun onSuccess(t: Long) {
+                        Log.i("MyTag", "onSuccessAddNewsArticleToDb: $t")
+                        statusMessage.postValue(Event("Article Saved"))
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorAddNewsArticleToDb: ${e.message}")
+                        statusMessage.postValue(Event("Could not save the article"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteAddArticleToDb: Operation completed")
+                    }
+                })
+        )
+    }
+
+    fun deleteNewsArticle(articleId: Int) {
+        disposable.add(
+            deleteNewsArticleFromDb.execute(articleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableMaybeObserver<Int>() {
+                    override fun onSuccess(t: Int) {
+                        Log.i("MyTag", "onSuccessDeleteNewsArticleFromDb: $t deleted")
+                        statusMessage.postValue(Event("Article Deleted"))
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.i("MyTag", "onErrorDeleteNewsArticleToDb: ${e.message}")
+                        statusMessage.postValue(Event("Could not delete the article"))
+                    }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteDeleteArticleToDb: Operation completed")
                     }
                 })
         )

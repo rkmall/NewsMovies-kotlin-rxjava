@@ -2,28 +2,22 @@ package com.rupesh.kotlinrxjavaex.data.movie.repository
 
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
 import com.rupesh.kotlinrxjavaex.domain.repository.IMovieRepository
-import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.Response
-import javax.inject.Inject
 
-class MovieRepositoryImpl @Inject constructor(
+class MovieRepositoryImpl(
     private val iMovieLocalDataSource: IMovieLocalDataSource,
     private val iMovieRemoteDataSource: IMovieRemoteDataSource
 ) : IMovieRepository {
 
-    override fun getTopMovies(): Observable<Response<MovieDBResponse>> {
+    override fun getTopMovies(): Single<Response<MovieResponse>> {
         return iMovieRemoteDataSource.getTopMovies()
-    }
-
-    override fun getSearchedMovies(searchQuery: String): Single<Response<List<Movie>>> {
-        return iMovieRemoteDataSource.getSearchedMovies(searchQuery)
     }
 
     override fun getSavedMovieList(): Observable<List<DbMovie>> {
@@ -34,7 +28,7 @@ class MovieRepositoryImpl @Inject constructor(
         return iMovieLocalDataSource.addMovieToDb(dbMovie)
     }
 
-    override fun deleteMovieFromDb(dbMovie: DbMovie): Maybe<Int> {
-        return iMovieLocalDataSource.deleteMovieFromDb(dbMovie)
+    override fun deleteMovieFromDb(id: Int): Maybe<Int> {
+        return iMovieLocalDataSource.deleteMovieFromDb(id)
     }
 }

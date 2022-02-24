@@ -1,9 +1,8 @@
 package com.rupesh.kotlinrxjavaex.data.movie.service
 
-import android.os.Build
 import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.data.movie.model.MovieDBResponse
+import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Response
@@ -21,20 +20,20 @@ import retrofit2.http.Query
 interface MovieDataService {
 
     /**
-     * Gets the Retrofit Call<MovieDBResponse> as HTTP response which
+     * Gets the Retrofit Call<MovieResponse> as HTTP response which
      * is the converted to RxJava Observable using RxJava2CallAdapterFactory
      * @see [com.rupesh.kotlinrxjavaex.service.RetrofitInstance]
      * @param apiKey the REST API key
-     * @return the RxJava Observables containing [com.rupesh.kotlinrxjavaex.model.MovieDBResponse]
+     * @return the RxJava Observables containing [com.rupesh.kotlinrxjavaex.model.MovieResponse]
      */
     @GET("movie/popular")
     fun getAllMoviesWithRx(
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
-    ): Observable<Response<MovieDBResponse>>
+    ): Single<Response<MovieResponse>>
 
-    @GET("search/movie")
+    /*@GET("search/movie")
     fun getSearchedMovie(
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("query") searchQuery: String
-    ): Single<Response<List<Movie>>>
+    ): Single<Response<List<Movie>>>*/
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -13,8 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
+import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsAdapter
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,11 +36,10 @@ class NewsFragment : Fragment() {
     private lateinit var fragmentNewsBinding: FragmentNewsBinding
     private  lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: NewsAdapter
-    private var defaultCountry = "us"
-    private var defaultPage = 1
     private var disposable: CompositeDisposable = CompositeDisposable()
-
     val subject: PublishSubject<String> = PublishSubject.create()
+
+    private var isProgressbarLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,35 +48,52 @@ class NewsFragment : Fragment() {
         // Inflate the layout for this fragment
         fragmentNewsBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
-
         return fragmentNewsBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = (activity as MainActivity).newsViewModel
-
-        setToolbar()
-        initRV()
-        observeNewsList()
-        displayToastMessage()
+        initRecyclerView()
+        observeTopHeadlines()
         searchNewsArticle()
+        setSearchCloseButton()
     }
 
-    // Observe the article list
-    private fun observeNewsList() {
+    private fun observeTopHeadlines() {
         viewModel.newsLiveDataResult.observe(viewLifecycleOwner, Observer {
-            val articleList = it as ArrayList<NewsArticle>
-            newsAdapter.differ.submitList(articleList)
+            when(it) {
+                is Resource.Success -> {
+                    hideProgressbar()
+                    val topHeadlines = it.data as? ArrayList<NewsArticle>
+                    Log.i("newsList", "topListSize: ${topHeadlines?.size}")
+                    newsAdapter.differ.submitList(topHeadlines)
+                }
+                is Resource.Error -> {
+                    hideProgressbar()
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+                is Resource.Loading -> showProgressBar()
+            }
         })
     }
 
-    // Observe the searched news article list
-    private fun observeSearchedNews() {
-        viewModel.searchedNewsLivedataResult.observe(viewLifecycleOwner, Observer {
-            val articleList = it as ArrayList<NewsArticle>
-            newsAdapter.differ.submitList(articleList)
+    private fun observeSearchedHeadlines() {
+     viewModel.searchedNewsLivedataResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Success -> {
+                    hideProgressbar()
+                    val searchedHeadlines = it.data as ArrayList<NewsArticle>
+                    newsAdapter.differ.submitList(searchedHeadlines)
+                }
+                is Resource.Error -> {
+                    hideProgressbar()
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
         })
     }
 
@@ -85,23 +104,19 @@ class NewsFragment : Fragment() {
     private fun searchNewsArticle() {
         disposable.add( subject
             // debounce of 1s on MainThread
-            .debounce(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .filter { str ->
-                if (str.isEmpty()) {
-                    observeNewsList()   // observe news list if query string empty
-                    false
-                } else {
-                    true
-                }
-            }
+            .debounce(3000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .distinctUntilChanged()
-
-            // Any future items emitted by PublishSubject will be available to this
-            // Observer as now the Observer is attached to PublishSubject before it has started emitting items
+            // any future items emitted by PublishSubject will be available to this
+            // observer as now the Observer is attached to PublishSubject before it has started emitting items
             .subscribeWith(object: DisposableObserver<String>()  {
                 override fun onNext(t: String) {
-                    viewModel.getSearchedNewsList(defaultCountry, t, defaultPage) // use the search query string (emitted)
-                    observeSearchedNews()
+                    // use the search query string (emitted)
+                    if(t == "") {
+                        observeTopHeadlines()
+                    }else {
+                        viewModel.getSearchedNewsList(AppConstantsData.DEFAULT_COUNTRY_NEWS, t, AppConstantsData.DEFAULT_PAGE_NEWS)
+                        observeSearchedHeadlines()
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -128,36 +143,59 @@ class NewsFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    subject.onNext(newText) // set search query text, which is emitted by PublishSubject
-                }else {
-                    throw Exception("Internal RxJava Error")
+                when {
+                    newText == null -> Toast.makeText(requireContext(), "Could not fetch search results", Toast.LENGTH_LONG).show()
+                    newText.isNotEmpty() -> subject.onNext(newText)
+                    newText.isEmpty() -> subject.onNext("")
                 }
                 return true
             }
         })
     }
 
-    private fun displayToastMessage() {
-        viewModel.statusMessageResult.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-            }
-        })
+    private fun setSearchCloseButton() {
+        val searchCloseBtnId: Int = fragmentNewsBinding
+            .svNews.context.resources.getIdentifier("android:id/search_close_btn", null, null)
+
+        val closeBtn: ImageView = fragmentNewsBinding.svNews.findViewById(searchCloseBtnId)
+        closeBtn.setOnClickListener {
+            fragmentNewsBinding.svNews.setQuery("", true)
+        }
     }
 
-    private fun setToolbar() {
-        val toolbar = fragmentNewsBinding.tbNewsFrag
-        toolbar.title = "News"
+
+    private fun onNewsItemClick(article: NewsArticle) {
+        val newsDetailFragment = NewsDetailFragment()
+
+        val bundle = Bundle()
+        bundle.putParcelable("article", article)
+        newsDetailFragment.arguments = bundle
+
+        val fm = activity?.supportFragmentManager
+        val fragmentTransaction = fm?.beginTransaction()
+        fragmentTransaction?.replace(R.id.frame_layout_main, newsDetailFragment)
+        fragmentTransaction?.addToBackStack(null)
+        fragmentTransaction?.commit()
     }
 
-    private fun initRV() {
+    private fun initRecyclerView() {
         fragmentNewsBinding.rvNews.apply {
-            newsAdapter = NewsAdapter()
+            newsAdapter = NewsAdapter(requireContext()) { item -> onNewsItemClick(item) }
             layoutManager = LinearLayoutManager(activity)
             this.adapter = newsAdapter
         }
     }
+
+    private fun showProgressBar() {
+        isProgressbarLoading = true
+        fragmentNewsBinding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressbar() {
+        isProgressbarLoading = false
+        fragmentNewsBinding.progressBar.visibility = View.INVISIBLE
+    }
+
 
     override fun onPause() {
         super.onPause()
