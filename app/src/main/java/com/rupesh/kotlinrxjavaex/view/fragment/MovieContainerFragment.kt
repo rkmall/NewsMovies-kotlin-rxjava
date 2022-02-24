@@ -63,7 +63,7 @@ class MovieContainerFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
-                0 -> tab.text = "Movie Info"
+                0 -> tab.text = "Top 20"
                 1 -> tab.text = "Watch List"
             }
         }).attach()

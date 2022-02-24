@@ -60,8 +60,8 @@ class NewsContainerFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
-                0 -> tab.text = "Popular News"
-                1 -> tab.text = "Saved News"
+                0 -> tab.text = "Headlines"
+                1 -> tab.text = "Saved"
             }
         }).attach()
     }
