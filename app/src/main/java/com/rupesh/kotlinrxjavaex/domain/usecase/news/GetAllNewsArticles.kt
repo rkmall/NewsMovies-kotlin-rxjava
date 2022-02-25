@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetAllNewsArticles @Inject constructor(
     private val iNewsRepository: INewsRepository
 ) {
-    fun execute(country: String, page:Int): Single<Response<NewsResponse>> {
+    fun execute(country: String, page:Int): Observable<Response<NewsResponse>> {
         return iNewsRepository.getTopHeadlines(country, page)
     }
 }

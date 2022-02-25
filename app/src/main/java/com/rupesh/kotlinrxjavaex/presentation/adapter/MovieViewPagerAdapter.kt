@@ -16,14 +16,12 @@ import com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment
  * @since 1.0
  */
 class MovieViewPagerAdapter(
+    _fragmentList: ArrayList<Fragment>,
     fm: FragmentManager,
     lifecycle: Lifecycle
 ): FragmentStateAdapter(fm, lifecycle) {
 
-    private val fragmentList = arrayListOf(
-        MovieFragment(),
-        WatchListFragment()
-    )
+    private val fragmentList = _fragmentList
 
     // Returns Fragments count
     override fun getItemCount(): Int {

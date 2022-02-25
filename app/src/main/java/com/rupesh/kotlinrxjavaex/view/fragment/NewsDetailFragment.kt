@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -13,6 +14,7 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsDetailBinding
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 /**
@@ -75,6 +77,7 @@ class NewsDetailFragment : Fragment() {
         }
     }
 
+
     private fun setToolbar() {
         val toolbar = binding.tbNewsDetail
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
@@ -88,7 +91,6 @@ class NewsDetailFragment : Fragment() {
     private fun saveNewsArticle() {
         binding.fabNewsDetail.setOnClickListener {
             newsViewModel.saveNewsArticle(newsArticle)
-                //Snackbar.make(requireActivity().findViewById(android.R.id.content), "Saved Successfully", Snackbar.LENGTH_LONG).show()
         }
     }
 }

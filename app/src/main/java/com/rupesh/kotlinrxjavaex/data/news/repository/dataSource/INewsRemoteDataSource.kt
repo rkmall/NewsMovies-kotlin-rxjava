@@ -8,6 +8,6 @@ import retrofit2.Response
 
 interface INewsRemoteDataSource {
 
-    fun getTopNewsHeadlines(country: String, page: Int): Single<Response<NewsResponse>>
-    fun getSearchedNewsHeadlines(country: String, searchQuery: String, page: Int): Single<Response<NewsResponse>>
+    fun getTopNewsHeadlines(country: String, page: Int): Observable<Response<NewsResponse>>
+    fun getSearchedNewsHeadlines(country: String, searchQuery: String, page: Int): Observable<Response<NewsResponse>>
 }

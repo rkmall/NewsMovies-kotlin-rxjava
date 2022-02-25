@@ -9,8 +9,8 @@ import retrofit2.Response
 
 interface INewsRepository {
 
-    fun getTopHeadlines(country: String, page: Int): Single<Response<NewsResponse>>
-    fun getSearchedHeadlines(country: String, searchQuery: String, page: Int): Single<Response<NewsResponse>>
+    fun getTopHeadlines(country: String, page: Int): Observable<Response<NewsResponse>>
+    fun getSearchedHeadlines(country: String, searchQuery: String, page: Int): Observable<Response<NewsResponse>>
     fun getSavedNewsArticles(): Observable<List<NewsArticle>>
     fun saveNewsArticle(newsArticle: NewsArticle): Maybe<Long>
     fun removeNewsArticle(id: Int): Maybe<Int>

@@ -10,12 +10,10 @@ import com.rupesh.kotlinrxjavaex.domain.usecase.news.*
 import com.rupesh.kotlinrxjavaex.presentation.util.Event
 import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableMaybeObserver
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import javax.inject.Inject
@@ -48,6 +46,8 @@ class NewsViewModel @Inject constructor(
     private val statusMessage = MutableLiveData<Event<String>>()
     val statusMessageResult get() = statusMessage
 
+    val testData = ArrayList<NewsArticle>()
+
     /**
      * Gets a list of NewsArticle wrapped inside MutableLiveData
      */
@@ -57,8 +57,8 @@ class NewsViewModel @Inject constructor(
             getAllNewsArticles.execute(country, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableSingleObserver<Response<NewsResponse>>() {
-                    override fun onSuccess(t: Response<NewsResponse>) {
+                .subscribeWith(object: DisposableObserver<Response<NewsResponse>>() {
+                    override fun onNext(t: Response<NewsResponse>) {
                         val statusCode = t.code()
                         Log.i("MyTag", "onNextGetTopHeadlines response code: $statusCode")
                         if(statusCode == 200) {
@@ -72,18 +72,22 @@ class NewsViewModel @Inject constructor(
                         Log.i("MyTag", "onErrorGetTopHeadlines ${e.message}")
                         newsLiveData.postValue(Resource.Error(null, "Cannot fetch news"))
                     }
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteGetTopHeadlines")
+                    }
                 })
         )
     }
 
     fun getSearchedNewsList(country: String, searchQuery: String, page: Int) {
-        newsLiveData.postValue(Resource.Loading())
+        searchedNewsLiveData.postValue(Resource.Loading())
         disposable.add(
             getSearchedNewsArticle.execute(country, searchQuery, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<Response<NewsResponse>>() {
-                    override fun onSuccess(t: Response<NewsResponse>) {
+                .subscribeWith(object : DisposableObserver<Response<NewsResponse>>() {
+                    override fun onNext(t: Response<NewsResponse>) {
                         val statusCode = t.code()
                         Log.i("MyTag", "onNextGetSearchedHeadlines response code: $statusCode")
                         if(statusCode == 200) {
@@ -96,6 +100,11 @@ class NewsViewModel @Inject constructor(
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetSearchedNews: ${e.message}")
                         searchedNewsLiveData.postValue(Resource.Error(null, "Cannot fetch search results"))
+                    }
+
+
+                    override fun onComplete() {
+                        Log.i("MyTag", "onCompleteGetSearchedNews")
                     }
                 })
         )
@@ -113,12 +122,12 @@ class NewsViewModel @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetSearchedNews: ${e.message}")
+                        Log.i("MyTag", "onErrorGetSavedNews: ${e.message}")
                         statusMessage.postValue(Event("Could not fetch the saved articles"))
                     }
 
                     override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetSearchedNews")
+                        Log.i("MyTag", "onCompleteGetSavedNews")
                     }
                 })
         )

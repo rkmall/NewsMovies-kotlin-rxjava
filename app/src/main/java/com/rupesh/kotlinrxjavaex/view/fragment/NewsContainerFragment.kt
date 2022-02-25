@@ -1,20 +1,19 @@
 package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieContainerBinding
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsContainerBinding
-import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieViewPagerAdapter
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsViewPagerAdapter
+import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * A simple [Fragment] subclass.
@@ -31,7 +30,7 @@ class NewsContainerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news_container, container, false)
         return binding.root
@@ -39,6 +38,11 @@ class NewsContainerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomNavView = (activity as MainActivity).bnv_main
+        if(bottomNavView.visibility == View.INVISIBLE) {
+            bottomNavView.visibility = View.VISIBLE
+        }
 
         setToolbar()
         setViewPager()
@@ -60,23 +64,23 @@ class NewsContainerFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
-                0 -> tab.text = "Headlines"
-                1 -> tab.text = "Saved"
+                0 -> tab.text = getString(R.string.newsfrag_tab1_title)
+                1 -> tab.text = getString(R.string.newsfrag_tab2_title)
             }
         }).attach()
     }
 
     // Connect ViewPager2 with ViewPager Adapter
     private fun setViewPager() {
+        val fragmentList = arrayListOf(
+            NewsFragment(),
+            SavedNewsFragment()
+        )
         viewPager2 = binding.newsViewPager
-        val fragmentManager: FragmentManager = childFragmentManager
-        newsViewPagerAdapter = NewsViewPagerAdapter(fragmentManager, lifecycle)
+        newsViewPagerAdapter = NewsViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         viewPager2.adapter = newsViewPagerAdapter
     }
 
-    /**
-     * Unregister ViewPager2 callback
-     */
     override fun onDestroy() {
         super.onDestroy()
     }

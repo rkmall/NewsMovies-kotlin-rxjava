@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -44,7 +45,7 @@ class NewsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         fragmentNewsBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
@@ -60,9 +61,10 @@ class NewsFragment : Fragment() {
         setSearchCloseButton()
     }
 
+
     private fun observeTopHeadlines() {
-        viewModel.newsLiveDataResult.observe(viewLifecycleOwner, Observer {
-            when(it) {
+        viewModel.newsLiveDataResult.observe(requireParentFragment().viewLifecycleOwner) {
+            when (it) {
                 is Resource.Success -> {
                     hideProgressbar()
                     val topHeadlines = it.data as? ArrayList<NewsArticle>
@@ -71,30 +73,30 @@ class NewsFragment : Fragment() {
                 }
                 is Resource.Error -> {
                     hideProgressbar()
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                 }
                 is Resource.Loading -> showProgressBar()
             }
-        })
+        }
     }
 
     private fun observeSearchedHeadlines() {
-     viewModel.searchedNewsLivedataResult.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Success -> {
-                    hideProgressbar()
-                    val searchedHeadlines = it.data as ArrayList<NewsArticle>
-                    newsAdapter.differ.submitList(searchedHeadlines)
-                }
-                is Resource.Error -> {
-                    hideProgressbar()
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                }
-                is Resource.Loading -> {
-                    showProgressBar()
-                }
-            }
-        })
+     viewModel.searchedNewsLivedataResult.observe(requireParentFragment().viewLifecycleOwner) {
+         when (it) {
+             is Resource.Success -> {
+                 hideProgressbar()
+                 val searchedHeadlines = it.data as ArrayList<NewsArticle>
+                 newsAdapter.differ.submitList(searchedHeadlines)
+             }
+             is Resource.Error -> {
+                 hideProgressbar()
+                 makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+             }
+             is Resource.Loading -> {
+                 showProgressBar()
+             }
+         }
+     }
     }
 
     /**
@@ -144,7 +146,7 @@ class NewsFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 when {
-                    newText == null -> Toast.makeText(requireContext(), "Could not fetch search results", Toast.LENGTH_LONG).show()
+                    newText == null -> makeText(requireContext(), "Could not fetch search results", Toast.LENGTH_LONG).show()
                     newText.isNotEmpty() -> subject.onNext(newText)
                     newText.isEmpty() -> subject.onNext("")
                 }
@@ -196,12 +198,6 @@ class NewsFragment : Fragment() {
         fragmentNewsBinding.progressBar.visibility = View.INVISIBLE
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        disposable.clear()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
@@ -233,7 +229,6 @@ class NewsFragment : Fragment() {
                 return false
             }
         })
-
         fragmentNewsBinding.svNews.setOnCloseListener(object : SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 initRV()

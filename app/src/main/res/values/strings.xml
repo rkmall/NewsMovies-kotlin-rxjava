@@ -17,4 +17,10 @@
     <string name="menu_movies_title">Movies</string>
     <string name="search">Search</string>
     <string name="save_news_article_to_db">Save news article to DB</string>
+
+    <!--======================TabLayout Titles=======================-->
+    <string name="newsfrag_tab1_title">Headlines</string>
+    <string name="newsfrag_tab2_title">Saved</string>
+    <string name="moviefrag_tab1_title">Top 20</string>
+    <string name="moviefrag_tab2_title">Watch List</string>
 </resources>

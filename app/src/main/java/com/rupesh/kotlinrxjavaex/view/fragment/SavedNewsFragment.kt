@@ -48,13 +48,13 @@ class SavedNewsFragment : Fragment() {
     }
 
     private fun observeSavedNewsArticles() {
-        newsViewModel.savedNewsArticlesLiveDataResult.observe(viewLifecycleOwner) {
+        newsViewModel.savedNewsArticlesLiveDataResult.observe(requireParentFragment().viewLifecycleOwner) {
             newsAdapter.differ.submitList(it)
         }
     }
 
     private fun observeStatusMessage() {
-        newsViewModel.statusMessageResult.observe(viewLifecycleOwner) {
+        newsViewModel.statusMessageResult.observe(requireParentFragment().viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 when(message) {
                     "Article Deleted" -> {

@@ -15,7 +15,7 @@ class NewsRemoteDataSourceImpl(
     override fun getTopNewsHeadlines(
         country: String,
         page: Int
-    ): Single<Response<NewsResponse>> {
+    ): Observable<Response<NewsResponse>> {
         return newsService.getTopHeadlines(country, page)
     }
 
@@ -23,7 +23,7 @@ class NewsRemoteDataSourceImpl(
         country: String,
         searchQuery: String,
         page: Int
-    ): Single<Response<NewsResponse>> {
+    ): Observable<Response<NewsResponse>> {
         return newsService.getSearchedTopHeadlines(country, searchQuery, page)
     }
 }

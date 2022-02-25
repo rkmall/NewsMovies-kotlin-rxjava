@@ -1,12 +1,11 @@
 package com.rupesh.kotlinrxjavaex.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -39,11 +38,6 @@ class MovieContainerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setToolbar()
-
-        /**
-         * Note: ViewPager must be set first before calling setTabLayout() as
-         *       the method uses the initialized ViewPager to set the Tabs
-         */
         setViewPager()
         setTabLayout()
     }
@@ -63,17 +57,20 @@ class MovieContainerFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
-                0 -> tab.text = "Top 20"
-                1 -> tab.text = "Watch List"
+                0 -> tab.text = getString(R.string.moviefrag_tab1_title)
+                1 -> tab.text = getString(R.string.moviefrag_tab2_title)
             }
         }).attach()
     }
 
     // Connect ViewPager2 with ViewPager Adapter
     private fun setViewPager() {
+        val fragmentList = arrayListOf(
+            MovieFragment(),
+            WatchListFragment()
+        )
         viewPager2 = binding.movieViewPager
-        val fragmentManager: FragmentManager = childFragmentManager
-        movieViewPagerAdapter = MovieViewPagerAdapter(fragmentManager, lifecycle)
+        movieViewPagerAdapter = MovieViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         viewPager2.adapter = movieViewPagerAdapter
     }
 
@@ -82,36 +79,5 @@ class MovieContainerFragment : Fragment() {
      */
     override fun onDestroy() {
         super.onDestroy()
-        //viewPager2.unregisterOnPageChangeCallback(viewPagerCallBack)
     }
-
-    /**
-     * Set the correct tab item when a user swipes the fragment
-     * On ViewPager2 page change, gets the tabLayout position and
-     * sets the correct tab as selected
-     */
-    /*private val viewPagerCallBack = object: ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            tabLayout.selectTab(tabLayout.getTabAt(position))
-        }
-    }*/
-
-    /*// Connect TabLayout with ViewPagerAdapter
-    fun setTabLayout1() {
-        tabLayout = binding.mainTabLayout
-        tabLayout.addTab(tabLayout.newTab().setText("Movie Info"))
-        tabLayout.addTab(tabLayout.newTab().setText("Watch List"))
-
-        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewPager2.currentItem = tab!!.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
-    }*/
 }

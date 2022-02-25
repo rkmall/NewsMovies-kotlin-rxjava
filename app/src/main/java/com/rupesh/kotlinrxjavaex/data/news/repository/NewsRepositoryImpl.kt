@@ -18,7 +18,7 @@ class NewsRepositoryImpl(
     override fun getTopHeadlines(
         country: String,
         page: Int
-    ): Single<Response<NewsResponse>> {
+    ): Observable<Response<NewsResponse>> {
         return iNewsRemoteDataSource.getTopNewsHeadlines(country, page)
     }
 
@@ -26,7 +26,7 @@ class NewsRepositoryImpl(
         country: String,
         searchQuery: String,
         page: Int
-    ): Single<Response<NewsResponse>> {
+    ): Observable<Response<NewsResponse>> {
         return iNewsRemoteDataSource.getSearchedNewsHeadlines(country, searchQuery, page)
     }
 

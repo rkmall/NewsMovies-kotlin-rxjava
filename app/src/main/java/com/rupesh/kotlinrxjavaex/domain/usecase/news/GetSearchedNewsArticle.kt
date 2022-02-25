@@ -14,7 +14,7 @@ class GetSearchedNewsArticle @Inject constructor(
         country: String,
         searchQuery: String,
         page: Int
-    ): Single<Response<NewsResponse>> {
+    ): Observable<Response<NewsResponse>> {
         return iNewsRepository.getSearchedHeadlines(country, searchQuery, page)
     }
 }

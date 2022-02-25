@@ -3,6 +3,7 @@ package sharedTest.testdata.news
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsSource
+import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -50,7 +51,7 @@ class NewsResponseTestData {
         newsArticles.add(newsArticle2)
     }
 
-    fun getNewsResponseDataSuccess(): Single<Response<NewsResponse>> {
+    fun getNewsResponseDataSuccess(): Observable<Response<NewsResponse>> {
         createNewsArticle()
 
         val response: Response<NewsResponse> = Response.success(
@@ -61,11 +62,11 @@ class NewsResponseTestData {
                 totalResults = 2
             )
         )
-        return Single.create { emitter -> emitter.onSuccess(response) }
+        return Observable.create { emitter -> emitter.onNext(response) }
     }
 
 
-    fun <T> getResponseDataError(): Single<Response<T>> {
+    fun <T> getResponseDataError(): Observable<Response<T>> {
 
         val response: Response<T> = Response.error(
             "null".toResponseBody("application/json".toMediaTypeOrNull()),
@@ -78,6 +79,6 @@ class NewsResponseTestData {
                 .protocol(Protocol.HTTP_2)
                 .build()
         )
-        return Single.create{emitter -> emitter.onSuccess(response)}
+        return Observable.create{emitter -> emitter.onNext(response)}
     }
 }

@@ -64,7 +64,7 @@ class MovieFragment : Fragment() {
 
     // Get a list of Movie and observe the LiveData<List<Movie>>
     private fun observeMoviesList() {
-        movieViewModel.movieLiveDataResult.observe(viewLifecycleOwner, Observer() {
+        movieViewModel.movieLiveDataResult.observe(requireParentFragment().viewLifecycleOwner, Observer() {
             when(it) {
                 is Resource.Success -> {
                     movies = it.data as ArrayList<Movie>
@@ -98,7 +98,7 @@ class MovieFragment : Fragment() {
     }
 
     private fun observeStatusMessage() {
-        movieViewModel.statusMessageResult.observe(viewLifecycleOwner) {
+        movieViewModel.statusMessageResult.observe(requireParentFragment().viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 Snackbar.make(requireActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
             }
