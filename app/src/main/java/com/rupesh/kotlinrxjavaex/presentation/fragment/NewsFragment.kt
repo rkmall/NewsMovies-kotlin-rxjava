@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +19,7 @@ import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsAdapter
 import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver

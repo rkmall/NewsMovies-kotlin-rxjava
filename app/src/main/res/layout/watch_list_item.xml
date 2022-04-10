@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="dbMovie"
-            type="com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie" />
+            name="movie"
+            type="com.rupesh.kotlinrxjavaex.data.movie.model.Movie" />
     </data>
 
     <LinearLayout
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:padding="2dp"
-                    android:text="@{dbMovie.title}"
+                    android:text="@{movie.title}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="20sp" />
@@ -58,7 +58,7 @@
                     android:layout_toEndOf="@id/tv_watchlist_date1"
                     android:layout_margin="2dp"
                     android:padding="2dp"
-                    android:text="@{dbMovie.releaseDate}"
+                    android:text="@{movie.releaseDate}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="15sp" />
@@ -83,7 +83,7 @@
                     android:padding="2dp"
                     android:layout_below="@id/tv_watchlist_date1"
                     android:layout_toEndOf="@id/tv_watchlist_rating1"
-                    android:text="@{String.valueOf(dbMovie.rating)}"
+                    android:text="@{String.valueOf(movie.popularity)}"
                     android:textColor="@color/black"
                     android:fontFamily="sans-serif"
                     android:textSize="15sp" />

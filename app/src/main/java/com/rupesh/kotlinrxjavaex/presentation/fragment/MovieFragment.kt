@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.app.Dialog
 import android.content.res.Configuration
@@ -15,14 +15,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.MovieAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 
 /**
  * A simple [Fragment] subclass.
@@ -134,16 +133,7 @@ class MovieFragment : Fragment() {
         addMovieDialogBinding.let {
             it.tvAddMovieName.text = movie.originalTitle
             it.ok.setOnClickListener {
-                val movieToBeSaved = DbMovie(
-                    0L,
-                    movie.originalTitle,
-                    movie.voteAverage,
-                    movie.overview,
-                    movie.releaseDate,
-                    movie.posterPath
-                )
-
-                movieViewModel.addMovieToDB(movieToBeSaved)
+                movieViewModel.addMovieToDB(movie)
                 dialog.dismiss()
             }
 

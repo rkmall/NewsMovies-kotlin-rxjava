@@ -62,15 +62,15 @@ class NewsViewModel @Inject constructor(
                         val statusCode = t.code()
                         Log.i("MyTag", "onNextGetTopHeadlines response code: $statusCode")
                         if(statusCode == 200) {
-                            newsLiveData.postValue(Resource.Success(t.body()!!.articles))
+                            newsLiveData.value = Resource.Success(t.body()!!.articles)
                         }else {
-                            newsLiveData.postValue(Resource.Error(null, "Cannot fetch news"))
+                            newsLiveData.value = Resource.Error(null, "Cannot fetch news")
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetTopHeadlines ${e.message}")
-                        newsLiveData.postValue(Resource.Error(null, "Cannot fetch news"))
+                        newsLiveData.value = Resource.Error(null, "Cannot fetch news")
                     }
 
                     override fun onComplete() {
@@ -91,15 +91,15 @@ class NewsViewModel @Inject constructor(
                         val statusCode = t.code()
                         Log.i("MyTag", "onNextGetSearchedHeadlines response code: $statusCode")
                         if(statusCode == 200) {
-                            searchedNewsLiveData.postValue(Resource.Success(t.body()!!.articles))
+                            searchedNewsLiveData.value = Resource.Success(t.body()!!.articles)
                         } else {
-                            searchedNewsLiveData.postValue(Resource.Error(null, "Cannot fetch search results"))
+                            searchedNewsLiveData.value = Resource.Error(null, "Cannot fetch search results")
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetSearchedNews: ${e.message}")
-                        searchedNewsLiveData.postValue(Resource.Error(null, "Cannot fetch search results"))
+                        searchedNewsLiveData.value = Resource.Error(null, "Cannot fetch search results")
                     }
 
 
@@ -118,12 +118,12 @@ class NewsViewModel @Inject constructor(
                 .subscribeWith(object : DisposableObserver<List<NewsArticle>>() {
                     override fun onNext(t: List<NewsArticle>) {
                         Log.i("MyTag", "onNextGetSavedHeadlines: ${t.size}")
-                        savedNewsArticlesLiveData.postValue(t)
+                        savedNewsArticlesLiveData.value = t
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetSavedNews: ${e.message}")
-                        statusMessage.postValue(Event("Could not fetch the saved articles"))
+                        statusMessage.value = Event("Could not fetch the saved articles")
                     }
 
                     override fun onComplete() {
@@ -141,12 +141,12 @@ class NewsViewModel @Inject constructor(
                 .subscribeWith(object: DisposableMaybeObserver<Long>() {
                     override fun onSuccess(t: Long) {
                         Log.i("MyTag", "onSuccessAddNewsArticleToDb: $t")
-                        statusMessage.postValue(Event("Article Saved"))
+                        statusMessage.value = Event("Article Saved")
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorAddNewsArticleToDb: ${e.message}")
-                        statusMessage.postValue(Event("Could not save the article"))
+                        statusMessage.value = Event("Could not save the article")
                     }
 
                     override fun onComplete() {
@@ -164,12 +164,12 @@ class NewsViewModel @Inject constructor(
                 .subscribeWith(object: DisposableMaybeObserver<Int>() {
                     override fun onSuccess(t: Int) {
                         Log.i("MyTag", "onSuccessDeleteNewsArticleFromDb: $t deleted")
-                        statusMessage.postValue(Event("Article Deleted"))
+                        statusMessage.value = Event("Article Deleted")
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorDeleteNewsArticleToDb: ${e.message}")
-                        statusMessage.postValue(Event("Could not delete the article"))
+                        statusMessage.value = Event("Could not delete the article")
                     }
 
                     override fun onComplete() {

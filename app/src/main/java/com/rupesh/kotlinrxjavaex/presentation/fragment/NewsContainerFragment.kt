@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsContainerBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsViewPagerAdapter
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**

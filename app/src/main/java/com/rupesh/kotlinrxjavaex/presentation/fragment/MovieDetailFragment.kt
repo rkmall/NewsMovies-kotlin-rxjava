@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,7 +15,7 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieDetailBinding
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 
 /**
  * A simple [Fragment] subclass.

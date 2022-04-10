@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@color/layout_background"
         android:orientation="vertical"
-        tools:context=".view.fragment.NewsFragment">
+        tools:context=".presentation.fragment.NewsFragment">
 
         <SearchView
             android:id="@+id/sv_news"

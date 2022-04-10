@@ -4,7 +4,6 @@ import androidx.room.*
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 
 @Dao
 interface NewsDao {

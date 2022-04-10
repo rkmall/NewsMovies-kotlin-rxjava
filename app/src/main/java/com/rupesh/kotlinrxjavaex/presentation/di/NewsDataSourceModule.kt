@@ -1,8 +1,5 @@
 package com.rupesh.kotlinrxjavaex.presentation.di
 
-import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
-import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl.MovieRemoteDataSourceImpl
-import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
 import com.rupesh.kotlinrxjavaex.data.news.db.NewsDao
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsRemoteDataSource

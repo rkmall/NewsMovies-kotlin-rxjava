@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +15,7 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.databinding.FragmentSavedNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.NewsAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 import kotlinx.android.synthetic.main.layout_content_movie_detail.view.*
 
 /**

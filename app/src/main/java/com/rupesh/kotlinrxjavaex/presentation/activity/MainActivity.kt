@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.activity
+package com.rupesh.kotlinrxjavaex.presentation.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -18,8 +18,8 @@ import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.MovieVMFactory
 import com.rupesh.kotlinrxjavaex.presentation.viewmodelfactory.NewsVMFactory
-import com.rupesh.kotlinrxjavaex.view.fragment.MovieContainerFragment
-import com.rupesh.kotlinrxjavaex.view.fragment.NewsContainerFragment
+import com.rupesh.kotlinrxjavaex.presentation.fragment.MovieContainerFragment
+import com.rupesh.kotlinrxjavaex.presentation.fragment.NewsContainerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

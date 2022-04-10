@@ -7,10 +7,11 @@ import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface NewsService {
 
-    @GET("v2/top-headlines")
+    @GET("${BuildConfig.URL_NEWS}v2/top-headlines")
     fun getTopHeadlines(
         @Query("country") country: String,
         @Query("page") page: Int,
@@ -18,7 +19,7 @@ interface NewsService {
     ): Observable<Response<NewsResponse>>
 
 
-    @GET("v2/top-headlines")
+    @GET("${BuildConfig.URL_NEWS}/v2/top-headlines")
     fun getSearchedTopHeadlines(
         @Query("country") country: String,
         @Query("q") searchQuery: String,

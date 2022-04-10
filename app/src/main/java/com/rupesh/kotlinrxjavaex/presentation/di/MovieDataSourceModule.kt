@@ -5,7 +5,7 @@ import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDat
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl.MovieLocalDataSourceImpl
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl.MovieRemoteDataSourceImpl
-import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
+import com.rupesh.kotlinrxjavaex.data.movie.service.MovieService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +20,9 @@ class MovieDataSourceModule {
     @Singleton
     @Provides
     fun provideIMovieRemoteDataSource(
-        movieDataService: MovieDataService
+        movieService: MovieService
     ): IMovieRemoteDataSource {
-        return MovieRemoteDataSourceImpl(movieDataService);
+        return MovieRemoteDataSourceImpl(movieService);
     }
 
 

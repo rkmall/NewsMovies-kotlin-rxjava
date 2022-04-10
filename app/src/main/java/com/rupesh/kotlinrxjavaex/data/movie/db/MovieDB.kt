@@ -5,8 +5,9 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 
 /**
@@ -15,7 +16,8 @@ import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
  * @author Rupesh Mall
  * @since 1.0
  */
-@Database(entities = [DbMovie::class], version = 1, exportSchema = false)
+@Database(entities = [Movie::class], version = 1, exportSchema = false)
+@TypeConverters(MovieGenreListConverter::class)
 abstract class MovieDB : RoomDatabase(){
 
     /**

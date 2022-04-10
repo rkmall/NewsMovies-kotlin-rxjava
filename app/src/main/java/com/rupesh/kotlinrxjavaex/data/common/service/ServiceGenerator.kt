@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.data.movie.service
+package com.rupesh.kotlinrxjavaex.data.common.service
 
 import com.rupesh.kotlinrxjavaex.BuildConfig
 import okhttp3.OkHttpClient
@@ -7,13 +7,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-/**
- * RetrofitInstance is a Retrofit singleton object, a REST client for this app
- * It is used to authenticate and connect with API
- * @author Rupesh Mall
- * @since 1.0
- */
-object RetrofitInstance {
+object ServiceGenerator {
 
     // OkHttpClient val
     private val client: OkHttpClient = OkHttpClient.Builder()
@@ -22,8 +16,9 @@ object RetrofitInstance {
         .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
+
     // Retrofit val by Kotlin lazy delegation
-    val retrofit: Retrofit by lazy {
+    val serviceApi: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.URL_MOVIE)
             .client(client)

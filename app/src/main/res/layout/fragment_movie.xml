@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/layout_background"
-        tools:context=".view.fragment.MovieFragment">
+        tools:context=".presentation.fragment.MovieFragment">
 
         <include
             android:id="@+id/layout_content_movie_fragment"

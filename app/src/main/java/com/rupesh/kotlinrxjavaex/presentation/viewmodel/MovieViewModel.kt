@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
-import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import com.rupesh.kotlinrxjavaex.domain.usecase.*
 import com.rupesh.kotlinrxjavaex.domain.usecase.movie.*
 import com.rupesh.kotlinrxjavaex.presentation.util.Event
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -42,13 +41,13 @@ class MovieViewModel @Inject constructor(
     // RxJava CompositeDisposables
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment]
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.presentation.fragment.WatchListFragment]
     private val movieLiveData: MutableLiveData<Resource<List<Movie>>> = MutableLiveData()
     val movieLiveDataResult: LiveData<Resource<List<Movie>>> get() = movieLiveData
 
-    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.view.fragment.WatchListFragment]
-    private val dbMovieListLiveData: MutableLiveData<List<DbMovie>> = MutableLiveData()
-    val dbMovieListResult: LiveData<List<DbMovie>> get() = dbMovieListLiveData
+    // Livedata of type DbMovie to be observed by [com.rupesh.kotlinrxjavaex.presentation.fragment.WatchListFragment]
+    private val dbMovieListLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
+    val dbMovieListResult: LiveData<List<Movie>> get() = dbMovieListLiveData
 
     // Status message to notify user about the completion of event
     private val statusMessage = MutableLiveData< Event<String>>()
@@ -71,7 +70,7 @@ class MovieViewModel @Inject constructor(
                         val statusCode = t.code()
                         Log.i("MyTag", "onNextGetMovieListAPI response code: $statusCode")
                         if(statusCode == 200) {
-                            movieLiveData.postValue(Resource.Success(t.body()!!.movies))
+                            movieLiveData.value = Resource.Success(t.body()!!.movies)
                         }else {
                             Log.i("MyTag", "onNextGetMovieListAPI error message: ${t.message()}")
                             //movieLiveData.postValue(Resource.Error(null, "Cannot fetch the movies"))
@@ -80,7 +79,7 @@ class MovieViewModel @Inject constructor(
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetMovieListAPI message: ${e.message}")
-                        movieLiveData.postValue(Resource.Error(null, "${e.message}"))
+                        movieLiveData.value = Resource.Error(null, "${e.message}")
                     }
                 })
         )
@@ -96,15 +95,15 @@ class MovieViewModel @Inject constructor(
             getAllSavedMovies.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableObserver<List<DbMovie>>() {
-                    override fun onNext(t: List<DbMovie>) {
+                .subscribeWith(object : DisposableObserver<List<Movie>>() {
+                    override fun onNext(t: List<Movie>) {
                         Log.i("MyTag", "onNextGetMovieListDb: ${t.size}")
-                        dbMovieListLiveData.postValue(t)
+                        dbMovieListLiveData.value = t
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorGetMovieListDb")
-                        statusMessage.postValue(Event("Could not fetch the saved movies"))
+                        statusMessage.value = Event("Could not fetch the saved movies")
                     }
 
                     override fun onComplete() {
@@ -123,7 +122,7 @@ class MovieViewModel @Inject constructor(
      * @param releaseDate the DMovie release date
      * @param posterPath the DMovie poster path (url)
      */
-    fun addMovieToDB(movie: DbMovie) {
+    fun addMovieToDB(movie: Movie) {
 
         disposable.add(
             saveMovieToDb.execute(movie)
@@ -132,12 +131,12 @@ class MovieViewModel @Inject constructor(
                 .subscribeWith(object : DisposableMaybeObserver<Long>() {
                     override fun onSuccess(t: Long) {
                         Log.i("MyTag", "onSuccessAddMovieToDb: $t")
-                        statusMessage.postValue(Event("Movie Saved"))
+                        statusMessage.value = Event("Movie Saved")
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorAddMovieTiDb: ${e.message}")
-                        statusMessage.postValue( Event("Could not save the movie"))
+                        statusMessage.value = Event("Could not save the movie")
                     }
 
                     override fun onComplete() {
@@ -159,12 +158,12 @@ class MovieViewModel @Inject constructor(
                 .subscribeWith(object : DisposableMaybeObserver<Int>() {
                     override fun onSuccess(t: Int) {
                         Log.i("MyTag", "onSuccessDeleteDB: $t ")
-                        statusMessage.postValue(Event("Movie Deleted"))
+                        statusMessage.value = Event("Movie Deleted")
                     }
 
                     override fun onError(e: Throwable) {
                         Log.i("MyTag", "onErrorDeleteDB: ${e.message}")
-                        statusMessage.postValue(Event("Could not delete the movie"))
+                        statusMessage.value = Event("Could not delete the movie")
                     }
 
                     override fun onComplete() {

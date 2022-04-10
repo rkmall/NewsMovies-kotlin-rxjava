@@ -1,4 +1,4 @@
-package com.rupesh.kotlinrxjavaex.view.fragment
+package com.rupesh.kotlinrxjavaex.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentWatchListBinding
 import com.rupesh.kotlinrxjavaex.presentation.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.view.activity.MainActivity
+import com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity
 import kotlinx.android.synthetic.*
 import java.util.*
 
@@ -68,8 +68,8 @@ class WatchListFragment : Fragment() {
     /**
      * Remove DbMovie from the local database on Remove button clicked
      */
-    private fun onRemoveButtonClicked(dbMovie: DbMovie) {
-        movieViewModel.deleteMovieFromDB(dbMovie.id.toInt())
+    private fun onRemoveButtonClicked(movie: Movie) {
+        movieViewModel.deleteMovieFromDB(movie.id)
     }
 
     /**

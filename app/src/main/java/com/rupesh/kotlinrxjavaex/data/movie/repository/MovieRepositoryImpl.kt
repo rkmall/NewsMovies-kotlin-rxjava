@@ -1,6 +1,6 @@
 package com.rupesh.kotlinrxjavaex.data.movie.repository
 
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
@@ -19,12 +19,12 @@ class MovieRepositoryImpl(
         return iMovieRemoteDataSource.getTopMovies()
     }
 
-    override fun getSavedMovieList(): Observable<List<DbMovie>> {
+    override fun getSavedMovieList(): Observable<List<Movie>> {
         return iMovieLocalDataSource.getSavedMovieList()
     }
 
-    override fun addMovieToDb(dbMovie: DbMovie): Maybe<Long> {
-        return iMovieLocalDataSource.addMovieToDb(dbMovie)
+    override fun addMovieToDb(movie: Movie): Maybe<Long> {
+        return iMovieLocalDataSource.addMovieToDb(movie)
     }
 
     override fun deleteMovieFromDb(id: Int): Maybe<Int> {

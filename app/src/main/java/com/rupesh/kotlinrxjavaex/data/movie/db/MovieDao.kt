@@ -1,7 +1,7 @@
 package com.rupesh.kotlinrxjavaex.data.movie.db
 
 import androidx.room.*
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -17,11 +17,11 @@ import io.reactivex.Single
 interface MovieDao {
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addMovie(movie: DbMovie): Maybe<Long>
+    fun addMovie(movie: Movie): Maybe<Long>
 
     @Query("delete from movies where id = :id")
     fun deleteMovie(id: Int): Maybe<Int>
 
     @Query("select * from movies")
-    fun getAllMovie(): Observable<List<DbMovie>>
+    fun getAllMovie(): Observable<List<Movie>>
 }

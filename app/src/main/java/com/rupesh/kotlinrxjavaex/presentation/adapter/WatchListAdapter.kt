@@ -1,13 +1,12 @@
 package com.rupesh.kotlinrxjavaex.presentation.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
+import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
 
 /**
@@ -19,10 +18,10 @@ import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
  */
 class WatchListAdapter(
     val context: Context,
-    val listener: (dbMovie: DbMovie) -> Unit
+    val listener: (movie: Movie) -> Unit
 ): RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
 
-    var moviesList: List<DbMovie> = ArrayList()
+    var moviesList: List<Movie> = ArrayList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -45,7 +44,7 @@ class WatchListAdapter(
         return moviesList.size
     }
 
-    fun setList(_movieList: List<DbMovie>) {
+    fun setList(_movieList: List<Movie>) {
         moviesList = _movieList
         notifyDataSetChanged()
     }
@@ -55,8 +54,8 @@ class WatchListAdapter(
      */
     inner class WatchListViewHolder(val binding: WatchListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(_dbMovie: DbMovie) {
-            binding.dbMovie = _dbMovie
+        fun bind(_movie: Movie) {
+            binding.movie = _movie
             onRemoveButtonClicked()
         }
 
@@ -70,8 +69,8 @@ class WatchListAdapter(
                 val position = adapterPosition
 
                 if(position != RecyclerView.NO_POSITION) {
-                    val dbMovie: DbMovie = moviesList[position]
-                    listener(dbMovie)
+                    val movie: Movie = moviesList[position]
+                    listener(movie)
                 }
             }
         }

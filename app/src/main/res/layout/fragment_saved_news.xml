@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/layout_background"
-        tools:context=".view.fragment.SavedNewsFragment">
+        tools:context=".presentation.fragment.SavedNewsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_saved_news"
