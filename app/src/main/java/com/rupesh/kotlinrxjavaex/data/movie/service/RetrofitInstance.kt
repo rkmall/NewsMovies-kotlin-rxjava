@@ -25,7 +25,7 @@ object RetrofitInstance {
     // Retrofit val by Kotlin lazy delegation
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(BuildConfig.URL_MOVIE)
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

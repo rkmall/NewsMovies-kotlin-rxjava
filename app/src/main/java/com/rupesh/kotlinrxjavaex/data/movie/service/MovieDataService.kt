@@ -28,7 +28,7 @@ interface MovieDataService {
      */
     @GET("movie/popular")
     fun getAllMoviesWithRx(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+        @Query("api_key") apiKey: String = BuildConfig.API_MOVIE
     ): Single<Response<MovieResponse>>
 
     /*@GET("search/movie")

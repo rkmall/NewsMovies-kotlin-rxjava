@@ -1,7 +1,6 @@
 package com.rupesh.kotlinrxjavaex.data.movie.repository
 
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
-import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource

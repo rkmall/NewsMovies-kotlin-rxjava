@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 
-@Database(entities = [NewsArticle::class], version = 1)
+@Database(entities = [NewsArticle::class], version = 1, exportSchema = false)
 @TypeConverters(NewsConverters::class)
 abstract class NewsDB : RoomDatabase() {
 

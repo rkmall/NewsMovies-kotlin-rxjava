@@ -15,7 +15,7 @@ import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
  * @author Rupesh Mall
  * @since 1.0
  */
-@Database(entities = [DbMovie::class], version = 1)
+@Database(entities = [DbMovie::class], version = 1, exportSchema = false)
 abstract class MovieDB : RoomDatabase(){
 
     /**

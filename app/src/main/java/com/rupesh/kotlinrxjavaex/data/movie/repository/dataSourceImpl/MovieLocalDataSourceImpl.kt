@@ -5,7 +5,6 @@ import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieLocalDataSource
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 
 class MovieLocalDataSourceImpl(
     private val movieDao: MovieDao

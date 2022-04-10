@@ -20,7 +20,7 @@ object NewsRetrofitInstance {
     // Retrofit val by Kotlin lazy delegation
     val retrofitNews: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_NEWS)
+            .baseUrl(BuildConfig.URL_NEWS)
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

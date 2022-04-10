@@ -3,7 +3,6 @@ package com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource
 import com.rupesh.kotlinrxjavaex.data.movie.db.entity.DbMovie
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 
 interface IMovieLocalDataSource {
 

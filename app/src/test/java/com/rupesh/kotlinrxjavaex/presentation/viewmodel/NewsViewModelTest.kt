@@ -115,7 +115,6 @@ class NewsViewModelTest {
         }
     }
 
-
     @Test
     fun `getSearchedList given CountryPageAndSearchKey sets SearchedNewsLiveData with ErrorMessage OnFailure`() {
         val responseTestData = NewsResponseTestData()
@@ -134,7 +133,6 @@ class NewsViewModelTest {
             }
         }
     }
-
 
     @Test
     fun `getSavedNewsArticles given the savedDataInDb returns the savedDataFromDb`() {
@@ -170,7 +168,6 @@ class NewsViewModelTest {
             }
         }
     }
-
 
     @Test
     fun `saveNewsArticle given the dataToBeSaved sets failureStatusMessage OnFailure`() {

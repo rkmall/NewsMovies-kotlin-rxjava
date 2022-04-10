@@ -15,6 +15,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class MovieResponse(
+
     @SerializedName("page")
     @Expose
     val page: Int,

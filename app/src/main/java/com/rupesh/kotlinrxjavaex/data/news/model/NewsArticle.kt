@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "news")
 @Parcelize
 data class NewsArticle(
+
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     val id : Int? = null,

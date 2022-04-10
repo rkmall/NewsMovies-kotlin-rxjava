@@ -81,10 +81,10 @@ class MovieServiceTest {
 
         testObserver.await()
             .assertValue {
-                return@assertValue it.body()!!.movies[0].original_title == "Spider-Man: No Way Home"
+                return@assertValue it.body()!!.movies[0].originalTitle == "Spider-Man: No Way Home"
             }
             .assertValue {
-                return@assertValue it.body()!!.movies[1].original_title == "The King's Man"
+                return@assertValue it.body()!!.movies[1].originalTitle == "The King's Man"
             }
     }
 

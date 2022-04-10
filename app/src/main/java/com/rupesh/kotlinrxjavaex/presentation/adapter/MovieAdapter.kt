@@ -61,7 +61,7 @@ class MovieAdapter(
         fun bind(_movie: Movie) {
             binding.movie = _movie
 
-            val posterPath = "${BuildConfig.POSTER_PATH}${_movie.poster_path}"
+            val posterPath = "${BuildConfig.MOVIE_POSTER_PATH}${_movie.posterPath}"
             Glide.with(binding.ivMovie.context)
                 .load(posterPath)
                 .placeholder(R.drawable.loading)

@@ -55,8 +55,8 @@ class MovieDetailFragment : Fragment() {
             binding.movieVM!!.movie = movie   // data binding
 
             // Bind Movie image with the View
-            val image = movie!!.poster_path
-            val posterPath = "${BuildConfig.POSTER_PATH}$image"
+            val image = movie!!.posterPath
+            val posterPath = "${BuildConfig.MOVIE_POSTER_PATH}$image"
             binding.let {
 
                 Glide.with(this)
@@ -84,7 +84,7 @@ class MovieDetailFragment : Fragment() {
      */
     private fun initCollapsingToolBar() {
         val collapsingToolbarLayout: CollapsingToolbarLayout = binding.ctMovieDetail
-        collapsingToolbarLayout.title = " "
+        collapsingToolbarLayout.title = ""
 
         val appBarLayout: AppBarLayout = binding.appbarMovieDetail
         appBarLayout.setExpanded(true)

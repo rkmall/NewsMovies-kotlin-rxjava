@@ -76,7 +76,7 @@ class NewsResponseTestData {
                 .message("Response.error(), bad-request")
                 .addHeader("content-type", "application/json")
                 .request(Request.Builder().url("http://localhost/").build())
-                .protocol(Protocol.HTTP_2)
+                .protocol(Protocol.HTTP_1_1)
                 .build()
         )
         return Observable.create{emitter -> emitter.onNext(response)}

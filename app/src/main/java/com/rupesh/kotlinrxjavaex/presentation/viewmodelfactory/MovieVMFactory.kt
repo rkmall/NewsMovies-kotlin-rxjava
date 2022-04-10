@@ -16,8 +16,7 @@ class MovieVMFactory @Inject constructor(
     private val getAllSavedMovies: GetAllSavedMovies,
     private val saveMovieToDb: SaveMovieToDb,
     private val deleteSavedMovie: DeleteSavedMovie
-): ViewModelProvider.Factory{
-
+): ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MovieViewModel(

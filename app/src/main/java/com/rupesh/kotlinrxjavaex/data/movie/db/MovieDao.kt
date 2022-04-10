@@ -15,7 +15,7 @@ import io.reactivex.Single
  */
 @Dao
 interface MovieDao {
-
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMovie(movie: DbMovie): Maybe<Long>
 

@@ -112,11 +112,10 @@ class MovieFragment : Fragment() {
         bundle.putParcelable("movie", movie)
         movieDetailFragment.arguments = bundle
 
-        val fm = activity?.supportFragmentManager
-        val fragmentTransaction = fm?.beginTransaction()
-        fragmentTransaction?.replace(R.id.frame_layout_main, movieDetailFragment)
-        fragmentTransaction?.addToBackStack(null)
-        fragmentTransaction?.commit()
+        val ft = activity?.supportFragmentManager?.beginTransaction()
+        ft?.replace(R.id.frame_layout_main, movieDetailFragment)
+        ft?.addToBackStack(null)
+        ft?.commit()
     }
 
     /**
@@ -133,15 +132,15 @@ class MovieFragment : Fragment() {
         dialog.setContentView(addMovieDialogBinding.root)
 
         addMovieDialogBinding.let {
-            it.tvAddMovieName.text = movie.original_title
+            it.tvAddMovieName.text = movie.originalTitle
             it.ok.setOnClickListener {
                 val movieToBeSaved = DbMovie(
                     0L,
-                    movie.original_title,
-                    movie.vote_average,
+                    movie.originalTitle,
+                    movie.voteAverage,
                     movie.overview,
-                    movie.release_date,
-                    movie.poster_path
+                    movie.releaseDate,
+                    movie.posterPath
                 )
 
                 movieViewModel.addMovieToDB(movieToBeSaved)

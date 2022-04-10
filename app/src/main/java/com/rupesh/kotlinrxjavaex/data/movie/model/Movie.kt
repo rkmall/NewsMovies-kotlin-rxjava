@@ -19,11 +19,11 @@ data class Movie(
 
     @SerializedName("backdrop_path")
     @Expose
-    val backdrop_path: String,
+    val backdropPath: String,
 
     @SerializedName("genre_ids")
     @Expose
-    val genre_ids : List<Int>,
+    val genreIds : List<Int>,
 
     @SerializedName("id")
     @Expose
@@ -31,11 +31,11 @@ data class Movie(
 
     @SerializedName("original_language")
     @Expose
-    val original_language: String,
+    val originalLanguage: String,
 
     @SerializedName("original_title")
     @Expose
-    val original_title: String,
+    val originalTitle: String,
 
     @SerializedName("overview")
     @Expose
@@ -47,11 +47,11 @@ data class Movie(
 
     @SerializedName("poster_path")
     @Expose
-    val poster_path: String,
+    val posterPath: String,
 
     @SerializedName("release_date")
     @Expose
-    val release_date: String,
+    val releaseDate: String,
 
     @SerializedName("title")
     @Expose
@@ -63,9 +63,9 @@ data class Movie(
 
     @SerializedName("vote_average")
     @Expose
-    val vote_average: Double,
+    val voteAverage: Double,
 
     @SerializedName("vote_count")
     @Expose
-    val vote_count: Int
+    val voteCount: Int
 ): Parcelable

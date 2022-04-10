@@ -1,10 +1,8 @@
 package com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl
 
-import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSource.IMovieRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.movie.service.MovieDataService
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Response
 
