@@ -3,7 +3,6 @@ package com.rupesh.kotlinrxjavaex.data.movie.repository
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
-import com.rupesh.kotlinrxjavaex.data.movie.db.MovieDB
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl.MovieLocalDataSourceImpl
 import com.rupesh.kotlinrxjavaex.data.movie.repository.dataSourceImpl.MovieRemoteDataSourceImpl

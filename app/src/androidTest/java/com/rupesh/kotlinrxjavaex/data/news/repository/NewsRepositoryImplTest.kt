@@ -3,7 +3,6 @@ package com.rupesh.kotlinrxjavaex.data.news.repository
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
-import com.rupesh.kotlinrxjavaex.data.news.db.NewsDB
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl.NewsLocalDataSourceImpl
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl.NewsRemoteDataSourceImpl

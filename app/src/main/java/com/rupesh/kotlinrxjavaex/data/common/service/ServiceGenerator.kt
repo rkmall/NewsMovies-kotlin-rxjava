@@ -20,7 +20,7 @@ object ServiceGenerator {
     // Retrofit val by Kotlin lazy delegation
     val serviceApi: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BuildConfig.URL_MOVIE)
+            .baseUrl(BuildConfig.URL_NEWS)
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
