@@ -2,6 +2,7 @@ package com.rupesh.kotlinrxjavaex.domain.usecase.news
 
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.domain.repository.INewsRepository
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import io.reactivex.Observable
 import retrofit2.Response
 import javax.inject.Inject

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@color/layout_background"
         android:orientation="vertical"
-        tools:context=".presentation.fragment.NewsFragment">
+        tools:context=".presentation.ui.features.news.fragment.NewsFragment">
 
         <SearchView
             android:id="@+id/sv_news"
@@ -24,7 +24,7 @@
             android:padding="5dp"/>
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/progress_bar_news"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -11,9 +11,12 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addNewsArticleToDb(newsArticle: NewsArticle): Maybe<Long>
 
+    @Query("select * from news")
+    fun getSavedNewsArticleFromDb(): Observable<List<NewsArticle>>
+
     @Query("delete from news where id = :id")
     fun deleteNewsArticleFromDb(id: Int): Maybe<Int>
 
-    @Query("select * from news")
-    fun getSavedNewsArticleFromDb(): Observable<List<NewsArticle>>
+    @Query("delete from news")
+    fun clear(): Maybe<Int>
 }

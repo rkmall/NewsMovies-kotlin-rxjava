@@ -8,13 +8,13 @@
     <data>
         <variable
             name="movieVM"
-            type="com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel" />
+            type="com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.fragment.MovieDetailFragment">
+        tools:context=".presentation.ui.features.movie.fragment.MovieDetailFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar_movie_detail"

@@ -10,4 +10,5 @@ interface INewsLocalDataSource {
     fun getSavedNewsArticles(): Observable<List<NewsArticle>>
     fun addNewsArticleToDb(newsArticle: NewsArticle): Maybe<Long>
     fun deleteNewsArticleFromDb(id: Int): Maybe<Int>
+    fun clear(): Maybe<Int>
 }

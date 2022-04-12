@@ -25,7 +25,6 @@ import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 @Database(entities = [NewsArticle::class, Movie::class], version = 1, exportSchema = false)
 @TypeConverters(NewsConverters::class, MovieGenreListConverter::class)
 abstract class AppDB : RoomDatabase() {
-
     /**
      * In other classes where we need to instantiate AppDB
      * to perform database operation, we can get singleton
@@ -38,7 +37,6 @@ abstract class AppDB : RoomDatabase() {
     abstract fun getMovieDao(): MovieDao
 
     companion object {
-
         private var INSTANCE: AppDB? = null
 
         /**

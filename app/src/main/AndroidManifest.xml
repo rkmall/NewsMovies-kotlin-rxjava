@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinRxJavaEx">
         <activity
-            android:name="com.rupesh.kotlinrxjavaex.presentation.activity.MainActivity"
+            android:name="com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

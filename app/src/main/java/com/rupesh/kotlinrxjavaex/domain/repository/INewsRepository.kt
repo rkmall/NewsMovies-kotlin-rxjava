@@ -2,6 +2,7 @@ package com.rupesh.kotlinrxjavaex.domain.repository
 
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
+import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -14,4 +15,5 @@ interface INewsRepository {
     fun getSavedNewsArticles(): Observable<List<NewsArticle>>
     fun saveNewsArticle(newsArticle: NewsArticle): Maybe<Long>
     fun removeNewsArticle(id: Int): Maybe<Int>
+    fun clear(): Maybe<Int>
 }

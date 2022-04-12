@@ -23,4 +23,6 @@
     <string name="newsfrag_tab2_title">Saved</string>
     <string name="moviefrag_tab1_title">Top 20</string>
     <string name="moviefrag_tab2_title">Watch List</string>
+    <string name="news_refresh_button">Refresh</string>
+    <string name="news_error_tv">Something went wrong!</string>
 </resources>

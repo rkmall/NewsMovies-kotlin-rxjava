@@ -23,4 +23,8 @@ class NewsLocalDataSourceImpl(
     override fun deleteNewsArticleFromDb(id: Int): Maybe<Int> {
         return newsDao.deleteNewsArticleFromDb(id)
     }
+
+    override fun clear(): Maybe<Int> {
+        return newsDao.clear()
+    }
 }

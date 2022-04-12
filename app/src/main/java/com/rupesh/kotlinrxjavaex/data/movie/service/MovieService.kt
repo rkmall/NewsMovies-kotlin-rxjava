@@ -8,7 +8,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MovieService {
-
     /**
      * Gets the Retrofit Call<MovieResponse> as HTTP response which
      * is the converted to RxJava Observable using RxJava2CallAdapterFactory

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import java.util.concurrent.TimeUnit
 
 object NetworkChecker {
 
@@ -33,5 +34,11 @@ object NetworkChecker {
             }
         }
         return false
+    }
+
+    fun checkTimePeriod(period: Long): Long {
+        val currentTime: Long = System.currentTimeMillis()
+        val currentTimeInMin: Long = TimeUnit.MILLISECONDS.toMinutes(currentTime)
+        return currentTimeInMin - period
     }
 }

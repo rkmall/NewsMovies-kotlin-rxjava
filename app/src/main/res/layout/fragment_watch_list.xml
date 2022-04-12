@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.fragment.WatchListFragment">
+        tools:context=".presentation.ui.features.movie.fragment.WatchListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_watchList"

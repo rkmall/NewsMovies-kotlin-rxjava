@@ -6,7 +6,7 @@
     <data>
         <variable
             name="movieVM"
-            type="com.rupesh.kotlinrxjavaex.presentation.viewmodel.MovieViewModel" />
+            type="com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel" />
     </data>
     
     <LinearLayout
@@ -14,11 +14,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/layout_background"
-        tools:context=".presentation.fragment.MovieFragment">
+        tools:context=".presentation.ui.features.movie.fragment.MovieFragment">
+
+        <ProgressBar
+            android:id="@+id/progress_bar_movie"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            style="?android:attr/progressBarStyleSmall"
+            android:visibility="invisible" />
 
         <include
             android:id="@+id/layout_content_movie_fragment"
             layout="@layout/content_movie_fragment"/>
-
     </LinearLayout>
 </layout>
