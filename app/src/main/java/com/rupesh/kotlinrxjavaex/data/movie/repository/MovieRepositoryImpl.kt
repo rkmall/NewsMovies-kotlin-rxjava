@@ -15,19 +15,23 @@ class MovieRepositoryImpl(
     private val iMovieRemoteDataSource: IMovieRemoteDataSource
 ) : IMovieRepository {
 
-    override fun getTopMovies(): Single<Response<MovieResponse>> {
-        return iMovieRemoteDataSource.getTopMovies()
+    override fun getPopularMovies(): Single<Response<MovieResponse>> {
+        return iMovieRemoteDataSource.getPopularMovies()
     }
 
-    override fun getSavedMovieList(): Observable<List<Movie>> {
-        return iMovieLocalDataSource.getSavedMovieList()
+    override fun getSavedMovies(): Observable<List<Movie>> {
+        return iMovieLocalDataSource.getSavedMovies()
     }
 
-    override fun addMovieToDb(movie: Movie): Maybe<Long> {
-        return iMovieLocalDataSource.addMovieToDb(movie)
+    override fun saveMovie(movie: Movie): Maybe<Long> {
+        return iMovieLocalDataSource.saveMovie(movie)
     }
 
-    override fun deleteMovieFromDb(id: Int): Maybe<Int> {
-        return iMovieLocalDataSource.deleteMovieFromDb(id)
+    override fun deleteMovie(id: Int): Maybe<Int> {
+        return iMovieLocalDataSource.deleteMovie(id)
+    }
+
+    override fun clear(): Maybe<Int> {
+        return iMovieLocalDataSource.clear()
     }
 }

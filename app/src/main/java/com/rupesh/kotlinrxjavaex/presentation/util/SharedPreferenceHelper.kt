@@ -1,9 +1,6 @@
 package com.rupesh.kotlinrxjavaex.presentation.util
 
 import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import java.util.concurrent.TimeUnit
 
 class SharedPreferenceHelper(
@@ -16,14 +13,14 @@ class SharedPreferenceHelper(
      */
     fun storeFirstRun() {
         sharedPrefFirstRun.edit().also {
-            it.putBoolean(AppConstantsPresentation.IS_FIRST_RUN, true)
+            it.putBoolean(AppConstPresentation.IS_FIRST_RUN, true)
             it.apply()
         }
     }
 
     fun storeSubsequentRun() {
         sharedPrefFirstRun.edit().also {
-            it.putBoolean(AppConstantsPresentation.IS_FIRST_RUN, false)
+            it.putBoolean(AppConstPresentation.IS_FIRST_RUN, false)
             it.apply()
         }
     }
@@ -31,7 +28,7 @@ class SharedPreferenceHelper(
      * @return App's first run status
      */
     fun getIsFirstRunDone(): Boolean {
-        return sharedPrefFirstRun.getBoolean(AppConstantsPresentation.IS_FIRST_RUN, false)
+        return sharedPrefFirstRun.getBoolean(AppConstPresentation.IS_FIRST_RUN, false)
     }
 
     /**
@@ -40,7 +37,7 @@ class SharedPreferenceHelper(
     fun storeCurrentTime(currentTime: Long) {
         val currentTimeInMin: Long = TimeUnit.MILLISECONDS.toMinutes(currentTime)
         sharedPrefTime.edit().also {
-            it.putLong(AppConstantsPresentation.CURRENT_TIME, currentTimeInMin )
+            it.putLong(AppConstPresentation.CURRENT_TIME, currentTimeInMin )
             it.apply()
         }
     }
@@ -49,6 +46,6 @@ class SharedPreferenceHelper(
      * @return App's stored time status
      */
     fun getStoredTime(): Long {
-        return sharedPrefTime.getLong(AppConstantsPresentation.CURRENT_TIME, 15L)
+        return sharedPrefTime.getLong(AppConstPresentation.CURRENT_TIME, 15L)
     }
 }

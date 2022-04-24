@@ -3,20 +3,20 @@ package sharedTest.testdata.news
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsSource
-import io.reactivex.Observable
 import io.reactivex.Single
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
 import okhttp3.Request
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 
-class NewsResponseTestData {
+class NewsTestData {
 
-    private val newsArticles = ArrayList<NewsArticle>()
+    private val mNewsArticles = ArrayList<NewsArticle>()
+    val newsArticles get() = mNewsArticles
+
+    init { createNewsArticle() }
 
     private fun createNewsArticle() {
         val newsArticle1 = NewsArticle(
@@ -46,14 +46,11 @@ class NewsResponseTestData {
             url = "https://news2.com",
             urlToImage = "https://imageToUrl2.com"
         )
-
         newsArticles.add(newsArticle1)
         newsArticles.add(newsArticle2)
     }
 
-    fun getNewsResponseDataSuccess(): Observable<Response<NewsResponse>> {
-        createNewsArticle()
-
+    fun createSuccessNewsResponseObservable(): Single<Response<NewsResponse>> {
         val response: Response<NewsResponse> = Response.success(
             200,
             NewsResponse(
@@ -62,23 +59,22 @@ class NewsResponseTestData {
                 totalResults = 2
             )
         )
-        return Observable.create { emitter -> emitter.onNext(response) }
+        return Single.create { emitter -> emitter.onSuccess(response) }
     }
 
 
-    fun <T> getResponseDataError(): Observable<Response<T>> {
-
-        val response: Response<T> = Response.error(
+    fun createErrorNewsResponseObservable(): Single<Response<NewsResponse>> {
+        val response: Response<NewsResponse> = Response.error(
             "null".toResponseBody("application/json".toMediaTypeOrNull()),
 
             okhttp3.Response.Builder()
                 .code(400)
-                .message("Response.error(), bad-request")
+                .message("bad-request")
                 .addHeader("content-type", "application/json")
                 .request(Request.Builder().url("http://localhost/").build())
                 .protocol(Protocol.HTTP_1_1)
                 .build()
         )
-        return Observable.create{emitter -> emitter.onNext(response)}
+        return Single.create{emitter -> emitter.onSuccess(response)}
     }
 }

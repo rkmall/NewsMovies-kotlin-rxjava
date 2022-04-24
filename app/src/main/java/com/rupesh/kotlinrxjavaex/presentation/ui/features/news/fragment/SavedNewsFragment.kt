@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
+import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
+import com.rupesh.kotlinrxjavaex.data.util.fromNewsSavedToNewsArticle
 import com.rupesh.kotlinrxjavaex.databinding.FragmentSavedNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
-import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsAdapter
+import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsSavedAdapter
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
 import com.rupesh.kotlinrxjavaex.presentation.util.transaction
-import kotlinx.android.synthetic.main.layout_content_movie_detail.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -30,8 +30,8 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
     private val newsViewModel: NewsViewModel by viewModels(ownerProducer = {requireParentFragment()})
 
-    private lateinit var newsAdapter: NewsAdapter
-    private lateinit var newsArticleToBeDeleted: NewsArticle
+    private lateinit var newsAdapter: NewsSavedAdapter
+    private lateinit var newsArticleToBeDeleted: NewsSaved
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,13 +43,13 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
     }
 
     private fun observeSavedNewsArticles() {
-        newsViewModel.savedNewsArticlesLiveDataResult.observe(requireParentFragment().viewLifecycleOwner) {
+        newsViewModel.savedNews.observe(requireParentFragment().viewLifecycleOwner) {
             newsAdapter.differ.submitList(it)
         }
     }
 
     private fun observeStatusMessage() {
-        newsViewModel.statusMessageResult.observe(requireParentFragment().viewLifecycleOwner) {
+        newsViewModel.eventMessage.observe(requireParentFragment().viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 when(message) {
                     "Article Deleted" -> {
@@ -58,7 +58,7 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
                             message,
                             Snackbar.LENGTH_LONG).apply {
                             setAction("Undo") {
-                                newsViewModel.saveNewsArticle(newsArticleToBeDeleted)
+                                newsViewModel.saveArticle(newsArticleToBeDeleted)
                             }.show()
                         }
                     }
@@ -70,16 +70,16 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
     private fun initRecyclerView() {
         binding.rvSavedNews.apply{
-            newsAdapter = NewsAdapter(requireContext()) { item -> onNewsItemClick(item) }
+            newsAdapter = NewsSavedAdapter(requireContext()) { item -> onNewsItemClick(item) }
             layoutManager = LinearLayoutManager(requireContext())
             adapter = newsAdapter
         }
     }
 
-    private fun onNewsItemClick(article: NewsArticle) {
+    private fun onNewsItemClick(article: NewsSaved) {
         val newsDetailFragment = NewsDetailFragment()
         val bundle = Bundle()
-        bundle.putParcelable("article", article)
+        bundle.putParcelable("article", fromNewsSavedToNewsArticle(article))
         newsDetailFragment.arguments = bundle
         activity?.transaction(R.id.frame_layout_main, newsDetailFragment)
     }
@@ -98,7 +98,7 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             newsArticleToBeDeleted = newsAdapter.differ.currentList[viewHolder.adapterPosition]
-            newsViewModel.deleteNewsArticle(newsArticleToBeDeleted.id!!)
+            newsViewModel.deleteSavedArticle(newsArticleToBeDeleted.id!!)
         }
     }
 

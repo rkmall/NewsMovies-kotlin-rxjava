@@ -9,8 +9,9 @@ import retrofit2.Response
 
 interface IMovieRepository {
 
-    fun getTopMovies(): Single<Response<MovieResponse>>
-    fun getSavedMovieList(): Observable<List<Movie>>
-    fun addMovieToDb(movie: Movie): Maybe<Long>
-    fun deleteMovieFromDb(id: Int): Maybe<Int>
+    fun getPopularMovies(): Single<Response<MovieResponse>>
+    fun getSavedMovies(): Observable<List<Movie>>
+    fun saveMovie(movie: Movie): Maybe<Long>
+    fun deleteMovie(id: Int): Maybe<Int>
+    fun clear(): Maybe<Int>
 }

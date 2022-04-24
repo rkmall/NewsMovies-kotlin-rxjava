@@ -1,3 +1,4 @@
+/*
 package com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl
 
 import android.content.Context
@@ -32,7 +33,7 @@ class NewsLocalDataSourceImplTest {
     @Test
     fun addNewsArticleToDb_whenGivenNewsArticle_returnsInsertedItemRowId() {
         val newsArticleList = newsDbTestData.getNewsDbTestData()
-        newsLocalDataSourceImpl.addNewsArticleToDb(newsArticleList[0]).test()
+        newsLocalDataSourceImpl.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
@@ -42,22 +43,22 @@ class NewsLocalDataSourceImplTest {
     fun deleteNewsArticleFromDb_whenGivenArticleId_returnsNoOfRowDeleted() {
         val newsArticleList = newsDbTestData.getNewsDbTestData()
 
-        newsLocalDataSourceImpl.addNewsArticleToDb(newsArticleList[0]).test()
+        newsLocalDataSourceImpl.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
 
-        newsLocalDataSourceImpl.addNewsArticleToDb(newsArticleList[1]).test()
+        newsLocalDataSourceImpl.addCacheArticle(newsArticleList[1]).test()
             .assertValue {
                 it == 2L
             }
 
-        newsLocalDataSourceImpl.deleteNewsArticleFromDb(2).test()
+        newsLocalDataSourceImpl.deleteCacheArticle(2).test()
             .assertValue {
                 it == 1
             }
 
-        newsLocalDataSourceImpl.getSavedNewsArticles().test()
+        newsLocalDataSourceImpl.getCachedArticles().test()
             .assertValue {
                 it.size == 1
             }
@@ -67,17 +68,17 @@ class NewsLocalDataSourceImplTest {
     fun getNewsArticleFromDb_returnsAllItems() {
         val newsArticleList = newsDbTestData.getNewsDbTestData()
 
-        newsLocalDataSourceImpl.addNewsArticleToDb(newsArticleList[0]).test()
+        newsLocalDataSourceImpl.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
 
-        newsLocalDataSourceImpl.addNewsArticleToDb(newsArticleList[1]).test()
+        newsLocalDataSourceImpl.addCacheArticle(newsArticleList[1]).test()
             .assertValue {
                 it == 2L
             }
 
-        newsLocalDataSourceImpl.getSavedNewsArticles().test()
+        newsLocalDataSourceImpl.getCachedArticles().test()
             .assertValue {
                 it.size == 2
             }
@@ -99,4 +100,4 @@ class NewsLocalDataSourceImplTest {
     fun tearDown() {
         newsDb.close()
     }
-}
+}*/

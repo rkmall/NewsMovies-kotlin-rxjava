@@ -10,7 +10,7 @@ class MovieRemoteDataSourceImpl(
     private val movieService: MovieService
 ) : IMovieRemoteDataSource {
 
-    override fun getTopMovies(): Single<Response<MovieResponse>> {
-        return movieService.getAllMoviesWithRx()
+    override fun getPopularMovies(): Single<Response<MovieResponse>> {
+        return movieService.getPopularMovies()
     }
 }

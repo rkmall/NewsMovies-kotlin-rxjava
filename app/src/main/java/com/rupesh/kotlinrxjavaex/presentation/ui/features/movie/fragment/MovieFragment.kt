@@ -18,8 +18,8 @@ import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieBinding
 import com.rupesh.kotlinrxjavaex.databinding.LayoutAddMovieDialogBinding
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter.MovieAdapter
-import com.rupesh.kotlinrxjavaex.presentation.util.*
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
+import com.rupesh.kotlinrxjavaex.presentation.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -37,7 +37,6 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
@@ -45,9 +44,8 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
         observeStatusMessage()
     }
 
-    // Get a list of Movie and observe the LiveData<List<Movie>>
     private fun observeMoviesList() {
-        movieViewModel.movieLiveDataResult.observe(requireParentFragment().viewLifecycleOwner) {
+        movieViewModel.popularMovies.observe(requireParentFragment().viewLifecycleOwner) {
             if (it != null) {
                 render(it)
             }
@@ -83,7 +81,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
      * For Landscape view, the span is 4
      */
     private fun initRecyclerView() {
-        recyclerView = binding.layoutContentMovieFragment.rvMovieFragment.also {
+        recyclerView = binding.rvMovieFragment.also {
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
                 it.layoutManager = GridLayoutManager(requireContext(), 2)
             else
@@ -95,7 +93,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
     }
 
     private fun observeStatusMessage() {
-        movieViewModel.statusMessageResult.observe(requireParentFragment().viewLifecycleOwner) {
+        movieViewModel.eventMessage.observe(requireParentFragment().viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 requireParentFragment().requireView().snackBar(message)
             }
@@ -126,7 +124,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
         addMovieDialogBinding?.let {
             it.tvAddMovieName.text = movie.originalTitle
             it.ok.setOnClickListener {
-                movieViewModel.addMovieToDB(movie)
+                movieViewModel.saveMovie(movie)
                 dialog.dismiss()
             }
 

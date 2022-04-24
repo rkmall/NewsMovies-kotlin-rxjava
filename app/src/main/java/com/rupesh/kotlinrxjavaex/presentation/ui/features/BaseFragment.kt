@@ -26,6 +26,7 @@ abstract class BaseFragment<DB : ViewDataBinding> : Fragment() {
         container: ViewGroup?,
     ): DB
 
+
     override fun onDestroy() {
         super.onDestroy()
         mBinding = null

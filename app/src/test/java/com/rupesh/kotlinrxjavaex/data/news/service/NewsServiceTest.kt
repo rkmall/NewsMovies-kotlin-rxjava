@@ -1,13 +1,13 @@
-package com.rupesh.kotlinrxjavaex.data.news.service
-
 import com.google.common.truth.Truth.assertThat
 import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
+import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import io.reactivex.observers.TestObserver
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,21 +16,25 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import sharedTest.ApiResponseTestHelper
-
+import sharedTest.RxImmediateSchedulerRule
 
 @RunWith(JUnit4::class)
 class NewsServiceTest {
 
+    @get:Rule
+    var rxImmediateSchedulerRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
+
     private lateinit var service: NewsService
-    private lateinit var server: MockWebServer
+    private lateinit var mockServer: MockWebServer
+    private var mockUrl = "/v2/top-headlines"
     private lateinit var testObserver: TestObserver<Response<NewsResponse>>
 
     @Before
     fun setUp() {
-        server = MockWebServer()
+        mockServer = MockWebServer()
 
         service = Retrofit.Builder()
-            .baseUrl(server.url("/"))
+            .baseUrl(mockServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
@@ -40,17 +44,28 @@ class NewsServiceTest {
     }
 
     @Test
-    fun getTopHeadlines_requestPath () {
-        ApiResponseTestHelper.enqueueMockResponse(server, "news-response.json")
-        service.getTopHeadlines("us", 1).subscribe(testObserver)
-        val request = server.takeRequest()
+    fun `getTopHeadlines requestPath`() {
+        ApiResponseTestHelper.enqueueMockResponse(mockServer, "news-response.json")
+
+        service.getTopHeadlines(
+            url = mockUrl,
+            AppConstantsData.DEFAULT_COUNTRY_NEWS,
+            AppConstantsData.DEFAULT_PAGE_NEWS
+        ).subscribe(testObserver)
+        val request = mockServer.takeRequest()
         assertThat(request.path).isEqualTo("/v2/top-headlines?country=us&page=1&apiKey=${BuildConfig.API_NEWS}")
     }
 
     @Test
-    fun getTopHeadlines_requestHeaderAndResponseCode () {
-        ApiResponseTestHelper.enqueueMockResponse(server, "news-response.json")
-        service.getTopHeadlines(AppConstantsData.DEFAULT_COUNTRY_NEWS, AppConstantsData.DEFAULT_PAGE_NEWS).subscribe(testObserver)
+    fun `getTopHeadlines requestHeader and ResponseCode`() {
+        ApiResponseTestHelper.enqueueMockResponse(mockServer, "news-response.json")
+
+        service.getTopHeadlines(
+            url = mockUrl,
+            AppConstantsData.DEFAULT_COUNTRY_NEWS,
+            AppConstantsData.DEFAULT_PAGE_NEWS
+        ).subscribe(testObserver)
+
         testObserver.await()
             .assertValue {
                 return@assertValue it.headers()["content-type"]!! == "application/json"
@@ -61,9 +76,14 @@ class NewsServiceTest {
     }
 
     @Test
-    fun getTopHeadlines_givenCountryAndPage_statusAndTotalResults () {
-        ApiResponseTestHelper.enqueueMockResponse(server, "news-response.json")
-        service.getTopHeadlines(AppConstantsData.DEFAULT_COUNTRY_NEWS, AppConstantsData.DEFAULT_PAGE_NEWS).subscribe(testObserver)
+    fun `getTopHeadlines given CountryAndPage status and totalResults`() {
+        ApiResponseTestHelper.enqueueMockResponse(mockServer, "news-response.json")
+
+        service.getTopHeadlines(
+            url = mockUrl,
+            AppConstantsData.DEFAULT_COUNTRY_NEWS,
+            AppConstantsData.DEFAULT_PAGE_NEWS
+        ).subscribe(testObserver)
 
         testObserver.await()
             .assertValue {
@@ -75,18 +95,33 @@ class NewsServiceTest {
     }
 
     @Test
-    fun getSearchedHeadlines_requestPath () {
-        ApiResponseTestHelper.enqueueMockResponse(server, "news-response.json")
-        service.getSearchedTopHeadlines(AppConstantsData.DEFAULT_COUNTRY_NEWS, "cnn", AppConstantsData.DEFAULT_PAGE_NEWS).subscribe(testObserver)
-        val request = server.takeRequest()
+    fun `getSearchedHeadlines requestPath`() {
+        val searchKey = "cnn"
+        mockUrl = "/v2/top-headlines"
+        ApiResponseTestHelper.enqueueMockResponse(mockServer, "news-response.json")
+        service.getSearchedHeadlines(
+            url = mockUrl,
+            AppConstantsData.DEFAULT_COUNTRY_NEWS,
+            searchKey,
+            AppConstantsData.DEFAULT_PAGE_NEWS
+        ).subscribe(testObserver)
+        val request = mockServer.takeRequest()
         assertThat(request.path).isEqualTo("/v2/top-headlines?country=us&q=cnn&page=1&apiKey=${BuildConfig.API_NEWS}")
     }
 
     @Test
     fun getSearchedHeadlines_requestPath2 () {
-        ApiResponseTestHelper.enqueueMockResponse(server, "news-search-response-cnn.json")
         val searchKey = "cnn"
-        service.getSearchedTopHeadlines(AppConstantsData.DEFAULT_COUNTRY_NEWS, searchKey, AppConstantsData.DEFAULT_PAGE_NEWS).subscribe(testObserver)
+        val expectedNoOfSearchedArticles = 5
+
+        ApiResponseTestHelper.enqueueMockResponse(mockServer, "news-search-response-cnn.json")
+        service.getSearchedHeadlines(
+            url = mockUrl,
+            AppConstantsData.DEFAULT_COUNTRY_NEWS,
+            searchKey,
+            AppConstantsData.DEFAULT_PAGE_NEWS
+        ).subscribe(testObserver)
+
         testObserver.await()
             .assertValue {
                 var result = 0
@@ -97,17 +132,18 @@ class NewsServiceTest {
                         article.source!!.name.lowercase().contains(searchKey) -> true
                         article.url!!.lowercase().contains(searchKey) -> true
                         article.description!!.lowercase().contains(searchKey) -> true
+                        article.content!!.lowercase().contains(searchKey) -> true
                         else -> false
                     }
                     if (containsSearchKey) result++
                 }
-                return@assertValue result == 5
+                return@assertValue result == expectedNoOfSearchedArticles
             }
     }
 
     @After
     fun tearDown() {
         testObserver.dispose()
-        server.shutdown()
+        mockServer.shutdown()
     }
 }

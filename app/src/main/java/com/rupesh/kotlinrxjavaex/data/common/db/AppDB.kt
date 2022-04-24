@@ -12,8 +12,11 @@ import com.rupesh.kotlinrxjavaex.data.movie.db.MovieGenreListConverter
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.news.db.NewsConverters
 import com.rupesh.kotlinrxjavaex.data.news.db.NewsDao
+import com.rupesh.kotlinrxjavaex.data.news.db.NewsSavedDao
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
+import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
+import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
 
 /**
  * AppDB represents a Room database with entities
@@ -22,7 +25,7 @@ import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
  * @author Rupesh Mall
  * @since 1.0
  */
-@Database(entities = [NewsArticle::class, Movie::class], version = 1, exportSchema = false)
+@Database(entities = [NewsArticle::class, NewsSaved::class, Movie::class], version = 1, exportSchema = false)
 @TypeConverters(NewsConverters::class, MovieGenreListConverter::class)
 abstract class AppDB : RoomDatabase() {
     /**
@@ -34,6 +37,7 @@ abstract class AppDB : RoomDatabase() {
      * @return the AppDB [com.rupesh.kotlinrxjavaex.data.common.db.AppDB]
      */
     abstract fun getNewsDao(): NewsDao
+    abstract fun getNewsSavedDao(): NewsSavedDao
     abstract fun getMovieDao(): MovieDao
 
     companion object {
@@ -61,12 +65,12 @@ abstract class AppDB : RoomDatabase() {
         ).addCallback(object : RoomDatabase.Callback(){
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
-                    Log.d("AppDb", "AppDb onCreate() invoked")
+                    Log.d(AppConstPresentation.LOG_DATA, "AppDb onCreate() invoked")
                 }
 
                 override fun onOpen(db: SupportSQLiteDatabase) {
                     super.onOpen(db)
-                    Log.d("AppDb", "AppDb onOpen() invoked")
+                    Log.d(AppConstPresentation.LOG_DATA, "AppDb onOpen() invoked")
                 }
             }).build()
     }

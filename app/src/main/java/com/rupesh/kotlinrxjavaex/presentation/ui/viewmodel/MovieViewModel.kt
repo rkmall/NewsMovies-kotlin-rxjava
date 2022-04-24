@@ -5,19 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
-import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import com.rupesh.kotlinrxjavaex.domain.usecase.*
 import com.rupesh.kotlinrxjavaex.domain.usecase.movie.*
+import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
 import com.rupesh.kotlinrxjavaex.presentation.util.Event
 import com.rupesh.kotlinrxjavaex.presentation.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.MaybeObserver
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableMaybeObserver
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
 import javax.inject.Inject
 
 /**
@@ -32,139 +32,110 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MovieViewModel @Inject constructor(
-    private val getAllMovies: GetAllMovies,
-    private val getAllSavedMovies: GetAllSavedMovies,
-    private val saveMovieToDb: SaveMovieToDb,
-    private val deleteSavedMovie: DeleteSavedMovie
+    private val networkMovieUseCase: NetworkMovieUseCase,
+    private val saveMovieUseCase: SaveMovieUseCase
 ): ViewModel() {
 
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    private val movieLiveData: MutableLiveData<Resource<List<Movie>>> = MutableLiveData()
-    val movieLiveDataResult: LiveData<Resource<List<Movie>>> get() = movieLiveData
+    private val mPopularMovies: MutableLiveData<Resource<List<Movie>>> = MutableLiveData()
+    val popularMovies: LiveData<Resource<List<Movie>>> get() = mPopularMovies
 
-    private val dbMovieListLiveData: MutableLiveData<List<Movie>> = MutableLiveData()
-    val dbMovieListResult: LiveData<List<Movie>> get() = dbMovieListLiveData
+    private val mSavedMovies: MutableLiveData<List<Movie>> = MutableLiveData()
+    val savedMovies: LiveData<List<Movie>> get() = mSavedMovies
 
-    private val statusMessage = MutableLiveData< Event<String>>()
-    val statusMessageResult get() = statusMessage
+    private val mEventMessage = MutableLiveData< Event<String>>()
+    val eventMessage get() = mEventMessage
 
-    // Used for data binding by [com.rupesh.kotlinrxjavaex.view.MovieDetailActivity]
-    var movie: Movie? = null
+    fun getPopularMovies() {
+        mPopularMovies.value = Resource.Loading()
+        networkMovieUseCase.getPopularMovies()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object: SingleObserver<Resource<List<Movie>>> {
+                override fun onSubscribe(d: Disposable) {
+                    disposable.add(d)
+                }
 
-    /**
-     * Gets a list of Movie wrapped inside MutableLiveData
-     * @return the LiveData<List<DMovie>
-     */
-    fun getMovieList() {
-        disposable.add(
-            getAllMovies.execute()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableSingleObserver<Response<MovieResponse>>() {
-                    override fun onSuccess(t: Response<MovieResponse>) {
-                        val statusCode = t.code()
-                        Log.i("MyTag", "onNextGetMovieListAPI response code: $statusCode")
-                        if(statusCode == 200) {
-                            movieLiveData.value = Resource.Success(t.body()!!.movies)
-                        }else {
-                            Log.i("MyTag", "onNextGetMovieListAPI error message: ${t.message()}")
-                            movieLiveData.value = Resource.Error("Cannot fetch movies")
-                        }
-                    }
-                    override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetMovieListAPI message: ${e.message}")
-                        movieLiveData.value = Resource.Error("Cannot fetch movies")
-                    }
-                })
-        )
+                override fun onSuccess(t: Resource<List<Movie>>) {
+                    Log.i(AppConstPresentation.LOG_UI, "onSuccess getPopularMovies ${t.data?.size}")
+                    mPopularMovies.value = t
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i(AppConstPresentation.LOG_UI, "onError getPopularMovies: ${e.message}")
+                }
+            })
     }
 
+    fun getSavedMovies() {
+         saveMovieUseCase.getSavedMovies()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : DisposableObserver<List<Movie>>() {
+                override fun onNext(t: List<Movie>) {
+                    Log.i(AppConstPresentation.LOG_UI, "onNext getSavedMovies: ${t.size}")
+                    mSavedMovies.value = t
+                }
 
-    /**
-     * Gets a list of DMovie wrapped inside MutableLiveData
-     * @return the LiveData<List<DMovie>
-     */
-    fun getAllMovieFromDb() {
-        disposable.add(
-            getAllSavedMovies.execute()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableObserver<List<Movie>>() {
-                    override fun onNext(t: List<Movie>) {
-                        Log.i("MyTag", "onNextGetMovieListDb: ${t.size}")
-                        dbMovieListLiveData.value = t
-                    }
+                override fun onError(e: Throwable) {
+                    Log.i(AppConstPresentation.LOG_UI, "onError getSavedMovies ${e.message}")
+                    mEventMessage.value = Event("Could not fetch the saved movies")
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorGetMovieListDb")
-                        statusMessage.value = Event("Could not fetch the saved movies")
-                    }
-
-                    override fun onComplete() {
-                        Log.i("MyTag", "onCompleteGetMovieListDb")
-                    }
-                })
-        )
+                override fun onComplete() {
+                    Log.i(AppConstPresentation.LOG_UI, "onComplete getSavedMovies")
+                }
+            })
     }
 
-    /**
-     * Forwards the operation to add DbMovie to DbMovieRepository
-     * @param id the DMovie id
-     * @param title the DMovie title
-     * @param rating the DMovie rating
-     * @param overview the DMovie overview
-     * @param releaseDate the DMovie release date
-     * @param posterPath the DMovie poster path (url)
-     */
-    fun addMovieToDB(movie: Movie) {
-        disposable.add(
-            saveMovieToDb.execute(movie)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableMaybeObserver<Long>() {
-                    override fun onSuccess(t: Long) {
-                        Log.i("MyTag", "onSuccessAddMovieToDb: $t")
-                        statusMessage.value = Event("Movie Saved")
-                    }
+    fun saveMovie(movie: Movie) {
+        saveMovieUseCase.savedMovie(movie)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : MaybeObserver<Long> {
+                override fun onSubscribe(d: Disposable) {
+                    disposable.add(d)
+                }
+                override fun onSuccess(t: Long) {
+                    Log.i(AppConstPresentation.LOG_UI, "onSuccess saveMovie: $t")
+                    mEventMessage.value = Event("Movie Saved")
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorAddMovieTiDb: ${e.message}")
-                        statusMessage.value = Event("Could not save the movie")
-                    }
+                override fun onError(e: Throwable) {
+                    Log.i(AppConstPresentation.LOG_UI, "onError saveMovie: ${e.message}")
+                    mEventMessage.value = Event("Could not save the movie")
+                }
 
-                    override fun onComplete() {
-                        Log.i("MyTag", "onCompleteAddMovieToDb: Operation completed")
-                    }
-                })
-        )
+                override fun onComplete() {
+                    Log.i(AppConstPresentation.LOG_UI, "onComplete saveMovie")
+                }
+            })
     }
 
-    /**
-     * Forwards the operation to delete DbMovie to DbMovieRepository
-     * @param dbMovie the DbMovie instance to be deleted
-     */
-    fun deleteMovieFromDB(id: Int) {
-        disposable.add(
-            deleteSavedMovie.execute(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableMaybeObserver<Int>() {
-                    override fun onSuccess(t: Int) {
-                        Log.i("MyTag", "onSuccessDeleteDB: $t ")
-                        statusMessage.value = Event("Movie Deleted")
-                    }
+    fun deleteMovie(id: Int) {
+         saveMovieUseCase.deleteMovie(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : MaybeObserver<Int> {
+                override fun onSubscribe(d: Disposable) {
+                    disposable.add(d)
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.i("MyTag", "onErrorDeleteDB: ${e.message}")
-                        statusMessage.value = Event("Could not delete the movie")
-                    }
+                override fun onSuccess(t: Int) {
+                    Log.i(AppConstPresentation.LOG_UI, "onSuccess deleteMovie: $t ")
+                    mEventMessage.value = Event("Movie Deleted")
+                }
 
-                    override fun onComplete() {
-                        Log.i("MyTag", "onCompleteDeleteDB")
-                    }
-                })
-        )
+                override fun onError(e: Throwable) {
+                    Log.i(AppConstPresentation.LOG_UI, "onError deleteMovie: ${e.message}")
+                    mEventMessage.value = Event("Could not delete the Movie")
+                }
+
+                override fun onComplete() {
+                    Log.i(AppConstPresentation.LOG_UI, "onComplete deleteMovie")
+                }
+            })
     }
 
     override fun onCleared() {

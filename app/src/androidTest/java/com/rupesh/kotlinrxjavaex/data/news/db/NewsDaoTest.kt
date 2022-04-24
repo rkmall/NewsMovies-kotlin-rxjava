@@ -3,14 +3,18 @@ package com.rupesh.kotlinrxjavaex.data.news.db
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
+import com.rupesh.kotlinrxjavaex.data.common.db.AppDB
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import sharedTest.DatabaseTestHelper
-import sharedTest.testdata.news.NewsDbTestData
+import sharedTest.RxImmediateSchedulerRule
+import sharedTest.testdata.news.NewsTestData
 
-
+@RunWith(JUnit4::class)
 class NewsDaoTest {
 
     // To execute each task synchronously in the background instead of default background executor
@@ -18,86 +22,102 @@ class NewsDaoTest {
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var newsDb: NewsDB
+    @get:Rule
+    var rxImmediateSchedulerRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
+
+
+    lateinit var appDB: AppDB
     lateinit var newsDao: NewsDao
-    lateinit var newsDbTestData: NewsDbTestData
+    var newsTestData = NewsTestData()
 
     @Before
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        newsDb = DatabaseTestHelper.initializeDb(context, NewsDB::class.java)
-        newsDao = newsDb.getNewsDao()
-        newsDbTestData = NewsDbTestData()
+        appDB = DatabaseTestHelper.initializeDb(context, AppDB::class.java)
+        newsDao = appDB.getNewsDao()
     }
 
     @Test
-    fun addNewsArticleToDb_whenGivenNewsArticle_returnsInsertedItemRowId() {
-        val newsArticleList = newsDbTestData.getNewsDbTestData()
-        newsDao.addNewsArticleToDb(newsArticleList[0]).test()
+    fun addCacheArticles_whenGivenNewsArticle_returnsInsertedItemRowId() {
+        val newsArticleList = newsTestData.newsArticles
+        newsDao.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
     }
 
     @Test
-    fun deleteNewsArticleFromDb_whenGivenArticleId_returnsNoOfRowDeleted() {
-        val newsArticleList = newsDbTestData.getNewsDbTestData()
+    fun deleteNewsArticleFromDb_whenGivenArticleId_deletesTheNews() {
+        val newsArticleList = newsTestData.newsArticles
 
-        newsDao.addNewsArticleToDb(newsArticleList[0]).test()
+        val insertedId = newsDao.addCacheArticle(newsArticleList[0]).blockingGet()
+
+        newsDao.getCachedArticles().subscribe({
+            newsDao.deleteCacheArticle(insertedId.toInt()).test().await()
+        }, { throwable -> throwable.printStackTrace() })
+
+        newsDao.getCachedArticles().test()
+            .assertValue {
+                it.isEmpty()
+            }
+    }
+
+    @Test
+    fun getCachedArticles_returnsAllItems() {
+        val newsArticleList = newsTestData.newsArticles
+
+        newsDao.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
 
-        newsDao.addNewsArticleToDb(newsArticleList[1]).test()
+        newsDao.addCacheArticle(newsArticleList[1]).test()
             .assertValue {
                 it == 2L
             }
 
-        newsDao.deleteNewsArticleFromDb(2).test()
+        newsDao.getCachedArticles().test()
             .assertValue {
-                it == 1
+                it.size == 2
             }
-
-        newsDao.getSavedNewsArticleFromDb().test()
             .assertValue {
-                it.size == 1
+                it[0].author == "author name 1"
+            }
+            .assertValue {
+                it[1].author == "author name 2"
             }
     }
 
     @Test
-    fun getNewsArticleFromDb_returnsAllItems() {
-        val newsArticleList = newsDbTestData.getNewsDbTestData()
+    fun clear_clearsNewsArticleTable() {
+        val newsArticleList = newsTestData.newsArticles
 
-        newsDao.addNewsArticleToDb(newsArticleList[0]).test()
+        newsDao.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 1L
             }
 
-        newsDao.addNewsArticleToDb(newsArticleList[1]).test()
+        newsDao.addCacheArticle(newsArticleList[0]).test()
             .assertValue {
                 it == 2L
             }
 
-         newsDao.getSavedNewsArticleFromDb().test()
-             .assertValue {
-                    it.size == 2
-             }
-             .assertValue {
-                 it[0].title.equals("title-1")
-             }
-             .assertValue {
-                 it[0].author.equals("author name 1")
-             }
-             .assertValue {
-                 it[1].title.equals("title-2")
-             }
-             .assertValue {
-                 it[1].author.equals("author name 2")
-             }
+
+        newsDao.getCachedArticles().test()
+            .assertValue {
+                it.size == 2
+            }
+
+        newsDao.clearCache().test().await()
+
+        newsDao.getCachedArticles().test()
+            .assertValue {
+                it.isEmpty()
+            }
     }
 
     @After
     fun tearDown() {
-        newsDb.close()
+        appDB.close()
     }
 }

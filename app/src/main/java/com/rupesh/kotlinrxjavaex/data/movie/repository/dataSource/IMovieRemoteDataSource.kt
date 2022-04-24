@@ -6,5 +6,5 @@ import retrofit2.Response
 
 interface IMovieRemoteDataSource {
 
-    fun getTopMovies(): Single<Response<MovieResponse>>
+    fun getPopularMovies(): Single<Response<MovieResponse>>
 }

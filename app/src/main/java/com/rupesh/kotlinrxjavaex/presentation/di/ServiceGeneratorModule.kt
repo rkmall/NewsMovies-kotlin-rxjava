@@ -25,5 +25,4 @@ class ServiceGeneratorModule {
     fun provideMovieService(): MovieService {
         return ServiceGenerator.serviceApi.create(MovieService::class.java)
     }
-
 }

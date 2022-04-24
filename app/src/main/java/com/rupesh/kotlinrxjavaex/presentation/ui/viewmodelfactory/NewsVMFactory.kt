@@ -1,3 +1,4 @@
+/*
 package com.rupesh.kotlinrxjavaex.presentation.ui.viewmodelfactory
 
 import androidx.lifecycle.ViewModel
@@ -6,29 +7,20 @@ import com.rupesh.kotlinrxjavaex.domain.usecase.news.*
 import javax.inject.Inject
 
 class NewsVMFactory @Inject constructor(
-    private val getAllNewsArticles: GetAllNewsArticles,
-    private val getSearchedNewsArticle: GetSearchedNewsArticle,
-    private val getSavedNewsArticles: GetSavedNewsArticles,
-    private val saveNewsArticleToDb: SaveNewsArticleToDb,
-    private val deleteNewsArticleFromDb: DeleteNewsArticleFromDb,
-    private val deleteAll: DeleteAll
+    private val networkNewsUseCase: NetworkNewsUseCase,
+    private val cacheNewsUseCase: CacheNewsUseCase,
+    private val saveNewsUseCase: SaveNewsUseCase
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(
-            GetAllNewsArticles::class.java,
-            GetSearchedNewsArticle::class.java,
-            GetSavedNewsArticles::class.java,
-            SaveNewsArticleToDb::class.java,
-            DeleteNewsArticleFromDb::class.java,
-            DeleteAll::class.java
+            NetworkNewsUseCase::class.java,
+            CacheNewsUseCase::class.java,
+            SaveNewsUseCase::class.java
         ).newInstance(
-            getAllNewsArticles,
-            getSearchedNewsArticle,
-            getSavedNewsArticles,
-            saveNewsArticleToDb,
-            deleteNewsArticleFromDb,
-            deleteAll
+            networkNewsUseCase,
+            cacheNewsUseCase,
+            saveNewsUseCase
         )
     }
-}
+}*/

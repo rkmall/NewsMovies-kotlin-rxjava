@@ -7,22 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsContainerBinding
-import com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsViewPagerAdapter
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
-import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodelfactory.NewsVMFactory
 import com.rupesh.kotlinrxjavaex.presentation.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
@@ -32,21 +28,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
 
-    @Inject
-    lateinit var newsVMFactory: NewsVMFactory
-    lateinit var newsViewModel: NewsViewModel
+    private val newsViewModel: NewsViewModel by viewModels()
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var newsViewPagerAdapter: NewsViewPagerAdapter
+    private lateinit var tabLayoutMediator: TabLayoutMediator
     private lateinit var preferenceHelper: SharedPreferenceHelper
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        newsViewModel = ViewModelProvider(this, newsVMFactory)[NewsViewModel::class.java]
-        displayBottomViewNav()
         setToolbar()
         setViewPager()
         setTabLayout()
@@ -65,45 +57,45 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
             initiateCall()
             with(binding) { newsRefreshBtn.setVisibleGone() }
         }else {
-            newsViewModel.getCachedNewsArticles()
+            getCachedPlusSavedData()
             with(binding) { newsRefreshBtn.setVisible() }
             requireView().snackBar("Please turn on network and click refresh")
         }
     }
 
     private fun initiateCall() {
-        val sharedPrefFirstRun = activity?.getSharedPreferences(AppConstantsPresentation.FIRST_RUN, Context.MODE_PRIVATE)
-        val sharedPrefTimePeriod = activity?.getSharedPreferences(AppConstantsPresentation.TIME_PERIOD, Context.MODE_PRIVATE)
+        val sharedPrefFirstRun = activity?.getSharedPreferences(AppConstPresentation.FIRST_RUN, Context.MODE_PRIVATE)
+        val sharedPrefTimePeriod = activity?.getSharedPreferences(AppConstPresentation.TIME_PERIOD, Context.MODE_PRIVATE)
         preferenceHelper = SharedPreferenceHelper(sharedPrefFirstRun!!, sharedPrefTimePeriod!!)
         val duration = NetworkChecker.checkTimePeriod(preferenceHelper.getStoredTime())
-        val isFirstRun = sharedPrefFirstRun.getBoolean(AppConstantsPresentation.IS_FIRST_RUN, false)
+        val isFirstRun = sharedPrefFirstRun.getBoolean(AppConstPresentation.IS_FIRST_RUN, false)
 
-        if(isFirstRun) {
-            refreshData()
-            preferenceHelper.storeSubsequentRun()
-        } else if(!isFirstRun && duration > AppConstantsPresentation.API_CALL_TIME) {
-            refreshData()
-        }else {
-            newsViewModel.getCachedNewsArticles()
+        when {
+            isFirstRun -> {
+                refreshData()
+                preferenceHelper.storeSubsequentRun()
+            }
+
+            (!isFirstRun && duration > AppConstPresentation.API_CALL_TIME) -> refreshData()
+
+            else -> getCachedPlusSavedData()
         }
     }
 
     private fun refreshData() {
-        newsViewModel.clearDb()
+        newsViewModel.clearCache()
         newsViewModel.newsApiCall(AppConstantsData.DEFAULT_COUNTRY_NEWS, AppConstantsData.DEFAULT_PAGE_NEWS)
+        newsViewModel.getSavedArticles()
+    }
+
+    private fun getCachedPlusSavedData() {
+        newsViewModel.getCachedArticles()
+        newsViewModel.getSavedArticles()
     }
 
     private fun setToolbar() {
         val toolbar = binding.tbNewsFrag
         toolbar.title = "News"
-    }
-
-    private fun displayBottomViewNav() {
-        val bottomNavView = (activity as MainActivity).bnv_main
-
-        if(bottomNavView.visibility == View.INVISIBLE) {
-            bottomNavView.visibility = View.VISIBLE
-        }
     }
 
     /**
@@ -114,15 +106,14 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
     private fun setTabLayout() {
         tabLayout = binding.newsTabLayout
 
-        TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
                 0 -> tab.text = getString(R.string.newsfrag_tab1_title)
                 1 -> tab.text = getString(R.string.newsfrag_tab2_title)
             }
-        }).attach()
+        }).apply { attach() }
     }
 
-    // Connect ViewPager2 with ViewPager Adapter
     private fun setViewPager() {
         val fragmentList = arrayListOf(
             NewsFragment(),
@@ -138,5 +129,10 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
         container: ViewGroup?,
     ): FragmentNewsContainerBinding {
         return DataBindingUtil.inflate(inflater, R.layout.fragment_news_container, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tabLayoutMediator.detach()
     }
 }

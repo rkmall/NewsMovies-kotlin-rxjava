@@ -11,7 +11,6 @@ class RxImmediateSchedulerRule: TestRule  {
     private val immediate = Schedulers.trampoline()
 
     override fun apply(base: Statement, description: Description?): Statement {
-
         return object : Statement() {
             @Throws(Throwable::class)
             override fun evaluate() {

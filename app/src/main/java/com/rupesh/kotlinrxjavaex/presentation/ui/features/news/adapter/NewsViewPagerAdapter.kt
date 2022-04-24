@@ -1,5 +1,6 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter
 
+import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

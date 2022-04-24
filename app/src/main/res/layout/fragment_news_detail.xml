@@ -16,6 +16,7 @@
             android:background="@color/search_background"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +43,5 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tb_news_detail" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

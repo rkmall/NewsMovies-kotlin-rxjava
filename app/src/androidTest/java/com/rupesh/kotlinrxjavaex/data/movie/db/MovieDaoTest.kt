@@ -3,13 +3,19 @@ package com.rupesh.kotlinrxjavaex.data.movie.db
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import com.rupesh.kotlinrxjavaex.data.common.db.AppDB
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import sharedTest.DatabaseTestHelper
-import sharedTest.testdata.movie.DbMovieTestData
+import sharedTest.RxImmediateSchedulerRule
+import sharedTest.testdata.movie.MovieTestData
 
+@RunWith(AndroidJUnit4::class)
 class MovieDaoTest {
 
     // To execute each task synchronously in the background instead of default background executor
@@ -17,86 +23,103 @@ class MovieDaoTest {
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var movieDb: MovieDB
+    @get:Rule
+    var rxImmediateSchedulerRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
+
+    lateinit var appDB: AppDB
     lateinit var movieDao: MovieDao
-    lateinit var movieTestData: DbMovieTestData
+    lateinit var movieTestData: MovieTestData
 
     @Before
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        movieDb = DatabaseTestHelper.initializeDb(context, MovieDB::class.java)
-        movieDao = movieDb.getMovieDao()
-        movieTestData = DbMovieTestData()
+        appDB = DatabaseTestHelper.initializeDb(context, AppDB::class.java)
+        movieDao = appDB.getMovieDao()
+        movieTestData = MovieTestData()
     }
 
     @Test
-    fun addMovieToDb_whenGivenMovie_returnsInsertedItemRowId() {
-        val movieList = movieTestData.getMovieListTestData()
-        movieDao.addMovie(movieList[0]).test()
+    fun insert_MovieToLocalDatabase_whenGivenMovie_Returns_InsertedItemRowId() {
+        val movieList = movieTestData.movieList
+        movieDao.insertMovie(movieList[0]).test()
             .assertValue {
                 it == 1L
             }
     }
 
+
     @Test
-    fun deleteMovieFromDb_whenGivenMovie_returnsNoOfRowDeleted() {
-        val movieList = movieTestData.getMovieListTestData()
+    fun deleteMovieFromDb_whenGivenMovieId_deletesTheMovie() {
+        val movieList = movieTestData.movieList
 
-        movieDao.addMovie(movieList[0]).test()
-            .assertValue {
-                it == 1L
-            }
+        val insertedId = movieDao.insertMovie(movieList[0]).blockingGet()
+        assertThat(insertedId).isEqualTo(1)
 
-        movieDao.addMovie(movieList[1]).test()
-            .assertValue {
-                it == 2L
-            }
+        movieDao.getSavedMovies().subscribe({
+            movieDao.deleteMovie(insertedId.toInt()).test().await()
+        }, { throwable -> throwable.printStackTrace() })
 
-        movieDao.deleteMovie(movieList[0]).test()
+        movieDao.getSavedMovies().test()
             .assertValue {
-                it == 1
-            }
-
-        movieDao.getAllMovie().test()
-            .assertValue {
-                it.size == 1
+                it.isEmpty()
             }
     }
 
     @Test
     fun getSavedMoviesFromDb_returnsAllItems() {
-        val movieList = movieTestData.getMovieListTestData()
+        val movieList = movieTestData.movieList
 
-        movieDao.addMovie(movieList[0]).test()
+        movieDao.insertMovie(movieList[0]).test()
             .assertValue {
                 it == 1L
             }
 
-        movieDao.addMovie(movieList[1]).test()
+        movieDao.insertMovie(movieList[1]).test()
             .assertValue {
                 it == 2L
             }
 
-        movieDao.getAllMovie().test()
+        movieDao.getSavedMovies().test()
             .assertValue {
                 it.size == 2
             }
             .assertValue {
-                it[0].title == "Movie-1"
+                it[0].originalTitle == "First Movie"
             }
             .assertValue {
-                it[0].releaseDate == "20/01/2020"
+                it[1].originalTitle == "Second Movie"
             }
+    }
+
+    @Test
+    fun clearSavedMoviesFromDb_clearsMovieTable() {
+        val movieList = movieTestData.movieList
+
+        movieDao.insertMovie(movieList[0]).test()
             .assertValue {
-                it[1].title == "Movie-2"
+                it == 1L
             }
+
+        movieDao.insertMovie(movieList[1]).test()
             .assertValue {
-                it[1].releaseDate == "20/01/2021"
+                it == 2L
+            }
+
+        movieDao.getSavedMovies().test()
+            .assertValue {
+                it.size == 2
+            }
+
+        movieDao.clear().test().await()
+
+        movieDao.getSavedMovies().test()
+            .assertValue {
+                it.isEmpty()
             }
     }
 
     @After
     fun tearDown() {
-        movieDb.close()
+        appDB.close()
     }
 }

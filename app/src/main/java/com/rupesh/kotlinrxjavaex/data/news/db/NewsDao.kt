@@ -9,14 +9,14 @@ import io.reactivex.Observable
 interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addNewsArticleToDb(newsArticle: NewsArticle): Maybe<Long>
+    fun addCacheArticle(newsArticle: NewsArticle): Maybe<Long>
 
     @Query("select * from news")
-    fun getSavedNewsArticleFromDb(): Observable<List<NewsArticle>>
+    fun getCachedArticles(): Observable<List<NewsArticle>>
 
     @Query("delete from news where id = :id")
-    fun deleteNewsArticleFromDb(id: Int): Maybe<Int>
+    fun deleteCacheArticle(id: Int): Maybe<Int>
 
     @Query("delete from news")
-    fun clear(): Maybe<Int>
+    fun clearCache(): Maybe<Int>
 }

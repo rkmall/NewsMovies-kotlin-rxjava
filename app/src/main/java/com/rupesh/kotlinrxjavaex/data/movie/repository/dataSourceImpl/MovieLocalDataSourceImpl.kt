@@ -9,15 +9,19 @@ import io.reactivex.Observable
 class MovieLocalDataSourceImpl(
     private val movieDao: MovieDao
 ) : IMovieLocalDataSource {
-    override fun getSavedMovieList(): Observable<List<Movie>> {
-        return movieDao.getAllMovie()
+    override fun getSavedMovies(): Observable<List<Movie>> {
+        return movieDao.getSavedMovies()
     }
 
-    override fun addMovieToDb(movie: Movie): Maybe<Long> {
-        return movieDao.addMovie(movie)
+    override fun saveMovie(movie: Movie): Maybe<Long> {
+        return movieDao.insertMovie(movie)
     }
 
-    override fun deleteMovieFromDb(id: Int): Maybe<Int> {
+    override fun deleteMovie(id: Int): Maybe<Int> {
         return movieDao.deleteMovie(id)
+    }
+
+    override fun clear(): Maybe<Int> {
+        return movieDao.clear()
     }
 }

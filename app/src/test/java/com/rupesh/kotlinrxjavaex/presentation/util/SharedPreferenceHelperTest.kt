@@ -30,22 +30,22 @@ class SharedPreferenceHelperTest {
 
     @Test
     fun `call to storeFirstRun sets FIRST_RUN_DONE as true and returns true in subsequent calls`() {
-        `when`(prefEditor.putBoolean(AppConstantsPresentation.IS_FIRST_RUN, false))
+        `when`(prefEditor.putBoolean(AppConstPresentation.IS_FIRST_RUN, false))
             .thenReturn(prefEditor)
 
         `when`(sharedPrefFirstRun.edit()).thenReturn(prefEditor)
 
-        `when`(context.getSharedPreferences(AppConstantsPresentation.FIRST_RUN, Context.MODE_PRIVATE))
+        `when`(context.getSharedPreferences(AppConstPresentation.FIRST_RUN, Context.MODE_PRIVATE))
             .thenReturn(sharedPrefFirstRun)
 
         sharedPreferenceHelper.storeFirstRun()
         verify(prefEditor, times(1)).apply()
 
-        `when`(sharedPrefFirstRun.getBoolean(AppConstantsPresentation.IS_FIRST_RUN, false))
+        `when`(sharedPrefFirstRun.getBoolean(AppConstPresentation.IS_FIRST_RUN, false))
             .thenReturn(true)
 
         sharedPreferenceHelper.getIsFirstRunDone()
-        verify(sharedPrefFirstRun, times( 1)).getBoolean(AppConstantsPresentation.IS_FIRST_RUN, false)
+        verify(sharedPrefFirstRun, times( 1)).getBoolean(AppConstPresentation.IS_FIRST_RUN, false)
         assertThat(sharedPreferenceHelper.getIsFirstRunDone()).isTrue()
     }
 
@@ -54,15 +54,15 @@ class SharedPreferenceHelperTest {
 
         val currentTimeInMin: Long = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis())
 
-        `when`(prefEditor.putLong(AppConstantsPresentation.CURRENT_TIME, currentTimeInMin))
+        `when`(prefEditor.putLong(AppConstPresentation.CURRENT_TIME, currentTimeInMin))
             .thenReturn(prefEditor)
 
         `when`(sharedPrefTime.edit()).thenReturn(prefEditor)
 
-        `when`(context.getSharedPreferences(AppConstantsPresentation.TIME_PERIOD, Context.MODE_PRIVATE))
+        `when`(context.getSharedPreferences(AppConstPresentation.TIME_PERIOD, Context.MODE_PRIVATE))
             .thenReturn(sharedPrefTime)
 
-        `when`(sharedPrefTime.getLong(AppConstantsPresentation.CURRENT_TIME, 180L))
+        `when`(sharedPrefTime.getLong(AppConstPresentation.CURRENT_TIME, 180L))
             .thenReturn(180L)
 
         sharedPreferenceHelper.storeCurrentTime(currentTimeInMin)
@@ -70,7 +70,7 @@ class SharedPreferenceHelperTest {
 
 
         sharedPreferenceHelper.getStoredTime()
-        verify(sharedPrefTime, times(1)).getLong(AppConstantsPresentation.CURRENT_TIME, 180L)
+        verify(sharedPrefTime, times(1)).getLong(AppConstPresentation.CURRENT_TIME, 180L)
         assertThat(sharedPreferenceHelper.getStoredTime()).isEqualTo(180L)
     }
 

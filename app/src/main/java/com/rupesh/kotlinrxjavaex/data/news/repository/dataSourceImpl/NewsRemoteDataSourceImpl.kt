@@ -1,6 +1,5 @@
 package com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl
 
-import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
@@ -12,18 +11,18 @@ class NewsRemoteDataSourceImpl(
     private val newsService: NewsService
 ) : INewsRemoteDataSource {
 
-    override fun getTopNewsHeadlines(
+    override fun getTopHeadlines(
         country: String,
         page: Int
-    ): Observable<Response<NewsResponse>> {
-        return newsService.getTopHeadlines(country, page)
+    ): Single<Response<NewsResponse>> {
+        return newsService.getTopHeadlines(country = country, page =  page)
     }
 
-    override fun getSearchedNewsHeadlines(
+    override fun getSearchedHeadlines(
         country: String,
         searchQuery: String,
         page: Int
-    ): Observable<Response<NewsResponse>> {
-        return newsService.getSearchedTopHeadlines(country, searchQuery, page)
+    ): Single<Response<NewsResponse>> {
+        return newsService.getSearchedHeadlines(country = country, searchQuery = searchQuery, page = page)
     }
 }

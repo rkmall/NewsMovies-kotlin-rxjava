@@ -1,7 +1,6 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.news.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
+import com.rupesh.kotlinrxjavaex.data.util.fromNewsArticleToNewsSaved
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsDetailBinding
+import com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
-import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodelfactory.NewsVMFactory
+import com.rupesh.kotlinrxjavaex.presentation.util.setVisibleGone
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 
 /**
@@ -29,12 +28,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>() {
 
-    @Inject
-    lateinit var newsVMFactory: NewsVMFactory
-    private val newsViewModel: NewsViewModel by viewModels{ newsVMFactory }
-
+    private val newsViewModel: NewsViewModel by viewModels()
     private lateinit var newsArticle: NewsArticle
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,10 +47,7 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>() {
     }
 
     private fun loadNewsWebView() {
-        // Set toolbar title with the article source name
         binding.tbNewsDetail.title = newsArticle.source?.name
-
-        // Set web view
         binding.wvNews.apply {
             webViewClient = WebViewClient()
             newsArticle.url?.let { loadUrl(it) }
@@ -63,26 +55,24 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>() {
     }
 
     private fun observeStatusMessage() {
-        newsViewModel.statusMessageResult.observe(viewLifecycleOwner) {
+        newsViewModel.eventMessage.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 requireView().snackBar(message)
             }
         }
     }
 
-    private fun setToolbar() {
-        val toolbar = binding.tbNewsDetail
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
-
-        // Go back to the fragment that started this fragment
-        toolbar.setNavigationOnClickListener {
-            activity?.supportFragmentManager?.popBackStack()
+    private fun saveNewsArticle() {
+        binding.fabNewsDetail.setOnClickListener {
+            newsViewModel.saveArticle(fromNewsArticleToNewsSaved(newsArticle))
         }
     }
 
-    private fun saveNewsArticle() {
-        binding.fabNewsDetail.setOnClickListener {
-            newsViewModel.saveNewsArticle(newsArticle)
+    private fun setToolbar() {
+        with(binding) {
+            tbNewsDetail.setNavigationOnClickListener {
+                activity?.supportFragmentManager?.popBackStack()
+            }
         }
     }
 
@@ -91,5 +81,10 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>() {
         container: ViewGroup?,
     ): FragmentNewsDetailBinding {
         return DataBindingUtil.inflate(inflater, R.layout.fragment_news_detail, container, false)
+    }
+
+    override fun onDestroy() {
+        binding.wvNews.stopLoading()
+        super.onDestroy()
     }
 }

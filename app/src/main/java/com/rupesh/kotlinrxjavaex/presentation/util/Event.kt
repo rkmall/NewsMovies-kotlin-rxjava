@@ -3,7 +3,7 @@ package com.rupesh.kotlinrxjavaex.presentation.util
 open class Event<out T>(private val content: T) {
 
     var hasBeenHandled = false
-        private set // allow eternal read but not write
+        //private set
 
     /**
      * Returns the content and prevents its use again

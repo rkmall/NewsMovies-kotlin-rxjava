@@ -11,19 +11,21 @@ import retrofit2.http.Url
 
 interface NewsService {
 
-    @GET("${BuildConfig.URL_NEWS}v2/top-headlines")
+    @GET
     fun getTopHeadlines(
+        @Url url: String = "${BuildConfig.URL_NEWS}v2/top-headlines",
         @Query("country") country: String,
         @Query("page") page: Int,
         @Query("apiKey") apiKey: String = BuildConfig.API_NEWS
-    ): Observable<Response<NewsResponse>>
+    ): Single<Response<NewsResponse>>
 
 
-    @GET("${BuildConfig.URL_NEWS}/v2/top-headlines")
-    fun getSearchedTopHeadlines(
+    @GET
+    fun getSearchedHeadlines(
+        @Url url: String = "${BuildConfig.URL_NEWS}v2/top-headlines",
         @Query("country") country: String,
         @Query("q") searchQuery: String,
         @Query("page") page: Int,
         @Query("apiKey") apiKey: String = BuildConfig.API_NEWS
-    ): Observable<Response<NewsResponse>>
+    ): Single<Response<NewsResponse>>
 }

@@ -15,6 +15,7 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsBinding
+import com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsAdapter
 import com.rupesh.kotlinrxjavaex.presentation.util.*
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit
 class NewsFragment : BaseFragment<FragmentNewsBinding>() {
 
     private val viewModel: NewsViewModel by viewModels(ownerProducer = {requireParentFragment()})
+
     private lateinit var newsAdapter: NewsAdapter
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -46,7 +48,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
     }
 
     private fun observeTopHeadlines() {
-        viewModel.newsLiveDataResult.observe(requireParentFragment().viewLifecycleOwner) {
+        viewModel.topHeadlines.observe(requireParentFragment().viewLifecycleOwner) {
             if (it != null) {
                 render(it)
             }
@@ -54,7 +56,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
     }
 
     private fun observeSearchedHeadlines() {
-        viewModel.searchedNewsLivedataResult.observe(requireParentFragment().viewLifecycleOwner) {
+        viewModel.searchedHeadlines.observe(requireParentFragment().viewLifecycleOwner) {
             if(it != null) {
                  render(it)
             }
@@ -99,7 +101,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
                     when {
                         queryText.isEmpty() -> observeTopHeadlines()
                         queryText.isNotEmpty() -> {
-                            viewModel.getSearchedNewsList(
+                            viewModel.getSearchedHeadlines(
                                 AppConstantsData.DEFAULT_COUNTRY_NEWS,
                                 queryText,
                                 AppConstantsData.DEFAULT_PAGE_NEWS

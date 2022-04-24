@@ -3,25 +3,27 @@ package sharedTest.testdata.movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import io.reactivex.Single
-import io.reactivex.exceptions.UndeliverableException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
-class MovieResponseTestData {
+class MovieTestData {
 
-    private val movieList = ArrayList<Movie>()
+    private val mMovieList = ArrayList<Movie>()
+    val movieList get() = mMovieList
+
+    init { createMovieList() }
 
     private fun createMovieList() {
         val movie1 = Movie(
+            1,
             false,
             "backdrop1",
-            List<Int>(1){0},
-            0,
+            List(1){0},
             "English",
-            "Movie2020",
+            "First Movie",
             "Movie of the year",
             8.0,
             "https://the_movie_poster123.com",
@@ -33,12 +35,12 @@ class MovieResponseTestData {
         )
 
         val movie2 = Movie(
+            2,
             false,
             "backdrop2",
-            List<Int>(1){0},
-            0,
+            List(1){0},
             "English",
-            "Movie2021",
+            "Second Movie",
             "Movie after the event",
             9.0,
             "https://the_movie_poster234.com",
@@ -48,34 +50,35 @@ class MovieResponseTestData {
             9.0,
             150
         )
-        movieList.add(movie1)
-        movieList.add(movie2)
+        mMovieList.add(movie1)
+        mMovieList.add(movie2)
     }
 
-    fun getResponseDataSuccess(): Single<Response<MovieResponse>> {
-        createMovieList()
+
+    fun createSuccessResponseMovieObservable(): Single<Response<MovieResponse>> {
         val response: Response<MovieResponse> = Response.success(
             200,
             MovieResponse(
-                1,
-                movieList,
-                10,
-                20
+                page = 1,
+                movies =  mMovieList,
+                totalPages = 10,
+                totalResults = 20
             )
         )
         return Single.create { emitter -> emitter.onSuccess(response) }
     }
 
-    fun <T> getResponseDataError(): Single<Response<T>> {
-        val response: Response<T> = Response.error(
+
+    fun createErrorResponseMovieObservable(): Single<Response<MovieResponse>> {
+        val response: Response<MovieResponse> = Response.error(
             "null".toResponseBody("application/json".toMediaTypeOrNull()),
 
             okhttp3.Response.Builder()
                 .code(400)
-                .message("Response.error(), bad-request")
+                .message("bad-request")
                 .addHeader("content-type", "application/json")
                 .request(Request.Builder().url("http://localhost/").build())
-                .protocol(Protocol.HTTP_2)
+                .protocol(Protocol.HTTP_1_1)
                 .build()
         )
         return Single.create{emitter -> emitter.onSuccess(response)}

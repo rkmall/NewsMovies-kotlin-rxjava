@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.presentation.di
 
 import com.rupesh.kotlinrxjavaex.data.news.db.NewsDao
+import com.rupesh.kotlinrxjavaex.data.news.db.NewsSavedDao
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsLocalDataSource
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl.NewsLocalDataSourceImpl
@@ -28,8 +29,9 @@ class NewsDataSourceModule {
     @Singleton
     @Provides
     fun provideINewsLocalDataSource(
-        newsDao: NewsDao
+        newsDao: NewsDao,
+        newsSavedDao: NewsSavedDao
     ): INewsLocalDataSource {
-        return NewsLocalDataSourceImpl(newsDao)
+        return NewsLocalDataSourceImpl(newsDao, newsSavedDao)
     }
 }

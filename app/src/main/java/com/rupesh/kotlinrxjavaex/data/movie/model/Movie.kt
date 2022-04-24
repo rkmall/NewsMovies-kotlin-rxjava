@@ -3,8 +3,9 @@ package com.rupesh.kotlinrxjavaex.data.movie.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Movie class represent a movie data instance
@@ -16,7 +17,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Movie(
 
-    @SerializedName("id")
+    @SerializedName("itemId")
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 

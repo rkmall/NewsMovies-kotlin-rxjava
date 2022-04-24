@@ -23,8 +23,6 @@
             android:layout_alignParentBottom="true"
             android:background="@color/search_background"
             app:menu="@menu/bottom_nav_menu"/>
-
     </RelativeLayout>
-
 </layout>
 

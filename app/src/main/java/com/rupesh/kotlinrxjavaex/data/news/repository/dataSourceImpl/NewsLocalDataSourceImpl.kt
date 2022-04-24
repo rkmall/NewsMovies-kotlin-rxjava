@@ -1,30 +1,47 @@
 package com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl
 
 import com.rupesh.kotlinrxjavaex.data.news.db.NewsDao
+import com.rupesh.kotlinrxjavaex.data.news.db.NewsSavedDao
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
+import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsLocalDataSource
-import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 
 class NewsLocalDataSourceImpl(
-    private val newsDao: NewsDao
+    private val newsDao: NewsDao,
+    private val newsSavedDao: NewsSavedDao
 ) : INewsLocalDataSource {
 
-    override fun getSavedNewsArticles(): Observable<List<NewsArticle>> {
-        return newsDao.getSavedNewsArticleFromDb()
+    override fun addCacheArticle(newsArticle: NewsArticle): Maybe<Long> {
+        return newsDao.addCacheArticle(newsArticle)
     }
 
-    override fun addNewsArticleToDb(newsArticle: NewsArticle): Maybe<Long> {
-        return newsDao.addNewsArticleToDb(newsArticle)
+    override fun getCachedArticles(): Observable<List<NewsArticle>> {
+        return newsDao.getCachedArticles()
     }
 
-    override fun deleteNewsArticleFromDb(id: Int): Maybe<Int> {
-        return newsDao.deleteNewsArticleFromDb(id)
+    override fun deleteCacheArticle(id: Int): Maybe<Int> {
+        return newsDao.deleteCacheArticle(id)
     }
 
-    override fun clear(): Maybe<Int> {
-        return newsDao.clear()
+    override fun clearCache(): Maybe<Int> {
+        return newsDao.clearCache()
+    }
+
+    override fun saveArticle(newsSaved: NewsSaved): Maybe<Long> {
+        return newsSavedDao.saveArticle(newsSaved)
+    }
+
+    override fun getSavedArticles(): Observable<List<NewsSaved>> {
+        return newsSavedDao.getSavedArticles()
+    }
+
+    override fun deleteSavedArticle(id: Int): Maybe<Int> {
+        return newsSavedDao.deleteSavedArticle(id)
+    }
+
+    override fun clearSaved(): Maybe<Int> {
+        return newsSavedDao.clearSaved()
     }
 }

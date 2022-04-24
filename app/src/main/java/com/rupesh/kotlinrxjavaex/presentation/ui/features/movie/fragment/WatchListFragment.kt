@@ -1,6 +1,7 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter.WatchListAdapter
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
-import kotlinx.android.synthetic.*
 import java.util.*
 
 /**
@@ -33,23 +33,21 @@ class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var watchListAdapter: WatchListAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerView()
         observeDbMovieList()
         observeStatusMessage()
     }
 
     private fun observeDbMovieList() {
-        movieViewModel.dbMovieListResult.observe(requireParentFragment().viewLifecycleOwner) {
+        movieViewModel.savedMovies.observe(requireParentFragment().viewLifecycleOwner) {
             watchListAdapter.setList(it)
         }
     }
 
     private fun observeStatusMessage() {
-        movieViewModel.statusMessageResult.observe(requireParentFragment().viewLifecycleOwner) {
+        movieViewModel.eventMessage.observe(requireParentFragment().viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { message ->
                 requireParentFragment().requireView().snackBar(message)
             }
@@ -60,7 +58,7 @@ class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
      * Remove DbMovie from the local database on Remove button clicked
      */
     private fun onRemoveButtonClicked(movie: Movie) {
-        movieViewModel.deleteMovieFromDB(movie.id)
+        movieViewModel.deleteMovie(movie.id)
     }
 
     /**

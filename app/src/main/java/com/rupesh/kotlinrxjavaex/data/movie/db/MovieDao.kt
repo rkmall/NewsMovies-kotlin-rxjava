@@ -15,13 +15,16 @@ import io.reactivex.Single
  */
 @Dao
 interface MovieDao {
-    
+
+    @Query("select * from movies")
+    fun getSavedMovies(): Observable<List<Movie>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addMovie(movie: Movie): Maybe<Long>
+    fun insertMovie(movie: Movie): Maybe<Long>
 
     @Query("delete from movies where id = :id")
     fun deleteMovie(id: Int): Maybe<Int>
 
-    @Query("select * from movies")
-    fun getAllMovie(): Observable<List<Movie>>
+    @Query("delete from movies")
+    fun clear(): Maybe<Int>
 }

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -15,9 +15,8 @@ import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieContainerBinding
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter.MovieViewPagerAdapter
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
-import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodelfactory.MovieVMFactory
+import com.rupesh.kotlinrxjavaex.presentation.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
@@ -27,27 +26,32 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MovieContainerFragment : BaseFragment<FragmentMovieContainerBinding>() {
 
-    @Inject
-    lateinit var movieVMFactory: MovieVMFactory
-    lateinit var movieViewModel: MovieViewModel
+    private val movieViewModel: MovieViewModel by viewModels()
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var movieViewPagerAdapter: MovieViewPagerAdapter
-
+    private lateinit var tabLayoutMediator: TabLayoutMediator
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieViewModel = ViewModelProvider(this, movieVMFactory)[MovieViewModel::class.java]
         setToolbar()
         setViewPager()
         setTabLayout()
-        loadData()
+        initiateCall()
+    }
+
+    private fun initiateCall() {
+        if(NetworkChecker.isNetWorkAvailable(requireContext())) {
+            loadData()
+        }else {
+            requireView().snackBar("Please turn on network")
+        }
     }
 
     private fun loadData() {
-        movieViewModel.getMovieList()
-        movieViewModel.getAllMovieFromDb()
+        movieViewModel.getPopularMovies()
+        movieViewModel.getSavedMovies()
     }
 
     private fun setToolbar() {
@@ -62,16 +66,14 @@ class MovieContainerFragment : BaseFragment<FragmentMovieContainerBinding>() {
      */
     private fun setTabLayout() {
         tabLayout = binding.movieTabLayout
-
-        TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager2, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when(position) {
                 0 -> tab.text = getString(R.string.moviefrag_tab1_title)
                 1 -> tab.text = getString(R.string.moviefrag_tab2_title)
             }
-        }).attach()
+        }).apply { attach() }
     }
 
-    // Connect ViewPager2 with ViewPager Adapter
     private fun setViewPager() {
         val fragmentList = arrayListOf(
             MovieFragment(),
@@ -87,5 +89,10 @@ class MovieContainerFragment : BaseFragment<FragmentMovieContainerBinding>() {
         container: ViewGroup?,
     ): FragmentMovieContainerBinding {
         return DataBindingUtil.inflate(inflater, R.layout.fragment_movie_container, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tabLayoutMediator.detach()
     }
 }
