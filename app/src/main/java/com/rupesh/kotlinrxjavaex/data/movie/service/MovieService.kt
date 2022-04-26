@@ -5,6 +5,7 @@ import com.rupesh.kotlinrxjavaex.data.movie.model.MovieResponse
 import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
 import retrofit2.http.Url
 
@@ -18,7 +19,8 @@ interface MovieService {
      */
     @GET
     fun getPopularMovies(
+        @Header("ApplyResponseCache") responseCache: Boolean = true,
         @Url url: String = "${BuildConfig.URL_MOVIE}movie/popular",
-        @Query("api_key") apiKey: String = BuildConfig.API_MOVIE
+        @Query("api_key") apiKey: String = BuildConfig.API_MOVIE,
     ): Single<Response<MovieResponse>>
 }
