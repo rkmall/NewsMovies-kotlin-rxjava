@@ -1,16 +1,15 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
-import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
+import com.rupesh.kotlinrxjavaex.databinding.MovieListItemBinding
 
 /**
  * A simple [RecyclerView.Adapter] subclass.
@@ -20,12 +19,9 @@ import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
  * @since 1.0
  */
 class MovieAdapter(
-    val context: Context,
     val listenerForClick: (movie: Movie) -> Unit,
     val listenerForLongClick: (movie: Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>()  {
-
-    var movies: List<Movie> = ArrayList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,30 +37,17 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movies[position])
+        val movie = differ.currentList[position]
+        holder.bind(movie)
     }
 
     override fun getItemCount(): Int {
-        return movies.size
+        return differ.currentList.size
     }
 
-    fun setList(movieList: List<Movie>) {
-        movies = movieList
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Inner class MovieViewHolder
-     */
     inner class MovieViewHolder(val binding: MovieListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(_movie: Movie) {
             binding.movie = _movie
-            val posterPath = "${BuildConfig.MOVIE_POSTER_PATH}${_movie.posterPath}"
-
-            Glide.with(binding.ivMovie.context)
-                .load(posterPath)
-                .into(binding.ivMovie)
-
             onMovieClick()
             onMovieLongClick()
         }
@@ -77,8 +60,10 @@ class MovieAdapter(
             binding.cvMovie.setOnClickListener {
                 val position = adapterPosition
                 if(position != RecyclerView.NO_POSITION) {
-                    val selectedMovie = movies[position]
+                    val selectedMovie = differ.currentList[position]
                     listenerForClick(selectedMovie)
+                } else {
+                    Toast.makeText(binding.root.context, "Internal error", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -92,14 +77,25 @@ class MovieAdapter(
             binding.cvMovie.setOnLongClickListener {
                 val position = adapterPosition
                 if(position != RecyclerView.NO_POSITION) {
-                    val selectedMovie = movies[position]
+                    val selectedMovie = differ.currentList[position]
                     listenerForLongClick(selectedMovie)
-                }else {
-                    Toast.makeText(context, "Internal error", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(binding.root.context, "Internal error", Toast.LENGTH_LONG).show()
                 }
-
                 return@setOnLongClickListener true
             }
         }
     }
+
+    private val diffCallback = object : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem.originalTitle == newItem.originalTitle
+        }
+
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, diffCallback)
 }

@@ -23,12 +23,10 @@ class MovieViewPagerAdapter(
 
     private val fragmentList = _fragmentList
 
-    // Returns Fragments count
     override fun getItemCount(): Int {
         return fragmentList.size
     }
 
-    // Returns Fragment
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
     }

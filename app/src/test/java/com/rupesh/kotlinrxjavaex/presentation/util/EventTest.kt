@@ -30,7 +30,6 @@ class EventTest {
         assertThat(event.hasBeenHandled).isTrue()
 
         val resultOfSecondCall = event.getContentIfNotHandled()
-        println(resultOfSecondCall)
         assertThat(resultOfSecondCall).isNull()
     }
 

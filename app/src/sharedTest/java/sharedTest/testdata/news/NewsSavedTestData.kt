@@ -12,6 +12,7 @@ class NewsSavedTestData {
 
     private fun createNewsArticle() {
         val newsArticle1 = NewsSaved(
+            id = 1,
             author = "author name 1",
             content = "news content section 1",
             description = "news description section 1",
@@ -26,6 +27,7 @@ class NewsSavedTestData {
         )
 
         val newsArticle2 = NewsSaved(
+            id = 2,
             author = "author name 2",
             content = "news content section 2",
             description = "news description section 2",

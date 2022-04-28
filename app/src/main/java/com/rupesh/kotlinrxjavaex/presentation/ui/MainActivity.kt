@@ -1,6 +1,5 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +9,6 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.databinding.ActivityMainBinding
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.fragment.MovieContainerFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.fragment.NewsContainerFragment
-import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
-import com.rupesh.kotlinrxjavaex.presentation.util.SharedPreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -24,17 +21,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var preferenceHelper: SharedPreferenceHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val sharedPrefFirstRun = getSharedPreferences(AppConstPresentation.FIRST_RUN, Context.MODE_PRIVATE)
-        val sharedPrefTimePeriod = getSharedPreferences(AppConstPresentation.TIME_PERIOD, Context.MODE_PRIVATE)
-        preferenceHelper = SharedPreferenceHelper(sharedPrefFirstRun, sharedPrefTimePeriod)
-
-        cacheSharedPreference()
         replaceFragment(NewsContainerFragment())
         initBottomNavView()
     }
@@ -70,10 +61,5 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = fm.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout_main, fragment)
         fragmentTransaction.commit()
-    }
-
-    private fun cacheSharedPreference() {
-        preferenceHelper.storeFirstRun()
-        preferenceHelper.storeCurrentTime(System.currentTimeMillis())
     }
 }

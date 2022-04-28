@@ -20,6 +20,7 @@ class NewsTestData {
 
     private fun createNewsArticle() {
         val newsArticle1 = NewsArticle(
+            id = 1,
             author = "author name 1",
             content = "news content section 1",
             description = "news description section 1",
@@ -34,6 +35,7 @@ class NewsTestData {
         )
 
         val newsArticle2 = NewsArticle(
+            id = 2,
             author = "author name 2",
             content = "news content section 2",
             description = "news description section 2",

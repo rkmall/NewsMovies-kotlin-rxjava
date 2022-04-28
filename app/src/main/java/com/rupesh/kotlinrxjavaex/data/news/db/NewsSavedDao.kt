@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 import io.reactivex.Maybe
 import io.reactivex.Observable

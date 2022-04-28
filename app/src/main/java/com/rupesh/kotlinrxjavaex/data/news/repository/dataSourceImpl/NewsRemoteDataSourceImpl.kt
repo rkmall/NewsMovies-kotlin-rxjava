@@ -3,7 +3,6 @@ package com.rupesh.kotlinrxjavaex.data.news.repository.dataSourceImpl
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import com.rupesh.kotlinrxjavaex.data.news.repository.dataSource.INewsRemoteDataSource
 import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Response
 

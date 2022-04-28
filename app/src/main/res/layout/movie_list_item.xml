@@ -29,6 +29,7 @@
                     android:layout_height="200dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitXY"
+                    loadMovieImageFromUrl="@{movie.posterPath}"
                     android:contentDescription="@string/movie_image" />
 
                 <TextView

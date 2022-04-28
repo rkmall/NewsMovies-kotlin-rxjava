@@ -66,9 +66,12 @@ class MovieRepositoryImplTest {
         val testObserver = movieRepositoryImpl.getPopularMovies().test()
 
         testObserver.await()
-            .assertError(HttpException::class.java)
-            .assertNotComplete()
-            .assertErrorMessage("HTTP 400 bad-request")
+            .assertValue {
+                it.code() == 400
+            }
+            .assertValue {
+                it.message() == "bad-request"
+            }
     }
 
     @Test

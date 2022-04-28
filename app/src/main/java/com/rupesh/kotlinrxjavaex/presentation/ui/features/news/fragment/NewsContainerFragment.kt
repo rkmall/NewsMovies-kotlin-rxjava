@@ -2,6 +2,7 @@ package com.rupesh.kotlinrxjavaex.presentation.ui.features.news.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +35,15 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
     private lateinit var tabLayout: TabLayout
     private lateinit var newsViewPagerAdapter: NewsViewPagerAdapter
     private lateinit var tabLayoutMediator: TabLayoutMediator
-    private lateinit var preferenceHelper: SharedPreferenceHelper
+    private lateinit var sharedPreference: SharedPreferenceHelper
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPrefFirstRun = activity?.getSharedPreferences(AppConstPresentation.PREF_FIRST_RUN, Context.MODE_PRIVATE)
+        val sharedPrefTimePeriod = activity?.getSharedPreferences(AppConstPresentation.PREF_TIME_PERIOD, Context.MODE_PRIVATE)
+        sharedPreference = SharedPreferenceHelper(sharedPrefFirstRun!!, sharedPrefTimePeriod!!)
+
         setToolbar()
         setViewPager()
         setTabLayout()
@@ -53,39 +58,50 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
     }
 
     private fun checkNetwork() {
-        if(NetworkChecker.isNetWorkAvailable(requireContext())) {
-            initiateCall()
-            with(binding) { newsRefreshBtn.setVisibleGone() }
-        }else {
-            getCachedPlusSavedData()
-            with(binding) { newsRefreshBtn.setVisible() }
-            requireView().snackBar("Please turn on network and click refresh")
+        val networkAvailable = NetworkChecker.isNetWorkAvailable(requireContext())
+        val isFirstRun = sharedPreference.getIsFirstRun()
+
+        when {
+            networkAvailable -> {
+                initiateCall()
+                with(binding) { newsRefreshBtn.setVisibleGone() }
+            }
+
+            !networkAvailable && !isFirstRun -> {
+                getCachedPlusSavedData()
+                with(binding) { newsRefreshBtn.setVisible() }
+                requireView().snackBar(AppConstPresentation.NO_NETWORK_REFRESH)
+            }
+
+            else -> {
+                with(binding) { newsRefreshBtn.setVisible() }
+                requireView().snackBar(AppConstPresentation.NO_NETWORK_REFRESH)
+            }
         }
     }
 
     private fun initiateCall() {
-        val sharedPrefFirstRun = activity?.getSharedPreferences(AppConstPresentation.FIRST_RUN, Context.MODE_PRIVATE)
-        val sharedPrefTimePeriod = activity?.getSharedPreferences(AppConstPresentation.TIME_PERIOD, Context.MODE_PRIVATE)
-        preferenceHelper = SharedPreferenceHelper(sharedPrefFirstRun!!, sharedPrefTimePeriod!!)
-        val duration = NetworkChecker.checkTimePeriod(preferenceHelper.getStoredTime())
-        val isFirstRun = sharedPrefFirstRun.getBoolean(AppConstPresentation.IS_FIRST_RUN, false)
-
+        val duration = NetworkChecker.checkTimePeriod(sharedPreference.getStoredTime())
+        Log.i(AppConstPresentation.LOG_UI, "Duration: $duration")
+        val isFirstRun = sharedPreference.getIsFirstRun()
         when {
-            isFirstRun -> {
-                refreshData()
-                preferenceHelper.storeSubsequentRun()
-            }
-
+            isFirstRun -> firstCall()
             (!isFirstRun && duration > AppConstPresentation.API_CALL_TIME) -> refreshData()
-
             else -> getCachedPlusSavedData()
         }
+    }
+
+    private fun firstCall() {
+        newsViewModel.newsApiCall(AppConstantsData.DEFAULT_COUNTRY_NEWS, AppConstantsData.DEFAULT_PAGE_NEWS)
+        sharedPreference.storeFirstRunDone()
+        sharedPreference.storeCurrentTime(System.currentTimeMillis())
     }
 
     private fun refreshData() {
         newsViewModel.clearCache()
         newsViewModel.newsApiCall(AppConstantsData.DEFAULT_COUNTRY_NEWS, AppConstantsData.DEFAULT_PAGE_NEWS)
         newsViewModel.getSavedArticles()
+        sharedPreference.storeCurrentTime(System.currentTimeMillis())
     }
 
     private fun getCachedPlusSavedData() {

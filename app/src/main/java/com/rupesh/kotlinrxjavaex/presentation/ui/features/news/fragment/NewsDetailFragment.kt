@@ -12,10 +12,8 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.util.fromNewsArticleToNewsSaved
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsDetailBinding
-import com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
-import com.rupesh.kotlinrxjavaex.presentation.util.setVisibleGone
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,10 +45,10 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>() {
     }
 
     private fun loadNewsWebView() {
-        binding.tbNewsDetail.title = newsArticle.source?.name
+        binding.tbNewsDetail.title = newsArticle.source.name
         binding.wvNews.apply {
             webViewClient = WebViewClient()
-            newsArticle.url?.let { loadUrl(it) }
+            loadUrl(newsArticle.url)
         }
     }
 

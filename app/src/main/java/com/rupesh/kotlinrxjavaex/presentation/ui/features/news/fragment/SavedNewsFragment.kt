@@ -18,6 +18,8 @@ import com.rupesh.kotlinrxjavaex.databinding.FragmentSavedNewsBinding
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsSavedAdapter
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
+import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
+import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
 import com.rupesh.kotlinrxjavaex.presentation.util.transaction
 
@@ -32,7 +34,6 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
     private lateinit var newsAdapter: NewsSavedAdapter
     private lateinit var newsArticleToBeDeleted: NewsSaved
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,18 +71,22 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
     private fun initRecyclerView() {
         binding.rvSavedNews.apply{
-            newsAdapter = NewsSavedAdapter(requireContext()) { item -> onNewsItemClick(item) }
+            newsAdapter = NewsSavedAdapter { item -> onNewsItemClick(item) }
             layoutManager = LinearLayoutManager(requireContext())
             adapter = newsAdapter
         }
     }
 
     private fun onNewsItemClick(article: NewsSaved) {
-        val newsDetailFragment = NewsDetailFragment()
-        val bundle = Bundle()
-        bundle.putParcelable("article", fromNewsSavedToNewsArticle(article))
-        newsDetailFragment.arguments = bundle
-        activity?.transaction(R.id.frame_layout_main, newsDetailFragment)
+        if(NetworkChecker.isNetWorkAvailable(requireContext())) {
+            val newsDetailFragment = NewsDetailFragment()
+            val bundle = Bundle()
+            bundle.putParcelable("article", fromNewsSavedToNewsArticle(article))
+            newsDetailFragment.arguments = bundle
+            activity?.transaction(R.id.frame_layout_main, newsDetailFragment)
+        } else {
+            requireView().snackBar(AppConstPresentation.NO_NETWORK)
+        }
     }
 
     private val itemTouchHelperCallback: ItemTouchHelper.Callback = object : ItemTouchHelper.SimpleCallback(
@@ -98,7 +103,7 @@ class SavedNewsFragment : BaseFragment<FragmentSavedNewsBinding>() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             newsArticleToBeDeleted = newsAdapter.differ.currentList[viewHolder.adapterPosition]
-            newsViewModel.deleteSavedArticle(newsArticleToBeDeleted.id!!)
+            newsViewModel.deleteSavedArticle(newsArticleToBeDeleted.id)
         }
     }
 

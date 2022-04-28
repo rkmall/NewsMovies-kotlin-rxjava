@@ -97,7 +97,7 @@ class NewsSavedDaoTest {
                 it == 1L
             }
 
-        newsSavedDao.saveArticle(newsArticleList[0]).test()
+        newsSavedDao.saveArticle(newsArticleList[1]).test()
             .assertValue {
                 it == 2L
             }

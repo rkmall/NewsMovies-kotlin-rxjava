@@ -15,7 +15,14 @@ class NetworkMovieUseCase @Inject constructor(
         return iMovieRepository
             .getPopularMovies()
             .map {
-                Log.i(AppConstPresentation.LOG_UI, "Response code movie: ${it.code()}")
+                Log.d(AppConstPresentation.LOG_UI, "Response code movie: ${it.code()}")
+                //if(it.raw().headers !=  null) {
+                    Log.d(AppConstPresentation.LOG_DATA, "${it.raw().headers}")
+                //}
+                /*if(it.raw().cacheResponse !=  null) {
+                    Log.d(AppConstPresentation.LOG_DATA, "response from cache")
+                }*/
+
                 when {
                     it.isSuccessful -> it.body()?.let { resource -> Resource.Success(resource.movies) }
                     else -> Resource.Error(message = "Error: ${it.code()}: Cannot fetch movies")

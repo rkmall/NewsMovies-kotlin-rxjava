@@ -128,9 +128,8 @@ class NewsServiceTest {
                 var containsSearchKey: Boolean
                 for(article in it.body()!!.articles) {
                     containsSearchKey = when {
-                        article.source!!.id.lowercase().contains(searchKey) -> true
-                        article.source!!.name.lowercase().contains(searchKey) -> true
-                        article.url!!.lowercase().contains(searchKey) -> true
+                        article.source.name.lowercase().contains(searchKey) -> true
+                        article.url.lowercase().contains(searchKey) -> true
                         article.description!!.lowercase().contains(searchKey) -> true
                         article.content!!.lowercase().contains(searchKey) -> true
                         else -> false

@@ -7,6 +7,7 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 fun fromNewsArticleToNewsSaved(newsArticle: NewsArticle): NewsSaved {
     return newsArticle.let {
         NewsSaved(
+            id = it.id,
             author = it.author,
             content = it.content,
             description = it.description ,
@@ -23,6 +24,7 @@ fun fromNewsArticleToNewsSaved(newsArticle: NewsArticle): NewsSaved {
 fun fromNewsSavedToNewsArticle(newsSaved: NewsSaved): NewsArticle {
     return newsSaved.let {
         NewsArticle(
+            id = it.id,
             author = it.author,
             content = it.content,
             description = it.description ,

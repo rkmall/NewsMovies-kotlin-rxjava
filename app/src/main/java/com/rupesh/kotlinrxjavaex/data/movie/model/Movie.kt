@@ -1,7 +1,9 @@
 package com.rupesh.kotlinrxjavaex.data.movie.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -17,9 +19,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Movie(
 
-    @SerializedName("itemId")
+    @ColumnInfo(name = "itemId")
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val itemId: Int = 0,
 
     @SerializedName("adult")
     val adult: Boolean,

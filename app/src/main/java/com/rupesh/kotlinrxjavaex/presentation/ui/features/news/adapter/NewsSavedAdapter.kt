@@ -1,6 +1,5 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -8,29 +7,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 import com.rupesh.kotlinrxjavaex.databinding.SavedNewsListItemBinding
 
 class NewsSavedAdapter(
-    val context: Context,
     val listenerForClick: (article: NewsSaved) -> Unit
 ): RecyclerView.Adapter<NewsSavedAdapter.NewsSavedViewHolder>() {
-
-    private val callback = object : DiffUtil.ItemCallback<NewsSaved>() {
-
-        override fun areItemsTheSame(oldItem: NewsSaved, newItem: NewsSaved): Boolean {
-            return oldItem.url == newItem.url
-        }
-
-        override fun areContentsTheSame(oldItem: NewsSaved, newItem: NewsSaved): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-    // It computes the List contents via DiffUtil on a background thread as new Lists are received
-    val differ = AsyncListDiffer(this, callback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsSavedAdapter.NewsSavedViewHolder {
         val binding: SavedNewsListItemBinding = DataBindingUtil.inflate(
@@ -55,11 +38,6 @@ class NewsSavedAdapter(
 
         fun bind(articleSaved: NewsSaved) {
             binding.newsSaved = articleSaved
-
-            Glide.with(binding.ivArticleImage.context)
-                .load(articleSaved.urlToImage)
-                .into(binding.ivArticleImage)
-
             onNewsItemClick()
         }
 
@@ -71,11 +49,21 @@ class NewsSavedAdapter(
                     val selectedArticle = differ.currentList[position]
                     listenerForClick(selectedArticle)
                 } else {
-                    Toast.makeText(context, "Internal error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(binding.root.context, "Internal error", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
+    private val diffCallback = object : DiffUtil.ItemCallback<NewsSaved>() {
+        override fun areItemsTheSame(oldItem: NewsSaved, newItem: NewsSaved): Boolean {
+            return oldItem.title == newItem.title
+        }
 
+        override fun areContentsTheSame(oldItem: NewsSaved, newItem: NewsSaved): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, diffCallback)
 }

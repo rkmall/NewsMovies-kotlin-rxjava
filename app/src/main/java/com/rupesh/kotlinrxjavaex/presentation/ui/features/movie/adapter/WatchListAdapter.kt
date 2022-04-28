@@ -1,9 +1,11 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
@@ -17,11 +19,8 @@ import com.rupesh.kotlinrxjavaex.databinding.WatchListItemBinding
  * @since 1.0
  */
 class WatchListAdapter(
-    val context: Context,
     val listener: (movie: Movie) -> Unit
 ): RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
-
-    var moviesList: List<Movie> = ArrayList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -37,21 +36,14 @@ class WatchListAdapter(
     }
 
     override fun onBindViewHolder(holder: WatchListViewHolder, position: Int) {
-        holder.bind(moviesList[position])
+        val movie = differ.currentList[position]
+        holder.bind(movie)
     }
 
     override fun getItemCount(): Int {
-        return moviesList.size
+        return differ.currentList.size
     }
 
-    fun setList(_movieList: List<Movie>) {
-        moviesList = _movieList
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Inner class MovieViewHolder
-     */
     inner class WatchListViewHolder(val binding: WatchListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(_movie: Movie) {
@@ -59,20 +51,29 @@ class WatchListAdapter(
             onRemoveButtonClicked()
         }
 
-        /**
-         * On "Cancel" button click gets the position of the selected item
-         * and invokes the callback method implemented by
-         * [com.rupesh.kotlinrxjavaex.view.WatchListFragment]
-         */
         private fun onRemoveButtonClicked() {
             binding.btnWatchlistRemove.setOnClickListener {
                 val position = adapterPosition
 
                 if(position != RecyclerView.NO_POSITION) {
-                    val movie: Movie = moviesList[position]
+                    val movie: Movie = differ.currentList[position]
                     listener(movie)
+                } else {
+                    Toast.makeText(binding.root.context, "Internal error", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
+
+    private val diffCallback = object : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem.originalTitle == newItem.originalTitle
+        }
+
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, diffCallback)
 }

@@ -6,17 +6,22 @@ import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.data.movie.service.MovieService
 import com.rupesh.kotlinrxjavaex.data.news.service.NewsService
 import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
+import com.rupesh.kotlinrxjavaex.presentation.util.NetworkChecker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.*
+import okhttp3.Cache
+import okhttp3.CacheControl
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -32,37 +37,65 @@ object ServiceGeneratorModule {
         return Cache(httpCacheDir, cache.toLong())
     }
 
-
     @Singleton
     @Provides
-    fun provideCacheInterceptor(): Interceptor {
+    @Named("responseCache")
+    fun provideResponseCacheInterceptor(): Interceptor = Interceptor { chain ->
         val cacheControl = CacheControl.Builder()
-            .maxAge(1, TimeUnit.SECONDS)
+            .maxAge(180, TimeUnit.SECONDS)
             .build()
 
-        return Interceptor {
-            val request = it.request()
-            if(request.header("ApplyResponseCache").toBoolean()) {
-                Log.i(AppConstPresentation.LOG_DATA, "Response cache applied")
-                val originalResponse = it.proceed(it.request())
-                return@Interceptor originalResponse.newBuilder()
+        var request = chain.request()
+        when {
+            (request.header("ApplyResponseCache").toBoolean()) -> {
+                Log.d(AppConstPresentation.LOG_DATA, "Response cache applied")
+                request = request.newBuilder()
                     .removeHeader("ApplyResponseCache")
                     .header("Cache-Control", cacheControl.toString())
                     .build()
-            }else {
-                Log.i(AppConstPresentation.LOG_DATA, "Response cache not applied")
-                return@Interceptor it.proceed(it.request())
             }
+            else -> Log.d(AppConstPresentation.LOG_DATA, "Response cache not applied")
         }
+        return@Interceptor chain.proceed(request)
     }
 
 
     @Singleton
     @Provides
-    fun provideHttpClient(cache: Cache, networkInterceptor: Interceptor): OkHttpClient {
+    @Named("offlineCache")
+    fun provideOfflineCacheInterceptor(@ApplicationContext context: Context): Interceptor =
+        Interceptor { chain ->
+            val cacheControl = CacheControl.Builder()
+                .onlyIfCached()
+                .maxStale(2419200, TimeUnit.SECONDS)
+                .build()
+
+            var request = chain.request()
+            when {
+                (request.header("ApplyOfflineCache").toBoolean()) &&
+                    (!NetworkChecker.isNetWorkAvailable(context)) -> {
+                        Log.d(AppConstPresentation.LOG_DATA, "Offline cache applied")
+                        request = request.newBuilder()
+                            .removeHeader("ApplyOfflineCache")
+                            .header("Cache-Control", cacheControl.toString())
+                            .build()
+                    }
+                else -> Log.d(AppConstPresentation.LOG_DATA, "Offline cache not applied")
+            }
+            return@Interceptor chain.proceed(request)
+        }
+
+    @Singleton
+    @Provides
+    fun provideHttpClient(
+        cache: Cache,
+        @Named("responseCache") responseCacheInterceptor: Interceptor,
+        @Named("offlineCache") offlineCacheInterceptor: Interceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(cache)
-            .addNetworkInterceptor(networkInterceptor)
+            .addNetworkInterceptor(responseCacheInterceptor)
+            .addInterceptor(offlineCacheInterceptor)
             .readTimeout(15, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -73,7 +106,6 @@ object ServiceGeneratorModule {
     fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
-
 
     @Singleton
     @Provides

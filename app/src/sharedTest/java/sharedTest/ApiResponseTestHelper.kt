@@ -1,6 +1,5 @@
 package sharedTest
 
-import com.rupesh.kotlinrxjavaex.BuildConfig
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.buffer

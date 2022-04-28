@@ -15,11 +15,10 @@ import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import com.rupesh.kotlinrxjavaex.databinding.FragmentNewsBinding
-import com.rupesh.kotlinrxjavaex.presentation.ui.MainActivity
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.BaseFragment
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.adapter.NewsAdapter
-import com.rupesh.kotlinrxjavaex.presentation.util.*
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.NewsViewModel
+import com.rupesh.kotlinrxjavaex.presentation.util.*
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -146,16 +145,20 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
     }
 
     private fun onNewsItemClick(article: NewsArticle) {
-        val newsDetailFragment = NewsDetailFragment()
-        val bundle = Bundle()
-        bundle.putParcelable("article", article)
-        newsDetailFragment.arguments = bundle
-        activity?.transaction(R.id.frame_layout_main, newsDetailFragment)
+        if(NetworkChecker.isNetWorkAvailable(requireContext())) {
+            val newsDetailFragment = NewsDetailFragment()
+            val bundle = Bundle()
+            bundle.putParcelable("article", article)
+            newsDetailFragment.arguments = bundle
+            activity?.transaction(R.id.frame_layout_main, newsDetailFragment)
+        } else {
+            requireView().snackBar(AppConstPresentation.NO_NETWORK)
+        }
     }
 
     private fun initRecyclerView() {
         binding.rvNews.apply {
-            newsAdapter = NewsAdapter(requireContext()) { item -> onNewsItemClick(item) }
+            newsAdapter = NewsAdapter { item -> onNewsItemClick(item) }
             layoutManager = LinearLayoutManager(activity)
             this.adapter = newsAdapter
         }

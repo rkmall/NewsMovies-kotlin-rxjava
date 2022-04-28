@@ -66,7 +66,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     private fun onSuccess(resource: Resource<List<Movie>>) = with(binding) {
         progressBarMovie.setVisibleGone()
-        movieAdapter.setList(resource.data!!)
+        movieAdapter.differ.submitList(resource.data!!)
     }
 
     private fun onError(resource: Resource<List<Movie>>) = with(binding) {
@@ -86,7 +86,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
                 it.layoutManager = GridLayoutManager(requireContext(), 2)
             else
                 it.layoutManager = GridLayoutManager(requireContext(), 4)
-            movieAdapter = MovieAdapter(requireContext(), {item -> onItemClick(item)}, {item -> onItemLongClick(item)})
+            movieAdapter = MovieAdapter({item -> onItemClick(item)}, {item -> onItemLongClick(item)})
             it.itemAnimator = DefaultItemAnimator()
             it.adapter = movieAdapter
         }

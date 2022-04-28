@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.rupesh.kotlinrxjavaex.BuildConfig
 import com.rupesh.kotlinrxjavaex.R
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import com.rupesh.kotlinrxjavaex.databinding.FragmentMovieDetailBinding
@@ -33,15 +31,6 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
         arguments?.let {
             val movie = it.getParcelable<Movie>("movie")
             binding.movie = movie   // data binding
-            val image = movie?.posterPath
-            val posterPath = "${BuildConfig.MOVIE_POSTER_PATH}$image"
-
-            binding.let { fragmentBinding ->
-                Glide.with(this)
-                    .load(posterPath)
-                    .placeholder(R.drawable.loading)
-                    .into(fragmentBinding.ivMovieDetailImage)
-            }
         }
     }
 

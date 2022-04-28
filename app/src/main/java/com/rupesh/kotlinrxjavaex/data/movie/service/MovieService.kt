@@ -21,6 +21,7 @@ interface MovieService {
     fun getPopularMovies(
         @Url url: String = "${BuildConfig.URL_MOVIE}movie/popular",
         @Header("ApplyResponseCache") responseCache: Boolean = true,
+        @Header("ApplyOfflineCache") offlineCache: Boolean = true,
         @Query("api_key") apiKey: String = BuildConfig.API_MOVIE,
     ): Single<Response<MovieResponse>>
 }

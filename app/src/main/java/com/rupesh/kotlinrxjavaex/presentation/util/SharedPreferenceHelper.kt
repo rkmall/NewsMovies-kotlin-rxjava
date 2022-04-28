@@ -11,24 +11,18 @@ class SharedPreferenceHelper(
     /**
      * Store App's first run status. This is only triggered when getFirstFun() returns false
      */
-    fun storeFirstRun() {
+    fun storeFirstRunDone() {
         sharedPrefFirstRun.edit().also {
-            it.putBoolean(AppConstPresentation.IS_FIRST_RUN, true)
+            it.putBoolean(AppConstPresentation.PREF_IS_FIRST_RUN, false)
             it.apply()
         }
     }
 
-    fun storeSubsequentRun() {
-        sharedPrefFirstRun.edit().also {
-            it.putBoolean(AppConstPresentation.IS_FIRST_RUN, false)
-            it.apply()
-        }
-    }
     /**
      * @return App's first run status
      */
-    fun getIsFirstRunDone(): Boolean {
-        return sharedPrefFirstRun.getBoolean(AppConstPresentation.IS_FIRST_RUN, false)
+    fun getIsFirstRun(): Boolean {
+        return sharedPrefFirstRun.getBoolean(AppConstPresentation.PREF_IS_FIRST_RUN, true)
     }
 
     /**
@@ -37,7 +31,7 @@ class SharedPreferenceHelper(
     fun storeCurrentTime(currentTime: Long) {
         val currentTimeInMin: Long = TimeUnit.MILLISECONDS.toMinutes(currentTime)
         sharedPrefTime.edit().also {
-            it.putLong(AppConstPresentation.CURRENT_TIME, currentTimeInMin )
+            it.putLong(AppConstPresentation.PREF_CURRENT_TIME, currentTimeInMin )
             it.apply()
         }
     }
@@ -46,6 +40,6 @@ class SharedPreferenceHelper(
      * @return App's stored time status
      */
     fun getStoredTime(): Long {
-        return sharedPrefTime.getLong(AppConstPresentation.CURRENT_TIME, 15L)
+        return sharedPrefTime.getLong(AppConstPresentation.PREF_CURRENT_TIME, 5L)
     }
 }

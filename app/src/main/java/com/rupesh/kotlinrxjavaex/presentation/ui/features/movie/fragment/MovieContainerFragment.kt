@@ -45,6 +45,7 @@ class MovieContainerFragment : BaseFragment<FragmentMovieContainerBinding>() {
         if(NetworkChecker.isNetWorkAvailable(requireContext())) {
             loadData()
         }else {
+            loadData()
             requireView().snackBar("Please turn on network")
         }
     }

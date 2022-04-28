@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 data class NewsSaved(
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
-    val id : Int? = null,
+    val id : Int = 0,
 
     @ColumnInfo(name = "author")
     @SerializedName("author")
@@ -28,19 +28,19 @@ data class NewsSaved(
 
     @ColumnInfo(name = "publishedAt")
     @SerializedName("publishedAt")
-    val publishedAt: String?,
+    val publishedAt: String,
 
     @ColumnInfo(name = "source")
     @SerializedName("source")
-    val source: NewsSource?,
+    val source: NewsSource,
 
     @ColumnInfo(name = "title")
     @SerializedName("title")
-    val title: String?,
+    val title: String,
 
     @ColumnInfo(name = "url")
     @SerializedName("url")
-    val url: String?,
+    val url: String,
 
     @ColumnInfo(name = "urlToImage")
     @SerializedName("urlToImage")

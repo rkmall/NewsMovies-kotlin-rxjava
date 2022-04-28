@@ -1,7 +1,6 @@
 package com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +41,7 @@ class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
 
     private fun observeDbMovieList() {
         movieViewModel.savedMovies.observe(requireParentFragment().viewLifecycleOwner) {
-            watchListAdapter.setList(it)
+            watchListAdapter.differ.submitList(it)
         }
     }
 
@@ -58,7 +57,7 @@ class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
      * Remove DbMovie from the local database on Remove button clicked
      */
     private fun onRemoveButtonClicked(movie: Movie) {
-        movieViewModel.deleteMovie(movie.id)
+        movieViewModel.deleteMovie(movie.itemId)
     }
 
     /**
@@ -67,7 +66,7 @@ class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
      */
     private fun initRecyclerView() {
         recyclerView = binding.rvWatchList.also {
-            watchListAdapter = WatchListAdapter(requireContext()) {item -> onRemoveButtonClicked(item)}
+            watchListAdapter = WatchListAdapter {item -> onRemoveButtonClicked(item)}
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = watchListAdapter
         }

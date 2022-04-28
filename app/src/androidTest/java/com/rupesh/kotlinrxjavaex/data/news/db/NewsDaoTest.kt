@@ -97,7 +97,7 @@ class NewsDaoTest {
                 it == 1L
             }
 
-        newsDao.addCacheArticle(newsArticleList[0]).test()
+        newsDao.addCacheArticle(newsArticleList[1]).test()
             .assertValue {
                 it == 2L
             }

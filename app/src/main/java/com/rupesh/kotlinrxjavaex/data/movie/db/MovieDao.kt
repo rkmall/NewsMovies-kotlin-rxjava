@@ -4,7 +4,6 @@ import androidx.room.*
 import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 
 /**
  * MovieDao is an interface that represents Data Access Object and
@@ -22,8 +21,8 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMovie(movie: Movie): Maybe<Long>
 
-    @Query("delete from movies where id = :id")
-    fun deleteMovie(id: Int): Maybe<Int>
+    @Query("delete from movies where itemId = :itemId")
+    fun deleteMovie(itemId: Int): Maybe<Int>
 
     @Query("delete from movies")
     fun clear(): Maybe<Int>
