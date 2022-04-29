@@ -40,8 +40,17 @@ class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPrefFirstRun = activity?.getSharedPreferences(AppConstPresentation.PREF_FIRST_RUN, Context.MODE_PRIVATE)
-        val sharedPrefTimePeriod = activity?.getSharedPreferences(AppConstPresentation.PREF_TIME_PERIOD, Context.MODE_PRIVATE)
+
+        val sharedPrefFirstRun = activity?.getSharedPreferences(
+            AppConstPresentation.PREF_FIRST_RUN,
+            Context.MODE_PRIVATE
+        )
+
+        val sharedPrefTimePeriod = activity?.getSharedPreferences(
+            AppConstPresentation.PREF_TIME_PERIOD,
+            Context.MODE_PRIVATE
+        )
+
         sharedPreference = SharedPreferenceHelper(sharedPrefFirstRun!!, sharedPrefTimePeriod!!)
 
         setToolbar()
