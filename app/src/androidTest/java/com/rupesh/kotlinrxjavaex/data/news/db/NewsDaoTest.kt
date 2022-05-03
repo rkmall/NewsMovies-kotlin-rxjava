@@ -17,8 +17,6 @@ import sharedTest.testdata.news.NewsTestData
 @RunWith(JUnit4::class)
 class NewsDaoTest {
 
-    // To execute each task synchronously in the background instead of default background executor
-    // used by Architecture components
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 

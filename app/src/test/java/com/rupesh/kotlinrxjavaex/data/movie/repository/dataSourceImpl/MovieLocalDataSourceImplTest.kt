@@ -47,8 +47,8 @@ class MovieLocalDataSourceImplTest {
     @Test
     fun `deleteMovie when given movieId deletes the movie from db`() {
         val movieList = movieTestData.movieList
-        `when`(movieDao.deleteMovie(movieList[0].id)).thenReturn(Maybe.just(1))
-        movieLocalDataSourceImpl.deleteMovie(movieList[0].id).test()
+        `when`(movieDao.deleteMovie(movieList[0].itemId)).thenReturn(Maybe.just(1))
+        movieLocalDataSourceImpl.deleteMovie(movieList[0].itemId).test()
             .await()
             .assertValue {
                 it == 1

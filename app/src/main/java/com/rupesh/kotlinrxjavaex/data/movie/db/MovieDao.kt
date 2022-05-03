@@ -5,13 +5,6 @@ import com.rupesh.kotlinrxjavaex.data.movie.model.Movie
 import io.reactivex.Maybe
 import io.reactivex.Observable
 
-/**
- * MovieDao is an interface that represents Data Access Object and
- * interacts with underlying SQLite database using Room database to perform
- * database operations for entity [com.rupesh.kotlinrxjavaex.db.entity.DbMovie]
- * @author Rupesh Mall
- * @since 1.0
- */
 @Dao
 interface MovieDao {
 

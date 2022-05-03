@@ -21,14 +21,6 @@ import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.adapter.MovieAda
 import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.util.*
 
-/**
- * A simple [Fragment] subclass.
- * This Fragment displays [com.rupesh.kotlinrxjavaex.model.Movie] information
- * using a Recycler View.
- * @author Rupesh Mall
- * @since 1.0
- */
-
 class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     private val movieViewModel: MovieViewModel by viewModels(ownerProducer = {requireParentFragment()})

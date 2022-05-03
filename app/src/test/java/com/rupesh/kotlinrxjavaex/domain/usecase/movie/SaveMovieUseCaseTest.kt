@@ -61,8 +61,8 @@ class SaveMovieUseCaseTest {
     @Test
     fun `deleteMovie when given movieId deletes the movie from db`() {
         val movieList = movieTestData.movieList
-        `when`(iMovieRepository.deleteMovie(movieList[0].id)).thenReturn(Maybe.just(1))
-        saveMovieUseCase.deleteMovie(movieList[0].id).test()
+        `when`(iMovieRepository.deleteMovie(movieList[0].itemId)).thenReturn(Maybe.just(1))
+        saveMovieUseCase.deleteMovie(movieList[0].itemId).test()
             .await()
             .assertValue {
                 it == 1
@@ -71,7 +71,7 @@ class SaveMovieUseCaseTest {
 
     @Test
     fun `deleteMovie when given id throws exception on failure`() {
-        val movieId = movieTestData.movieList[0].id
+        val movieId = movieTestData.movieList[0].itemId
 
         `when`(iMovieRepository.deleteMovie(movieId))
             .thenReturn(Maybe.create { emitter ->

@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import retrofit2.HttpException
 import sharedTest.RxImmediateSchedulerRule
 import sharedTest.testdata.movie.MovieTestData
 
@@ -89,8 +88,8 @@ class MovieRepositoryImplTest {
     @Test
     fun `deleteMovie when given movieId deletes the movie from db`() {
         val movieList = movieTestData.movieList
-        `when`(movieLocalDataSourceImpl.deleteMovie(movieList[0].id)).thenReturn(Maybe.just(1))
-        movieRepositoryImpl.deleteMovie(movieList[0].id).test()
+        `when`(movieLocalDataSourceImpl.deleteMovie(movieList[0].itemId)).thenReturn(Maybe.just(1))
+        movieRepositoryImpl.deleteMovie(movieList[0].itemId).test()
             .await()
             .assertValue {
                 it == 1

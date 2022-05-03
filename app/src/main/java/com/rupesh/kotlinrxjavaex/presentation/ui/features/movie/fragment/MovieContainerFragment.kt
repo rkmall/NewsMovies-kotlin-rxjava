@@ -18,11 +18,6 @@ import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.util.*
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MovieContainerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 @AndroidEntryPoint
 class MovieContainerFragment : BaseFragment<FragmentMovieContainerBinding>() {
 

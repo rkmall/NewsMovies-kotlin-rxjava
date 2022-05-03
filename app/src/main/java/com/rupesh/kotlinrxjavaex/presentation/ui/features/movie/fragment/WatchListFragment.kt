@@ -18,13 +18,6 @@ import com.rupesh.kotlinrxjavaex.presentation.ui.viewmodel.MovieViewModel
 import com.rupesh.kotlinrxjavaex.presentation.util.snackBar
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * This Fragment displays [com.rupesh.kotlinrxjavaex.db.entity.DbMovie]information
- * using a Recycler View.
- * @author Rupesh Mall
- * @since 1.0
- */
 class WatchListFragment : BaseFragment<FragmentWatchListBinding>() {
 
     private val movieViewModel: MovieViewModel by viewModels(ownerProducer = {requireParentFragment()})

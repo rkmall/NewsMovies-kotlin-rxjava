@@ -5,7 +5,6 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsResponse
 import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 import retrofit2.http.Url
 

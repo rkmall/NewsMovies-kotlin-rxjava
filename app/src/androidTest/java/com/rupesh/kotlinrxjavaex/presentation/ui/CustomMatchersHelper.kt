@@ -5,10 +5,8 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.android.material.tabs.TabLayout
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 
 
@@ -37,21 +35,4 @@ object CustomMatchersHelper {
             }
         }
     }
-
-    /*fun forceClick(): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return allOf(isClickable(), isEnabled(), isDisplayed())
-            }
-
-            override fun getDescription(): String {
-                return "force click"
-            }
-
-            override fun perform(uiController: UiController, view: View) {
-                view.performClick() // perform click without checking view coordinates.
-                uiController.loopMainThreadUntilIdle()
-            }
-        }
-    }*/
 }

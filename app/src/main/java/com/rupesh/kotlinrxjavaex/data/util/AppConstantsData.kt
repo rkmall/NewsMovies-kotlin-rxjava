@@ -1,11 +1,5 @@
 package com.rupesh.kotlinrxjavaex.data.util
 
-/**
- * AppConstantsData contain all the constants required for various
- * classes
- * @author Rupesh Mall
- * @since 1.0
- */
 class AppConstantsData {
 
     companion object {

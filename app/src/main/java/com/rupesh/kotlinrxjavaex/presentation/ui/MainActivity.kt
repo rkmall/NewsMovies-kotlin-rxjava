@@ -11,12 +11,6 @@ import com.rupesh.kotlinrxjavaex.presentation.ui.features.movie.fragment.MovieCo
 import com.rupesh.kotlinrxjavaex.presentation.ui.features.news.fragment.NewsContainerFragment
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A simple [AppCompatActivity] subclass.
- * The main Activity and the entry point of the App
- * @author Rupesh Mall
- * @since 1.0
- */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -29,11 +23,6 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(NewsContainerFragment())
         initBottomNavView()
     }
-
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }*/
 
     private fun initBottomNavView() {
         binding.bnvMain.setOnItemSelectedListener {

@@ -18,24 +18,10 @@ import com.rupesh.kotlinrxjavaex.data.news.model.NewsSaved
 import com.rupesh.kotlinrxjavaex.data.util.AppConstantsData
 import com.rupesh.kotlinrxjavaex.presentation.util.AppConstPresentation
 
-/**
- * AppDB represents a Room database with entities
- * [com.rupesh.kotlinrxjavaex.data.news.model.NewsArticle]
- * [com.rupesh.kotlinrxjavaex.data.movie.model.Movie]
- * @author Rupesh Mall
- * @since 1.0
- */
 @Database(entities = [NewsArticle::class, NewsSaved::class, Movie::class], version = 1, exportSchema = false)
 @TypeConverters(NewsConverters::class, MovieGenreListConverter::class)
 abstract class AppDB : RoomDatabase() {
-    /**
-     * In other classes where we need to instantiate AppDB
-     * to perform database operation, we can get singleton
-     * AppDB object and use it to invoke this method to get
-     * NewsDao and MovieDao that can be used to invoke all
-     * database operation methods declared in NewsDao
-     * @return the AppDB [com.rupesh.kotlinrxjavaex.data.common.db.AppDB]
-     */
+
     abstract fun getNewsDao(): NewsDao
     abstract fun getNewsSavedDao(): NewsSavedDao
     abstract fun getMovieDao(): MovieDao
