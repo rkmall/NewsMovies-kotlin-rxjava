@@ -1,4 +1,4 @@
-## Kotlin RxJava example
+## NewsMovies Kotlin RxJava
 
 ### Dependencies
 
